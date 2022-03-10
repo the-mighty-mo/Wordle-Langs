@@ -57,7 +57,8 @@ impl PlayerInfo {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use wordle_rs::players::PlayerInfo;
     /// let player = PlayerInfo::new("user");
     /// ```
     pub fn new(username: String) -> Self {
@@ -69,7 +70,9 @@ impl PlayerInfo {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use std::collections::HashSet;
+    /// # use wordle_rs::players::PlayerInfo;
     /// let words_played = HashSet::new();
     /// words_played.insert(String::from("TRACE"));
     ///
@@ -108,7 +111,8 @@ impl PlayerInfo {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use wordle_rs::players::PlayerInfo;
     /// let player = PlayerInfo::new("user");
     /// // prints "user"
     /// println!("{}", player.get_username());
@@ -122,7 +126,12 @@ impl PlayerInfo {
     /// # Examples:
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use std::collections::HashSet;
+    /// # use wordle_rs::players::PlayerInfo;
+    /// # fn read_dictionary(filename: &str) -> HashSet<String> {
+    /// # HashSet::new()
+    /// # }
     /// let player = PlayerInfo::new("user");
     /// let dictionary: HashSet<String> =
     ///     read_dictionary("dictionary.txt");
@@ -143,7 +152,8 @@ impl PlayerInfo {
     /// # Examples:
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use wordle_rs::players::PlayerInfo;
     /// let player = PlayerInfo::new("user");
     /// // player got TRACE in 3 guesses
     /// player.add_won_word(String::from("TRACE"), 3);
@@ -164,7 +174,8 @@ impl PlayerInfo {
     /// # Examples:
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use wordle_rs::players::PlayerInfo;
     /// let player = PlayerInfo::new("user");
     /// // player could not guess BEBOP within 6 guesses
     /// player.add_lost_word(String::from("BEBOP"));
@@ -185,7 +196,8 @@ impl PlayerInfo {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use wordle_rs::players::PlayerInfo;
     /// let player = PlayerInfo::new("user");
     /// println!("{}", player.get_stats());
     /// ```
@@ -227,9 +239,14 @@ impl PlayerInfo {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use std::io;
+    /// # use wordle_rs::players::PlayerInfo;
+    /// # fn main() -> io::Result<()> {
     /// let player = PlayerInfo::new("user");
     /// player.write_to_file("user.txt")?;
+    /// # Ok(())
+    /// # }
     /// ```
     pub fn write_to_file(&self, filename: &str) -> io::Result<()> {
         let file = File::create(filename)?;
@@ -246,8 +263,13 @@ impl PlayerInfo {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use std::io;
+    /// # use wordle_rs::players::PlayerInfo;
+    /// # fn main() -> io::Result<()> {
     /// let player = PlayerInfo::from_file("user.txt")?;
+    /// # Ok(())
+    /// # }
     /// ```
     pub fn from_file(filename: &str) -> io::Result<Option<Self>> {
         let bad_data_err = || {

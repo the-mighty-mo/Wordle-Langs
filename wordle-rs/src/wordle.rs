@@ -58,7 +58,8 @@ impl WordleGame {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use wordle_rs::wordle::WordleGame;
     /// let word = String::from("TRACE");
     /// let wordle_game = WordleGame::new(word);
     /// ```
@@ -85,7 +86,15 @@ impl WordleGame {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use std::collections::HashSet;
+    /// # use wordle_rs::{
+    /// #     players::PlayerInfo,
+    /// #     wordle::WordleGame
+    /// # };
+    /// # fn read_dictionary(filename: &str) -> HashSet<String> {
+    /// # HashSet::new()
+    /// # }
     /// let word = String::from("TRACE");
     /// let wordle_game = WordleGame::new(word);
     /// let mut player = PlayerInfo::from_file("user.txt");
@@ -166,7 +175,8 @@ impl WordleGame {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use wordle_rs::wordle::WordleGame;
     /// let wordle_game = WordleGame::new(String::from("TRACE"));
     ///
     /// let all_correct = wordle_game.guess("TRACE");
@@ -175,7 +185,8 @@ impl WordleGame {
     /// ```
     /// For the following examples,
     /// X = Incorrect, Y = Present, G = Correct:
-    /// ```
+    /// ```ignore
+    /// # use wordle_rs::wordle::WordleGame;
     /// let wordle_game = WordleGame::new(String::from("AABBB"));
     /// // Returns: [X G Y X X]
     /// let some_yellow = wordle_game.guess("CAACC");

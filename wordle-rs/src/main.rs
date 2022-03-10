@@ -73,10 +73,13 @@ fn main() {
 /// # Example
 ///
 /// Basic usage:
-///
 /// ```
+/// # use std::{fs::File, io};
+/// # fn main() -> io::Result<()> {
 /// let file = File::open("file.txt");
 /// let file_contents = read_file(file)?;
+/// # Ok(())
+/// # }
 /// ```
 fn read_file(file: io::Result<File>) -> io::Result<String> {
     let file = file?;

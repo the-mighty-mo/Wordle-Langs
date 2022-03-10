@@ -27,7 +27,9 @@ impl<T> DatabaseEntry<T> {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use std::convert::identity;
+    /// # use wordle_rs::database::DatabaseEntry;
     /// // Field name: "String Test"
     /// // Data: "data"
     /// let str_entry = DatabaseEntry::from_line("String Test: data", identity);
@@ -55,7 +57,9 @@ impl<T> DatabaseEntry<T> {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use std::convert::identity;
+    /// # use wordle_rs::database::DatabaseEntry;
     /// // Field name: "String Test"
     /// // Data: vec!["data1", "data2"]
     /// let str_list_entry = DatabaseEntry::from_list("String Test: data1,data2", identity);
@@ -90,7 +94,9 @@ impl<T> DatabaseEntry<T> {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```
+    /// ```ignore
+    /// # use std::convert::identity;
+    /// # use wordle_rs::database::DatabaseEntry;
     /// // Field name: "String Test"
     /// // Data: HashSet["data1", "data2"]
     /// let str_set_entry = DatabaseEntry::from_set("String Test: data1,data2", identity);

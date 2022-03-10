@@ -17,7 +17,14 @@
 //! # Examples
 //!
 //! Basic usage:
-//! ```
+//! ```ignore
+//! # use std::collections::{BTreeSet, HashSet};
+//! # fn read_dictionary(filename: &str) -> HashSet<String> {
+//! # HashSet::new()
+//! # }
+//! # fn read_usernames(filename: &str) -> BTreeSet<String> {
+//! # BTreeSet::new()
+//! # }
 //! let dictionary: HashSet<String> = read_dictionary("dictionary.txt");
 //! let usernames: BTreeSet<String> = read_usernames(wordle_rs::USERNAMES_FILENAME);
 //! wordle_rs::run_state_machine(dictionary, usernames);
@@ -48,7 +55,6 @@ pub const USERNAMES_FILENAME: &str = "users.txt";
 /// # Examples
 ///
 /// Basic usage:
-///
 /// ```ignore
 /// # use std::collections::{BTreeSet, HashSet};
 /// # fn read_dictionary(filename: &str) -> HashSet<String> {
@@ -119,11 +125,17 @@ pub fn run_state_machine(dictionary: HashSet<String>, mut usernames: BTreeSet<St
 /// # Example
 ///
 /// Basic usage:
-///
-/// ```
+/// ```ignore
+/// # use std::{
+/// #     collections::BTreeSet,
+/// #     io
+/// # };
+/// # fn main() -> io::Result<()> {
 /// let mut usernames = BTreeSet::new();
-/// usernames.insert("user");
-/// save_usernames(&usernames, "users.txt")?;
+/// usernames.insert(String::from("user"));
+/// wordle_rs::save_usernames(&usernames, "users.txt")?;
+/// # Ok(())
+/// # }
 /// ```
 fn save_usernames(usernames: &BTreeSet<String>, filename: &str) -> io::Result<()> {
     let file = File::create(filename)?;

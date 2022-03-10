@@ -53,7 +53,12 @@ impl TryFrom<isize> for UserSelection {
 /// # Examples
 ///
 /// Basic usage:
-/// ```
+/// ```ignore
+/// # use std::collections::BTreeSet;
+/// # use wordle_rs::main_menu;
+/// # fn read_usernames(filename: &str) -> BTreeSet<String> {
+/// # BTreeSet::new()
+/// # }
 /// let mut usernames: BTreeSet<String> =
 ///     read_usernames("usernames.txt");
 ///
@@ -99,7 +104,12 @@ pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo
 /// # Examples
 ///
 /// Basic usage:
-/// ```
+/// ```ignore
+/// # use std::collections::BTreeSet;
+/// # use wordle_rs::main_menu;
+/// # fn read_usernames(filename: &str) -> BTreeSet<String> {
+/// # BTreeSet::new()
+/// # }
 /// let mut usernames: BTreeSet<String> =
 ///     read_usernames("usernames.txt");
 ///
@@ -157,7 +167,15 @@ fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
 /// # Examples
 ///
 /// Basic usage:
-/// ```
+/// ```ignore
+/// # use std::collections::{BTreeSet, HashSet};
+/// # use wordle_rs::main_menu;
+/// # fn read_dictionary(filename: &str) -> HashSet<String> {
+/// # HashSet::new()
+/// # }
+/// # fn read_usernames(filename: &str) -> BTreeSet<String> {
+/// # BTreeSet::new()
+/// # }
 /// let dictionary: HashSet<String> =
 ///     read_dictionary("dictionary.txt");
 /// let mut usernames: BTreeSet<String> =
@@ -235,7 +253,8 @@ pub fn run(current_player: &mut PlayerInfo, dictionary: &HashSet<String>) -> Pro
 /// # Examples
 ///
 /// Basic usage:
-/// ```
+/// ```ignore
+/// # use wordle_rs::main_menu;
 /// let user_selection = main_menu::request_user_selection();
 /// match (user_selection) {
 ///     Some(user_selection) => { /* run selection */ },
