@@ -301,30 +301,15 @@ impl PlayerInfo {
             DatabaseEntry::from_line(lines_in_file[0], str::to_owned).ok_or_else(bad_data_err)?;
         let words_played =
             DatabaseEntry::from_set(lines_in_file[1], str::to_owned).ok_or_else(bad_data_err)?;
-        let num_guesses_list = DatabaseEntry::from_list(lines_in_file[2], str::parse::<usize>)
+        let num_guesses_list = DatabaseEntry::try_from_list(lines_in_file[2], str::parse::<usize>)
+            .map_err(|_| bad_data_err())?
             .ok_or_else(bad_data_err)?;
-        let max_win_streak = DatabaseEntry::from_line(lines_in_file[3], str::parse::<usize>)
+        let max_win_streak = DatabaseEntry::try_from_line(lines_in_file[3], str::parse::<usize>)
+            .map_err(|_| bad_data_err())?
             .ok_or_else(bad_data_err)?;
-        let cur_win_streak = DatabaseEntry::from_line(lines_in_file[3], str::parse::<usize>)
+        let cur_win_streak = DatabaseEntry::try_from_line(lines_in_file[3], str::parse::<usize>)
+            .map_err(|_| bad_data_err())?
             .ok_or_else(bad_data_err)?;
-
-        /* propogate any str::parse() errors to the caller */
-        let num_guesses_list = DatabaseEntry {
-            name: num_guesses_list.name,
-            value: num_guesses_list
-                .value
-                .into_iter()
-                .map(|r| r.map_err(|_| bad_data_err()))
-                .collect::<Result<Vec<_>, _>>()?,
-        };
-        let max_win_streak = DatabaseEntry {
-            name: max_win_streak.name,
-            value: max_win_streak.value.map_err(|_| bad_data_err())?,
-        };
-        let cur_win_streak = DatabaseEntry {
-            name: cur_win_streak.name,
-            value: cur_win_streak.value.map_err(|_| bad_data_err())?,
-        };
 
         /* parse the number of guesses into an array */
         let mut num_guesses = [0; 6];
