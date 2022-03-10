@@ -238,7 +238,7 @@ public class WordleMainMenu {
 
             /* handle remaining newline after calling reader.nextInt() */
             _reader.nextLine();
-        };
+        }
         System.out.println();
 
         return userSelection;
