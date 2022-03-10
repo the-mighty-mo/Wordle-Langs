@@ -1,3 +1,8 @@
+//! This program runs a game of Wordle using a dictionary
+//! file provided through the command-line arguments.
+//!
+//! Author: Benjamin Hall
+
 use std::{
     collections::{BTreeSet, HashSet},
     env,

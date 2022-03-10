@@ -1,3 +1,28 @@
+//! This crate provides methods to run a game of Wordle.
+//!
+//! To run a game of Wordle, the user must first login by
+//! either selecting a username from an existing list of
+//! usernames, or by creating a new one. From there, the
+//! user can play a game of Wordle, view their statistics,
+//! log out, or delete their account.
+//!
+//! User data and a list of usernames are stored to multiple
+//! database files. The calling program must load the list
+//! of usernames and a dictionary of valid five-letter words.
+//! From there, the calling program can start the main state
+//! machine of the program.
+//!
+//! Author: Benjamin Hall
+//!
+//! # Examples
+//!
+//! Basic usage:
+//! ```
+//! let dictionary: HashSet<String> = read_dictionary("dictionary.txt");
+//! let usernames: BTreeSet<String> = read_usernames(wordle_rs::USERNAMES_FILENAME);
+//! wordle_rs::run_state_machine(dictionary, usernames);
+//! ```
+
 use std::{
     collections::{BTreeSet, HashSet},
     fs::{self, File},

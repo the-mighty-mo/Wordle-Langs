@@ -1,3 +1,8 @@
+//! This module provides methods and structs to parse
+//! and manage databases used by the wordle-rs crate.
+//!
+//! Author: Benjamin Hall
+
 use std::{collections::HashSet, convert::identity, hash::Hash};
 
 /// Stores information about an entry in a database.

@@ -1,3 +1,9 @@
+//! This module provides methods and structs to manage information
+//! about a Wordle player. Methods are also provided to save the
+//! player to and load a player from a database file.
+//!
+//! Author: Benjamin Hall
+
 use core::fmt;
 use std::collections::HashSet;
 

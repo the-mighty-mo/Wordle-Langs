@@ -1,3 +1,8 @@
+//! This module provides methods to manage the main menu of
+//! the Wordle program, such as user login and running the game.
+//!
+//! Author: Benjamin Hall
+
 use std::{
     collections::{BTreeSet, HashSet},
     io::{self, stdin, Write},

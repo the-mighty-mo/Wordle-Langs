@@ -1,3 +1,8 @@
+//! This module provides methods and structs to manage
+//! a game of Wordle, such as the guessing algorithm.
+//!
+//! Author: Benjamin Hall
+
 use std::{collections::HashSet, fmt, io};
 
 use crate::players::PlayerInfo;
