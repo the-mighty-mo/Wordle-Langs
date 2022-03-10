@@ -297,26 +297,16 @@ impl PlayerInfo {
         }
 
         /* parse the lines in the file */
-        let username = DatabaseEntry::from_line(lines_in_file[0], str::to_owned);
-        let words_played = DatabaseEntry::from_set(lines_in_file[1], str::to_owned);
-        let num_guesses_list = DatabaseEntry::from_list(lines_in_file[2], str::parse::<usize>);
-        let max_win_streak = DatabaseEntry::from_line(lines_in_file[3], str::parse::<usize>);
-        let cur_win_streak = DatabaseEntry::from_line(lines_in_file[3], str::parse::<usize>);
-
-        /* make sure no data was missing */
-        if username.is_none()
-            || words_played.is_none()
-            || num_guesses_list.is_none()
-            || max_win_streak.is_none()
-            || cur_win_streak.is_none()
-        {
-            return Err(bad_data_err());
-        }
-        let username = username.unwrap();
-        let words_played = words_played.unwrap();
-        let num_guesses_list = num_guesses_list.unwrap();
-        let max_win_streak = max_win_streak.unwrap();
-        let cur_win_streak = cur_win_streak.unwrap();
+        let username =
+            DatabaseEntry::from_line(lines_in_file[0], str::to_owned).ok_or_else(bad_data_err)?;
+        let words_played =
+            DatabaseEntry::from_set(lines_in_file[1], str::to_owned).ok_or_else(bad_data_err)?;
+        let num_guesses_list = DatabaseEntry::from_list(lines_in_file[2], str::parse::<usize>)
+            .ok_or_else(bad_data_err)?;
+        let max_win_streak = DatabaseEntry::from_line(lines_in_file[3], str::parse::<usize>)
+            .ok_or_else(bad_data_err)?;
+        let cur_win_streak = DatabaseEntry::from_line(lines_in_file[3], str::parse::<usize>)
+            .ok_or_else(bad_data_err)?;
 
         /* propogate any str::parse() errors to the caller */
         let num_guesses_list = DatabaseEntry {

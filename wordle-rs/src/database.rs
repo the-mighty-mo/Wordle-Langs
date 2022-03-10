@@ -37,7 +37,10 @@ impl<T> DatabaseEntry<T> {
     /// // Data: 3
     /// let int_entry = DatabaseEntry::from_line("Int Test: 3", str::parse::<i32>);
     /// ```
-    pub fn from_line<'a>(line: &'a str, string_to_t: fn(&'a str) -> T) -> Option<DatabaseEntry<T>> {
+    pub fn from_line<'a, F>(line: &'a str, string_to_t: F) -> Option<DatabaseEntry<T>>
+    where
+        F: Fn(&'a str) -> T,
+    {
         let split_str = line.split_once(DELIM);
         split_str.map(|(key, value)| DatabaseEntry {
             name: key.to_owned(),
@@ -67,10 +70,10 @@ impl<T> DatabaseEntry<T> {
     /// // Data: vec![4, 3, 4, 5]
     /// let int_list_entry = DatabaseEntry::from_list("Int Test: 4,3,4,5", str::parse::<i32>);
     /// ```
-    pub fn from_list<'a>(
-        line: &'a str,
-        string_to_t: fn(&'a str) -> T,
-    ) -> Option<DatabaseEntry<Vec<T>>> {
+    pub fn from_list<'a, F>(line: &'a str, string_to_t: F) -> Option<DatabaseEntry<Vec<T>>>
+    where
+        F: Fn(&'a str) -> T,
+    {
         let parsed_row = DatabaseEntry::from_line(line, identity);
         parsed_row.map(|parsed_row| {
             let items = parsed_row.value.split(',').map(string_to_t).collect();
@@ -104,13 +107,11 @@ impl<T> DatabaseEntry<T> {
     /// // Data: HashSet[6, 3, 4, 5]
     /// let int_set_entry = DatabaseEntry::from_set("Int Test: 6,3,4,5", str::parse::<i32>);
     /// ```
-    pub fn from_set<'a>(
-        line: &'a str,
-        string_to_t: fn(&'a str) -> T,
-    ) -> Option<DatabaseEntry<HashSet<T>>>
+    pub fn from_set<'a, F>(line: &'a str, string_to_t: F) -> Option<DatabaseEntry<HashSet<T>>>
     where
         T: Eq,
         T: Hash,
+        F: Fn(&'a str) -> T,
     {
         let parsed_row = DatabaseEntry::from_line(line, identity);
         parsed_row.map(|parsed_row| {
