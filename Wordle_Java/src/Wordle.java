@@ -16,6 +16,15 @@ public class Wordle {
     private final String _word;
     private final int[] _letterCounts = new int[26];
 
+    private static final String[] WIN_MESSAGES = new String[] {
+        "Genius",
+        "Magnificent",
+        "Impressive",
+        "Splendid",
+        "Great",
+        "Phew",
+    };
+
     /**
      * Create a new Wordle game.
      * 
@@ -51,11 +60,10 @@ public class Wordle {
         boolean wonGame = false;
         int i;
         for (i = 1; i <= 6; ++i) {
-            System.out.println("Guess " + i + ":");
-
             String guess = null;
             boolean read = true;
             while (read) {
+                System.out.print("[" + i + "] ");
                 if (!reader.hasNextLine()) {
                     /* user likely quit the program with Ctrl-C */
                     return;
@@ -72,11 +80,11 @@ public class Wordle {
                 }
             }
 
+            System.out.print("    ");
             WordleLetterColor[] colors = guess(guess);
             for (WordleLetterColor color : colors) {
                 System.out.print(color.toString());
             }
-            System.out.println();
             System.out.println();
 
             wonGame = Arrays.stream(colors)
@@ -89,7 +97,7 @@ public class Wordle {
 
         if (wonGame) {
             player.addWonWord(_word, i);
-            System.out.print("Congratulations! ");
+            System.out.print(WIN_MESSAGES[i - 1] + "! ");
         } else {
             player.addLostWord(_word);
             System.out.print("Too bad! ");

@@ -3,7 +3,11 @@
 //!
 //! Author: Benjamin Hall
 
-use std::{collections::HashSet, fmt, io};
+use std::{
+    collections::HashSet,
+    fmt,
+    io::{self, Write},
+};
 
 use crate::players::PlayerInfo;
 
@@ -100,11 +104,12 @@ impl WordleGame {
         println!();
 
         let won_game = (1..=6).find_map(|i| {
-            println!("Guess {i}:");
-
             let mut guess = String::new();
             let mut read = true;
             while read {
+                print!("[{i}] ");
+                io::stdout().flush().unwrap();
+
                 guess.clear();
                 match io::stdin().read_line(&mut guess) {
                     Ok(_) => {}
@@ -122,8 +127,8 @@ impl WordleGame {
             }
 
             let colors = self.guess(&guess);
+            print!("    ");
             colors.iter().for_each(|c| print!("{c}"));
-            println!();
             println!();
 
             if colors.iter().all(|c| *c == WordleGuess::Correct) {
