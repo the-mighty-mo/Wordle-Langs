@@ -1,8 +1,7 @@
 /*
  * Wordle program
- * CS 203 Project 3
- * Benjamin Hall
- * 2022.03.07
+ * Author: Benjamin Hall
+ * Created: 2022.03.07
  */
 
 /**
