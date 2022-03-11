@@ -60,9 +60,10 @@ fn main() {
         .map(str::to_uppercase)
         .collect();
 
-    let usernames: BTreeSet<String> = usernames_file_contents.lines().map(str::to_owned).collect();
+    let mut usernames: BTreeSet<String> =
+        usernames_file_contents.lines().map(str::to_owned).collect();
 
-    wordle_rs::run_state_machine(dictionary, usernames);
+    wordle_rs::run_state_machine(&dictionary, &mut usernames);
 }
 
 /// Loads data from a file into a String.

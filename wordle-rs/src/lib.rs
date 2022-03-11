@@ -65,11 +65,11 @@ pub const USERNAMES_FILENAME: &str = "users.txt";
 /// # }
 /// let dictionary: HashSet<String> =
 ///     read_dictionary("dictionary.txt");
-/// let usernames: BTreeSet<String> =
+/// let mut usernames: BTreeSet<String> =
 ///     read_usernames("usernames.txt");
-/// wordle_rs::run_state_machine(dictionary, usernames);
+/// wordle_rs::run_state_machine(&dictionary, &mut usernames);
 /// ```
-pub fn run_state_machine(dictionary: HashSet<String>, mut usernames: BTreeSet<String>) {
+pub fn run_state_machine(dictionary: &HashSet<String>, usernames: &mut BTreeSet<String>) {
     let mut state = ProgramState::LogIn;
     let mut run_program = true;
 
@@ -78,10 +78,10 @@ pub fn run_state_machine(dictionary: HashSet<String>, mut usernames: BTreeSet<St
     while run_program {
         (|| match state {
             ProgramState::LogIn => {
-                current_player = main_menu::request_user_login(&mut usernames);
+                current_player = main_menu::request_user_login(usernames);
                 match current_player {
                     Some(_) => {
-                        if save_usernames(&usernames, USERNAMES_FILENAME).is_err() {
+                        if save_usernames(usernames, USERNAMES_FILENAME).is_err() {
                             println!("Error: could not write to the user database");
                             state = ProgramState::Exit;
                             return;
@@ -94,7 +94,7 @@ pub fn run_state_machine(dictionary: HashSet<String>, mut usernames: BTreeSet<St
                 }
             }
             ProgramState::MainMenu => {
-                state = main_menu::run(current_player.as_mut().unwrap(), &dictionary)
+                state = main_menu::run(current_player.as_mut().unwrap(), dictionary)
             }
             ProgramState::DeleteUser => {
                 /* remove the current player from the databse */
@@ -103,7 +103,7 @@ pub fn run_state_machine(dictionary: HashSet<String>, mut usernames: BTreeSet<St
                 _ = fs::remove_file(username.to_owned() + ".txt").is_err();
 
                 /* save the username database */
-                if save_usernames(&usernames, USERNAMES_FILENAME).is_err() {
+                if save_usernames(usernames, USERNAMES_FILENAME).is_err() {
                     println!("Error: could not write to the user database");
                     state = ProgramState::Exit;
                     return;
