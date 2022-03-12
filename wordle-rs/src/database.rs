@@ -9,6 +9,7 @@ use std::{collections::HashSet, convert::identity, hash::Hash};
 ///
 /// Each database entry contains two portions: the name
 /// of the field, and the value of the data.
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DatabaseEntry<T> {
     pub name: String,
     pub value: T,
@@ -30,9 +31,14 @@ impl<T> DatabaseEntry<T> {
     /// ```ignore
     /// # use std::convert::identity;
     /// # use wordle_rs::database::DatabaseEntry;
-    /// // Field name: "String Test"
-    /// // Data: "data"
     /// let str_entry = DatabaseEntry::from_line("String Test: data", identity);
+    /// assert_eq!(
+    ///     str_entry.unwrap(),
+    ///     DatabaseEntry {
+    ///         name: String::from("String Test"),
+    ///         value: "data"
+    ///     }
+    /// );
     /// ```
     pub fn from_line<'a, F>(line: &'a str, string_to_t: F) -> Option<DatabaseEntry<T>>
     where
@@ -59,12 +65,16 @@ impl<T> DatabaseEntry<T> {
     ///
     /// Basic usage:
     /// ```ignore
-    /// # use std::io;
     /// # use wordle_rs::database::DatabaseEntry;
-    /// # fn main() -> io::Result<()> {
-    /// // Field name: "Int Test"
-    /// // Data: 3
+    /// # fn main() -> Result<(), std::num::ParseIntError> {
     /// let int_entry = DatabaseEntry::try_from_line("Int Test: 3", str::parse::<i32>)?;
+    /// assert_eq!(
+    ///     int_entry.unwrap(),
+    ///     DatabaseEntry {
+    ///         name: String::from("Int Test"),
+    ///         value: 3
+    ///     }
+    /// );
     /// # Ok(())
     /// # }
     /// ```
@@ -102,9 +112,14 @@ impl<T> DatabaseEntry<T> {
     /// ```ignore
     /// # use std::convert::identity;
     /// # use wordle_rs::database::DatabaseEntry;
-    /// // Field name: "String Test"
-    /// // Data: vec!["data1", "data2"]
     /// let str_list_entry = DatabaseEntry::from_list("String Test: data1,data2", identity);
+    /// assert_eq!(
+    ///     str_list_entry.unwrap(),
+    ///     DatabaseEntry {
+    ///         name: String::from("String Test"),
+    ///         value: vec!["data1", "data2"]
+    ///     }
+    /// );
     /// ```
     pub fn from_list<'a, F>(line: &'a str, string_to_t: F) -> Option<DatabaseEntry<Vec<T>>>
     where
@@ -139,12 +154,18 @@ impl<T> DatabaseEntry<T> {
     ///
     /// Basic usage:
     /// ```ignore
-    /// # use std::io;
     /// # use wordle_rs::database::DatabaseEntry;
-    /// # fn main() -> io::Result<()> {
+    /// # fn main() -> Result<(), std::num::ParseIntError> {
     /// // Field name: "Int Test"
     /// // Data: vec![4, 3, 4, 5]
     /// let int_list_entry = DatabaseEntry::try_from_list("Int Test: 4,3,4,5", str::parse::<i32>)?;
+    /// assert_eq!(
+    ///     int_list_entry.unwrap(),
+    ///     DatabaseEntry {
+    ///         name: String::from("Int Test"),
+    ///         value: vec![4, 3, 4, 5]
+    ///     }
+    /// );
     /// # Ok(())
     /// # }
     /// ```
@@ -185,11 +206,19 @@ impl<T> DatabaseEntry<T> {
     ///
     /// Basic usage:
     /// ```ignore
-    /// # use std::convert::identity;
+    /// # use std::{
+    /// #     collections::HashSet,
+    /// #     convert::identity,
+    /// # };
     /// # use wordle_rs::database::DatabaseEntry;
-    /// // Field name: "String Test"
-    /// // Data: HashSet["data1", "data2"]
     /// let str_set_entry = DatabaseEntry::from_set("String Test: data1,data2", identity);
+    /// assert_eq!(
+    ///     str_set_entry.unwrap(),
+    ///     DatabaseEntry {
+    ///         name: String::from("String Test"),
+    ///         value: HashSet::from(["data1", "data2"])
+    ///     }
+    /// );
     /// ```
     pub fn from_set<'a, F>(line: &'a str, string_to_t: F) -> Option<DatabaseEntry<HashSet<T>>>
     where
@@ -226,12 +255,19 @@ impl<T> DatabaseEntry<T> {
     ///
     /// Basic usage:
     /// ```ignore
-    /// # use std::io;
+    /// # use std::collections::HashSet;
     /// # use wordle_rs::database::DatabaseEntry;
-    /// # fn main() -> io::Result<()> {
+    /// # fn main() -> Result<(), std::num::ParseIntError> {
     /// // Field name: "Int Test"
     /// // Data: HashSet[6, 3, 4, 5]
     /// let int_set_entry = DatabaseEntry::try_from_set("Int Test: 6,3,4,5", str::parse::<i32>)?;
+    /// assert_eq!(
+    ///     int_set_entry.unwrap(),
+    ///     DatabaseEntry {
+    ///         name: String::from("Int Test"),
+    ///         value: HashSet::from([6, 3, 4, 5])
+    ///     }
+    /// );
     /// # Ok(())
     /// # }
     /// ```

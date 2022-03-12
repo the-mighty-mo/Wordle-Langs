@@ -276,7 +276,7 @@ pub fn run_game(answer: &WordleAnswer, player: &mut PlayerInfo, dictionary: &Has
 #[cfg(test)]
 mod test {
     mod wordle {
-        use crate::wordle::{guess_result, WordleAnswer, WordleGuess};
+        use crate::wordle::{guess_result, WordleAnswer};
 
         #[test]
         fn all_green() {
