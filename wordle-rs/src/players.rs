@@ -57,9 +57,9 @@ impl PlayerInfo {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```ignore
+    /// ```
     /// # use wordle_rs::players::PlayerInfo;
-    /// let player = PlayerInfo::new("user");
+    /// let player = PlayerInfo::new(String::from("user"));
     /// ```
     pub fn new(username: String) -> Self {
         PlayerInfo::load(username, HashSet::new(), [0; 6], 0, 0)
@@ -70,20 +70,20 @@ impl PlayerInfo {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```ignore
+    /// ```
     /// # use std::collections::HashSet;
     /// # use wordle_rs::players::PlayerInfo;
-    /// let words_played = HashSet::new();
+    /// let mut words_played = HashSet::new();
     /// words_played.insert(String::from("TRACE"));
     ///
-    /// let num_guesses = [0; 6];
+    /// let mut num_guesses = [0; 6];
     /// num_guesses[4 - 1] += 1;
     ///
     /// let max_win_streak = 1;
     /// let cur_win_streak = 1;
     ///
-    /// let player = PlayerInfo::new(
-    ///     "user",
+    /// let player = PlayerInfo::load(
+    ///     String::from("user"),
     ///     words_played,
     ///     num_guesses,
     ///     max_win_streak,
@@ -111,9 +111,9 @@ impl PlayerInfo {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```ignore
+    /// ```
     /// # use wordle_rs::players::PlayerInfo;
-    /// let player = PlayerInfo::new("user");
+    /// let player = PlayerInfo::new(String::from("user"));
     /// // prints "user"
     /// println!("{}", player.get_username());
     /// ```
@@ -126,13 +126,15 @@ impl PlayerInfo {
     /// # Examples:
     ///
     /// Basic usage:
-    /// ```ignore
+    /// ```
     /// # use std::collections::HashSet;
     /// # use wordle_rs::players::PlayerInfo;
     /// # fn read_dictionary(filename: &str) -> HashSet<String> {
-    /// # HashSet::new()
+    /// # let mut dict = HashSet::new();
+    /// # dict.insert(String::from("TRACE"));
+    /// # dict
     /// # }
-    /// let player = PlayerInfo::new("user");
+    /// let player = PlayerInfo::new(String::from("user"));
     /// let dictionary: HashSet<String> =
     ///     read_dictionary("dictionary.txt");
     /// let word = player.get_random_word(&dictionary);
@@ -152,9 +154,9 @@ impl PlayerInfo {
     /// # Examples:
     ///
     /// Basic usage:
-    /// ```ignore
+    /// ```
     /// # use wordle_rs::players::PlayerInfo;
-    /// let player = PlayerInfo::new("user");
+    /// let mut player = PlayerInfo::new(String::from("user"));
     /// // player got TRACE in 3 guesses
     /// player.add_won_word(String::from("TRACE"), 3);
     /// ```
@@ -174,9 +176,9 @@ impl PlayerInfo {
     /// # Examples:
     ///
     /// Basic usage:
-    /// ```ignore
+    /// ```
     /// # use wordle_rs::players::PlayerInfo;
-    /// let player = PlayerInfo::new("user");
+    /// let mut player = PlayerInfo::new(String::from("user"));
     /// // player could not guess BEBOP within 6 guesses
     /// player.add_lost_word(String::from("BEBOP"));
     /// ```
@@ -196,9 +198,9 @@ impl PlayerInfo {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```ignore
+    /// ```
     /// # use wordle_rs::players::PlayerInfo;
-    /// let player = PlayerInfo::new("user");
+    /// let player = PlayerInfo::new(String::from("user"));
     /// println!("{}", player.get_stats());
     /// ```
     pub fn get_stats(&self) -> String {
@@ -239,11 +241,11 @@ impl PlayerInfo {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```ignore
+    /// ```no_run
     /// # use std::io;
     /// # use wordle_rs::players::PlayerInfo;
     /// # fn main() -> io::Result<()> {
-    /// let player = PlayerInfo::new("user");
+    /// let player = PlayerInfo::new(String::from("user"));
     /// player.write_to_file("user.txt")?;
     /// # Ok(())
     /// # }
@@ -263,7 +265,7 @@ impl PlayerInfo {
     /// # Examples
     ///
     /// Basic usage:
-    /// ```ignore
+    /// ```no_run
     /// # use std::io;
     /// # use wordle_rs::players::PlayerInfo;
     /// # fn main() -> io::Result<()> {

@@ -8,7 +8,10 @@ use std::{
     io::{self, stdin, Write},
 };
 
-use crate::{players::PlayerInfo, wordle::WordleGame};
+use crate::{
+    players::PlayerInfo,
+    wordle::{self, WordleAnswer},
+};
 
 /// Possible states of the main Wordle program.
 pub enum ProgramState {
@@ -53,7 +56,7 @@ impl TryFrom<isize> for UserSelection {
 /// # Examples
 ///
 /// Basic usage:
-/// ```ignore
+/// ```
 /// # use std::collections::BTreeSet;
 /// # use wordle_rs::main_menu;
 /// # fn read_usernames(filename: &str) -> BTreeSet<String> {
@@ -167,7 +170,7 @@ fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
 /// # Examples
 ///
 /// Basic usage:
-/// ```ignore
+/// ```no_run
 /// # use std::collections::{BTreeSet, HashSet};
 /// # use wordle_rs::main_menu;
 /// # fn read_dictionary(filename: &str) -> HashSet<String> {
@@ -197,8 +200,8 @@ pub fn run(current_player: &mut PlayerInfo, dictionary: &HashSet<String>) -> Pro
     match user_selection {
         UserSelection::PlayGame => {
             /* run a game of Wordle */
-            let wordle = WordleGame::new(current_player.get_random_word(dictionary));
-            wordle.run(current_player, dictionary);
+            let answer = WordleAnswer::new(current_player.get_random_word(dictionary));
+            wordle::run_game(&answer, current_player, dictionary);
             /* print the player's statistics after the game ends */
             println!("{}", current_player.get_stats());
             /* save the user's new statistics to their database */

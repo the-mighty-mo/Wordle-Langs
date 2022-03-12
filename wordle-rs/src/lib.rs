@@ -17,7 +17,7 @@
 //! # Examples
 //!
 //! Basic usage:
-//! ```ignore
+//! ```no_run
 //! # use std::collections::{BTreeSet, HashSet};
 //! # fn read_dictionary(filename: &str) -> HashSet<String> {
 //! # HashSet::new()
@@ -26,8 +26,8 @@
 //! # BTreeSet::new()
 //! # }
 //! let dictionary: HashSet<String> = read_dictionary("dictionary.txt");
-//! let usernames: BTreeSet<String> = read_usernames(wordle_rs::USERNAMES_FILENAME);
-//! wordle_rs::run_state_machine(dictionary, usernames);
+//! let mut usernames: BTreeSet<String> = read_usernames(wordle_rs::USERNAMES_FILENAME);
+//! wordle_rs::run_state_machine(&dictionary, &mut usernames);
 //! ```
 
 use std::{
@@ -39,9 +39,9 @@ use std::{
 use main_menu::ProgramState;
 
 mod database;
-mod main_menu;
-mod players;
-mod wordle;
+pub mod main_menu;
+pub mod players;
+pub mod wordle;
 
 /// Name of the usernames database file
 pub const USERNAMES_FILENAME: &str = "users.txt";
@@ -55,7 +55,7 @@ pub const USERNAMES_FILENAME: &str = "users.txt";
 /// # Examples
 ///
 /// Basic usage:
-/// ```ignore
+/// ```no_run
 /// # use std::collections::{BTreeSet, HashSet};
 /// # fn read_dictionary(filename: &str) -> HashSet<String> {
 /// # HashSet::new()
