@@ -15,17 +15,25 @@ use crate::{
 
 /// Possible states of the main Wordle program.
 pub enum ProgramState {
+    /// Request the user's login information
     LogIn,
+    /// Run the main menu
     MainMenu,
+    /// Delete the current user
     DeleteUser,
+    /// Exit the program
     Exit,
 }
 
 /// Possible user selections in the main menu.
 enum UserSelection {
+    /// Play a game of Wordle
     PlayGame = 1,
+    /// View the current player's statistics
     ViewStats,
+    /// Log off
     LogOff,
+    /// Delete the current user
     DeleteUser,
 }
 

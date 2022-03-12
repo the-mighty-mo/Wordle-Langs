@@ -113,9 +113,9 @@ impl PlayerInfo {
     /// Basic usage:
     /// ```
     /// # use wordle_rs::players::PlayerInfo;
-    /// let player = PlayerInfo::new(String::from("user"));
-    /// // prints "user"
-    /// println!("{}", player.get_username());
+    /// let username = "user";
+    /// let player = PlayerInfo::new(username.to_owned());
+    /// assert_eq!(player.get_username(), username);
     /// ```
     pub fn get_username(&self) -> &str {
         self.username.as_str()
