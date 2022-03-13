@@ -156,8 +156,6 @@ impl<T> DatabaseEntry<T> {
     /// ```ignore
     /// # use wordle_rs::database::DatabaseEntry;
     /// # fn main() -> Result<(), std::num::ParseIntError> {
-    /// // Field name: "Int Test"
-    /// // Data: vec![4, 3, 4, 5]
     /// let int_list_entry = DatabaseEntry::try_from_list("Int Test: 4,3,4,5", str::parse::<i32>)?;
     /// assert_eq!(
     ///     int_list_entry.unwrap(),
@@ -258,8 +256,6 @@ impl<T> DatabaseEntry<T> {
     /// # use std::collections::HashSet;
     /// # use wordle_rs::database::DatabaseEntry;
     /// # fn main() -> Result<(), std::num::ParseIntError> {
-    /// // Field name: "Int Test"
-    /// // Data: HashSet[6, 3, 4, 5]
     /// let int_set_entry = DatabaseEntry::try_from_set("Int Test: 6,3,4,5", str::parse::<i32>)?;
     /// assert_eq!(
     ///     int_set_entry.unwrap(),
