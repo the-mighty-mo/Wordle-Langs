@@ -69,7 +69,7 @@ fn main() {
 /// Loads data from a file into a String.
 ///
 /// Any errors, such as the file not existing or not having
-/// read access, will be propogated up to the caller.
+/// read access, will be propagated up to the caller.
 ///
 /// # Example
 ///

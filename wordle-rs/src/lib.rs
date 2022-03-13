@@ -120,7 +120,7 @@ pub fn run_state_machine(dictionary: &HashSet<String>, usernames: &mut BTreeSet<
 /// Saves a set of usernames to the usernames database file.
 ///
 /// Any errors, such as failing to open the file or not having
-/// read access, will be propogated up to the caller.
+/// read access, will be propagated up to the caller.
 ///
 /// # Example
 ///

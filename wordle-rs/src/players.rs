@@ -261,7 +261,7 @@ impl PlayerInfo {
     /// Reads a player's info from a file.
     ///
     /// All errors with reading the file, including any errors
-    /// with parsing data, is propogated up to the caller.
+    /// with parsing data, is propagated up to the caller.
     ///
     /// # Examples
     ///
