@@ -37,7 +37,7 @@ impl fmt::Display for WordleGuess {
 /// A game of Worlde has a target word. The guessing algorithm
 /// uses preprocessing so it can run in linear time. This results
 /// in an array containing the counts of each letter.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WordleAnswer {
     word: String,
     letter_counts: [u8; 26],

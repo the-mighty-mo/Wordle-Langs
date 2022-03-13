@@ -21,6 +21,7 @@ use crate::database::DatabaseEntry;
 /// - guess distribution
 /// - maximum win streak
 /// - current win streak
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PlayerInfo {
     username: String,
     words_played: HashSet<String>,

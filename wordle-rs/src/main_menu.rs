@@ -14,6 +14,7 @@ use crate::{
 };
 
 /// Possible states of the main Wordle program.
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum ProgramState {
     /// Request the user's login information
     LogIn,
@@ -26,6 +27,7 @@ pub enum ProgramState {
 }
 
 /// Possible user selections in the main menu.
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum UserSelection {
     /// Play a game of Wordle
     PlayGame = 1,
