@@ -19,6 +19,28 @@ pub struct DatabaseEntry<T, V> {
 /// Delimiter between the field name and data for database entries
 const DELIM: &str = ": ";
 
+impl<T, V> DatabaseEntry<T, V> {
+    /// Creates a new database entry with the
+    /// given name and value.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    /// ```ignore
+    /// # use wordle_rs::database::DatabaseEntry;
+    /// let entry = DatabaseEntry::<&str, &str>::new(String::from("Name"), "value");
+    /// assert_eq!(entry.name.as_str(), "Name");
+    /// assert_eq!(entry.value, "value");
+    /// ```
+    fn new(name: String, value: T) -> Self {
+        Self {
+            name,
+            value,
+            inner: PhantomData,
+        }
+    }
+}
+
 impl<T> DatabaseEntry<T, T> {
     /// Creates a simple database entry from a line of text.
     ///
@@ -35,11 +57,7 @@ impl<T> DatabaseEntry<T, T> {
     /// let str_entry = DatabaseEntry::from_line("String Test: data", identity);
     /// assert_eq!(
     ///     str_entry.unwrap(),
-    ///     DatabaseEntry {
-    ///         name: String::from("String Test"),
-    ///         value: "data",
-    /// #       inner: PhantomData,
-    ///     }
+    ///     DatabaseEntry::new(String::from("String Test"), "data")
     /// );
     /// ```
     pub fn from_line<'a, F>(line: &'a str, string_to_t: F) -> Option<Self>
@@ -47,11 +65,7 @@ impl<T> DatabaseEntry<T, T> {
         F: Fn(&'a str) -> T,
     {
         let split_str = line.split_once(DELIM);
-        split_str.map(|(key, value)| DatabaseEntry {
-            name: key.to_owned(),
-            value: string_to_t(value),
-            inner: PhantomData,
-        })
+        split_str.map(|(key, value)| DatabaseEntry::new(key.to_owned(), string_to_t(value)))
     }
 
     /// Creates a simple database entry from a line of text where
@@ -74,11 +88,7 @@ impl<T> DatabaseEntry<T, T> {
     /// let int_entry = DatabaseEntry::try_from_line("Int Test: 3", str::parse::<i32>)?;
     /// assert_eq!(
     ///     int_entry.unwrap(),
-    ///     DatabaseEntry {
-    ///         name: String::from("Int Test"),
-    ///         value: 3,
-    /// #       inner: PhantomData,
-    ///     }
+    ///     DatabaseEntry::new(String::from("Int Test"), 3)
     /// );
     /// # Ok(())
     /// # }
@@ -91,11 +101,7 @@ impl<T> DatabaseEntry<T, T> {
         split_str
             .map(|(key, value)| {
                 let value = string_to_t(value)?;
-                Ok(DatabaseEntry {
-                    name: key.to_owned(),
-                    value,
-                    inner: PhantomData,
-                })
+                Ok(DatabaseEntry::new(key.to_owned(), value))
             })
             .map_or(Ok(None), |r| r.map(Some))
     }
@@ -127,20 +133,12 @@ where
     /// let str_vec_entry = DatabaseEntry::from_list("String Test: data1,data2", identity);
     /// assert_eq!(
     ///     str_vec_entry.unwrap(),
-    ///     DatabaseEntry {
-    ///         name: String::from("String Test"),
-    ///         value: vec!["data1", "data2"],
-    /// #       inner: PhantomData,
-    ///     }
+    ///     DatabaseEntry::new(String::from("String Test"), vec!["data1", "data2"])
     /// );
     /// let str_set_entry = DatabaseEntry::from_list("String Test: data1,data2", identity);
     /// assert_eq!(
     ///     str_set_entry.unwrap(),
-    ///     DatabaseEntry {
-    ///         name: String::from("String Test"),
-    ///         value: HashSet::from(["data1", "data2"]),
-    /// #       inner: PhantomData,
-    ///     }
+    ///     DatabaseEntry::new(String::from("String Test"), HashSet::from(["data1", "data2"]))
     /// );
     /// ```
     pub fn from_list<'a, F>(line: &'a str, string_to_v: F) -> Option<Self>
@@ -151,11 +149,7 @@ where
         parsed_row.map(|parsed_row| {
             let items = parsed_row.value.split(',').map(string_to_v).collect();
 
-            DatabaseEntry {
-                name: parsed_row.name,
-                value: items,
-                inner: PhantomData,
-            }
+            DatabaseEntry::new(parsed_row.name, items)
         })
     }
 
@@ -183,20 +177,12 @@ where
     /// let int_vec_entry = DatabaseEntry::try_from_list("Int Test: 4,3,4,5", str::parse::<i32>)?;
     /// assert_eq!(
     ///     int_vec_entry.unwrap(),
-    ///     DatabaseEntry {
-    ///         name: String::from("Int Test"),
-    ///         value: vec![4, 3, 4, 5],
-    /// #       inner: PhantomData,
-    ///     }
+    ///     DatabaseEntry::new(String::from("Int Test"), vec![4, 3, 4, 5])
     /// );
     /// let int_set_entry = DatabaseEntry::try_from_list("Int Test: 6,3,4,5", str::parse::<i32>)?;
     /// assert_eq!(
     ///     int_set_entry.unwrap(),
-    ///     DatabaseEntry {
-    ///         name: String::from("Int Test"),
-    ///         value: HashSet::from([6, 3, 4, 5]),
-    /// #       inner: PhantomData,
-    ///     }
+    ///     DatabaseEntry::new(String::from("Int Test"), HashSet::from([6, 3, 4, 5]))
     /// );
     /// # Ok(())
     /// # }
@@ -214,11 +200,7 @@ where
                     .map(string_to_v)
                     .collect::<Result<_, _>>()?;
 
-                Ok(DatabaseEntry {
-                    name: parsed_row.name,
-                    value: items,
-                    inner: PhantomData,
-                })
+                Ok(DatabaseEntry::new(parsed_row.name, items))
             })
             .map_or(Ok(None), |r| r.map(Some))
     }
