@@ -82,7 +82,7 @@ public class WordleMainMenu {
             /* either we couldn't read the file, or the database is corrupt */
             System.err.println(e.getMessage());
             return null;
-        } catch (NumberFormatException n) {
+        } catch (Exception n) {
             /* couldn't parse an integer entry, database is likely corrupt */
             System.err.println("Error: corrupt player database file: " + username + ".txt");
             return null;

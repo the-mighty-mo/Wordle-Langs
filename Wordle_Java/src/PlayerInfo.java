@@ -253,11 +253,11 @@ public class PlayerInfo {
         }
 
         /* parse the lines in the file */
-        DatabaseEntry<String> username = PlayerDatabaseParser.parseLine(linesInFile.get(0), s -> s);
-        DatabaseEntry<HashSet<String>> wordsPlayed = PlayerDatabaseParser.parseSet(linesInFile.get(1), s -> s, HashSet::new);
-        DatabaseEntry<ArrayList<Integer>> numGuessesList = PlayerDatabaseParser.parseList(linesInFile.get(2), Integer::parseInt, ArrayList::new);
-        DatabaseEntry<Integer> maxWinStreak = PlayerDatabaseParser.parseLine(linesInFile.get(3), Integer::parseInt);
-        DatabaseEntry<Integer> curWinStreak = PlayerDatabaseParser.parseLine(linesInFile.get(4), Integer::parseInt);
+        DatabaseEntry<String> username = DatabaseEntry.parseLine(linesInFile.get(0), s -> s);
+        DatabaseEntry<HashSet<String>> wordsPlayed = DatabaseEntry.parseCollection(linesInFile.get(1), s -> s, HashSet::new);
+        DatabaseEntry<ArrayList<Integer>> numGuessesList = DatabaseEntry.parseCollection(linesInFile.get(2), Integer::parseInt, ArrayList::new);
+        DatabaseEntry<Integer> maxWinStreak = DatabaseEntry.parseLine(linesInFile.get(3), Integer::parseInt);
+        DatabaseEntry<Integer> curWinStreak = DatabaseEntry.parseLine(linesInFile.get(4), Integer::parseInt);
 
         /* parse the number of guesses into an array */
         int[] numGuesses = new int[6];

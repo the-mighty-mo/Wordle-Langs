@@ -112,7 +112,7 @@ where
     T: FromIterator<V>,
 {
     /// Creates a database entry from a line of text where
-    /// the data field is a list of elements.
+    /// the data field is a collection of elements.
     ///
     /// The text will be split between field name and data
     /// on the ": " delimiter. If the delimiter is not found,
@@ -130,18 +130,20 @@ where
     /// #     marker::PhantomData,
     /// # };
     /// # use wordle_rs::database::DatabaseEntry;
-    /// let str_vec_entry = DatabaseEntry::from_list("String Test: data1,data2", identity);
+    /// let str_vec_entry =
+    ///     DatabaseEntry::from_collection("String Test: data1,data2", identity);
     /// assert_eq!(
     ///     str_vec_entry.unwrap(),
     ///     DatabaseEntry::new(String::from("String Test"), vec!["data1", "data2"])
     /// );
-    /// let str_set_entry = DatabaseEntry::from_list("String Test: data1,data2", identity);
+    /// let str_set_entry =
+    ///     DatabaseEntry::from_collection("String Test: data1,data2", identity);
     /// assert_eq!(
     ///     str_set_entry.unwrap(),
     ///     DatabaseEntry::new(String::from("String Test"), HashSet::from(["data1", "data2"]))
     /// );
     /// ```
-    pub fn from_list<'a, F>(line: &'a str, string_to_v: F) -> Option<Self>
+    pub fn from_collection<'a, F>(line: &'a str, string_to_v: F) -> Option<Self>
     where
         F: Fn(&'a str) -> V,
     {
@@ -154,8 +156,8 @@ where
     }
 
     /// Creates a database entry from a line of text where
-    /// the data field is a list of elements, and parsing
-    /// the data entry has the potential to fail.
+    /// the data field is a collection of elements, and
+    /// parsing the data entry has the potential to fail.
     ///
     /// The text will be split between field name and data
     /// on the ": " delimiter. If the delimiter is not found,
@@ -174,12 +176,14 @@ where
     /// # use std::{collections::HashSet, marker::PhantomData};
     /// # use wordle_rs::database::DatabaseEntry;
     /// # fn main() -> Result<(), std::num::ParseIntError> {
-    /// let int_vec_entry = DatabaseEntry::try_from_list("Int Test: 4,3,4,5", str::parse::<i32>)?;
+    /// let int_vec_entry =
+    ///     DatabaseEntry::try_from_collection("Int Test: 4,3,4,5", str::parse::<i32>)?;
     /// assert_eq!(
     ///     int_vec_entry.unwrap(),
     ///     DatabaseEntry::new(String::from("Int Test"), vec![4, 3, 4, 5])
     /// );
-    /// let int_set_entry = DatabaseEntry::try_from_list("Int Test: 6,3,4,5", str::parse::<i32>)?;
+    /// let int_set_entry =
+    ///     DatabaseEntry::try_from_collection("Int Test: 6,3,4,5", str::parse::<i32>)?;
     /// assert_eq!(
     ///     int_set_entry.unwrap(),
     ///     DatabaseEntry::new(String::from("Int Test"), HashSet::from([6, 3, 4, 5]))
@@ -187,7 +191,7 @@ where
     /// # Ok(())
     /// # }
     /// ```
-    pub fn try_from_list<'a, F, E>(line: &'a str, string_to_v: F) -> Result<Option<Self>, E>
+    pub fn try_from_collection<'a, F, E>(line: &'a str, string_to_v: F) -> Result<Option<Self>, E>
     where
         F: Fn(&'a str) -> Result<V, E>,
     {
