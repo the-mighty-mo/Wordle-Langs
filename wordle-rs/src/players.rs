@@ -311,7 +311,7 @@ impl PlayerInfo {
         let max_win_streak = DatabaseEntry::try_from_line(lines_in_file[3], str::parse::<usize>)
             .map_err(|_| bad_data_err())?
             .ok_or_else(bad_data_err)?;
-        let cur_win_streak = DatabaseEntry::try_from_line(lines_in_file[3], str::parse::<usize>)
+        let cur_win_streak = DatabaseEntry::try_from_line(lines_in_file[4], str::parse::<usize>)
             .map_err(|_| bad_data_err())?
             .ok_or_else(bad_data_err)?;
 
