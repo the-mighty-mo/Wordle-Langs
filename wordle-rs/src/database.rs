@@ -40,7 +40,7 @@ impl<T> DatabaseEntry<T> {
     ///     }
     /// );
     /// ```
-    pub fn from_line<'a, F>(line: &'a str, string_to_t: F) -> Option<DatabaseEntry<T>>
+    pub fn from_line<'a, F>(line: &'a str, string_to_t: F) -> Option<Self>
     where
         F: Fn(&'a str) -> T,
     {
@@ -78,10 +78,7 @@ impl<T> DatabaseEntry<T> {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn try_from_line<'a, F, E>(
-        line: &'a str,
-        string_to_t: F,
-    ) -> Result<Option<DatabaseEntry<T>>, E>
+    pub fn try_from_line<'a, F, E>(line: &'a str, string_to_t: F) -> Result<Option<Self>, E>
     where
         F: Fn(&'a str) -> Result<T, E>,
     {
@@ -96,7 +93,9 @@ impl<T> DatabaseEntry<T> {
             })
             .map_or(Ok(None), |r| r.map(Some))
     }
+}
 
+impl<T> DatabaseEntry<Vec<T>> {
     /// Creates a database entry from a line of text where
     /// the data field is a list of elements.
     ///
@@ -121,7 +120,7 @@ impl<T> DatabaseEntry<T> {
     ///     }
     /// );
     /// ```
-    pub fn from_list<'a, F>(line: &'a str, string_to_t: F) -> Option<DatabaseEntry<Vec<T>>>
+    pub fn from_list<'a, F>(line: &'a str, string_to_t: F) -> Option<Self>
     where
         F: Fn(&'a str) -> T,
     {
@@ -167,10 +166,7 @@ impl<T> DatabaseEntry<T> {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn try_from_list<'a, F, E>(
-        line: &'a str,
-        string_to_t: F,
-    ) -> Result<Option<DatabaseEntry<Vec<T>>>, E>
+    pub fn try_from_list<'a, F, E>(line: &'a str, string_to_t: F) -> Result<Option<Self>, E>
     where
         F: Fn(&'a str) -> Result<T, E>,
     {
@@ -190,7 +186,13 @@ impl<T> DatabaseEntry<T> {
             })
             .map_or(Ok(None), |r| r.map(Some))
     }
+}
 
+impl<T> DatabaseEntry<HashSet<T>>
+where
+    T: Eq,
+    T: Hash,
+{
     /// Creates a database entry from a line of text where
     /// the data field is a set of unique elements.
     ///
@@ -218,10 +220,8 @@ impl<T> DatabaseEntry<T> {
     ///     }
     /// );
     /// ```
-    pub fn from_set<'a, F>(line: &'a str, string_to_t: F) -> Option<DatabaseEntry<HashSet<T>>>
+    pub fn from_set<'a, F>(line: &'a str, string_to_t: F) -> Option<Self>
     where
-        T: Eq,
-        T: Hash,
         F: Fn(&'a str) -> T,
     {
         let parsed_row = DatabaseEntry::from_line(line, identity);
@@ -267,13 +267,8 @@ impl<T> DatabaseEntry<T> {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn try_from_set<'a, F, E>(
-        line: &'a str,
-        string_to_t: F,
-    ) -> Result<Option<DatabaseEntry<HashSet<T>>>, E>
+    pub fn try_from_set<'a, F, E>(line: &'a str, string_to_t: F) -> Result<Option<Self>, E>
     where
-        T: Eq,
-        T: Hash,
         F: Fn(&'a str) -> Result<T, E>,
     {
         let parsed_row = DatabaseEntry::from_line(line, identity);
