@@ -38,7 +38,6 @@ use std::{
 
 use main_menu::ProgramState;
 
-mod database;
 pub mod main_menu;
 pub mod players;
 pub mod wordle;

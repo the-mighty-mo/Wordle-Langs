@@ -5,13 +5,16 @@
 //! Author: Benjamin Hall
 
 use core::fmt;
-use std::collections::HashSet;
+use std::{
+    collections::HashSet,
+    fmt::Write,
+    fs::File,
+    io::{self, BufReader, BufWriter, Read},
+};
 
-use std::fmt::Write;
-use std::fs::File;
-use std::io::{self, BufReader, BufWriter, Read};
+mod database;
 
-use crate::database::DatabaseEntry;
+use self::database::DatabaseEntry;
 
 /// Contains information about a Wordle player.
 ///
