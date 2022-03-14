@@ -67,7 +67,11 @@ int database_entry_from_collection(database_entry_t *entry, char *line, str_to_v
     char *next_item = NULL;
     char *token;
 
+#ifdef _MSC_VER
+    token = strtok_s(parsed_row.value, ",", &next_item);
+#else
     token = strtok_r(parsed_row.value, ",", &next_item);
+#endif
     while (token) {
         void *value;
         if (str_to_v(token, &value) != 0) {
@@ -76,7 +80,11 @@ int database_entry_from_collection(database_entry_t *entry, char *line, str_to_v
 
         insert(collection, value);
         free(value);
+#ifdef _MSC_VER
+        token = strtok_s(NULL, ",", &next_item);
+#else
         token = strtok_r(NULL, ",", &next_item);
+#endif
     }
 
     entry->name = parsed_row.name;

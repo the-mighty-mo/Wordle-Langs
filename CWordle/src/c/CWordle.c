@@ -1,6 +1,8 @@
 #include "players/players.h"
 #include "players/database.h"
 
+#include "collections/treeset.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,9 +29,35 @@ int main()
 
     printf("\n");
 
-    database_entry_t entry;
-    char str[] = "String Test: test";
-    database_entry_from_line(&entry, str, str_to_owned, string_type_info());
-    printf("%s\n%s\n", entry.name.buf, ((string_t *)entry.value)->buf);
-    database_entry_drop(&entry);
+    treeset_t treeset = treeset_new(string_type_info());
+    string_t value = string_from("ben");
+    treeset_insert(&treeset, &value);
+    value = string_from("user");
+    treeset_insert(&treeset, &value);
+    value = string_from("trace");
+    treeset_insert(&treeset, &value);
+    value = string_from("insert");
+    treeset_insert(&treeset, &value);
+    value = string_from("crate");
+    treeset_insert(&treeset, &value);
+    value = string_from("funny");
+    treeset_insert(&treeset, &value);
+    value = string_from("fudge");
+    treeset_insert(&treeset, &value);
+    value = string_from("grace");
+    treeset_insert(&treeset, &value);
+    value = string_from("humorous");
+    treeset_insert(&treeset, &value);
+    value = string_from("lame");
+    treeset_insert(&treeset, &value);
+    value = string_from("pours");
+    treeset_insert(&treeset, &value);
+
+    string_t *elem = NULL;
+    for (int i = 0; i < treeset.len; ++i) {
+        elem = treeset_get_next(&treeset, elem);
+        printf("%s\n", elem->buf);
+    }
+
+    treeset_drop(&treeset);
 }
