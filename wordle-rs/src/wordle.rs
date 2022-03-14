@@ -233,6 +233,7 @@ pub fn run_game(answer: &WordleAnswer, player: &mut PlayerInfo, dictionary: &Has
             guess.clear();
             match io::stdin().read_line(&mut guess) {
                 Ok(_) => {}
+                /* user likely quit the program with Ctrl-C */
                 Err(_) => return Some(-1),
             }
             guess = guess.trim().to_uppercase();
@@ -267,6 +268,7 @@ pub fn run_game(answer: &WordleAnswer, player: &mut PlayerInfo, dictionary: &Has
             player.add_lost_word(answer.get_word().to_owned());
             print!("Too bad! ");
         }
+        /* user likely quit the program with Ctrl-C */
         Some(_) => return,
     }
     println!("The word was: {}", answer.get_word());
