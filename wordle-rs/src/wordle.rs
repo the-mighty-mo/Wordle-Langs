@@ -3,13 +3,7 @@
 //!
 //! Author: Benjamin Hall
 
-use std::{
-    collections::HashSet,
-    fmt,
-    io::{self, Write},
-};
-
-use crate::players::PlayerInfo;
+use std::fmt;
 
 /// Possible guess results for a letter in a game of Wordle.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -123,11 +117,16 @@ impl WordleAnswer {
     ///
     /// let all_correct = answer.check_guess("TRACE");
     /// assert_eq!(all_correct, guess_result![G G G G G]);
+    ///
     /// let all_present = answer.check_guess("ETRAC");
     /// assert_eq!(all_present, guess_result![Y Y Y Y Y]);
+    ///
     /// let all_incorrect = answer.check_guess("BLIND");
     /// assert_eq!(all_incorrect, guess_result![X X X X X]);
-    ///
+    /// ```
+    /// Examples with duplicate letters:
+    /// ```
+    /// # use wordle_rs::wordle::{guess_result, WordleAnswer};
     /// let answer = WordleAnswer::new(String::from("AABBB"));
     /// let some_yellow = answer.check_guess("CAACC");
     /// assert_eq!(some_yellow, guess_result![X G Y X X]);
@@ -169,8 +168,13 @@ impl WordleAnswer {
 }
 
 /// Contains all the possible messages
-/// for a won game of Wordle
-const WIN_MESSAGES: [&'static str; 6] = [
+/// for a won game of Wordle.
+///
+/// If the user guessed the word in n
+/// guesses (starting at 1), then
+/// WIN_MESSAGES[n - 1] is the message
+/// that should be displayed.
+pub const WIN_MESSAGES: [&'static str; 6] = [
     "Genius",
     "Magnificent",
     "Impressive",
@@ -178,102 +182,6 @@ const WIN_MESSAGES: [&'static str; 6] = [
     "Great",
     "Phew",
 ];
-
-/// Runs a game of Wordle.
-///
-/// This function manages all user input and output using
-/// stdin and stdout, respectively, as well as all six
-/// guesses. The function ends after the user has guessed
-/// the answer or used all six guesses, whichever is first.
-///
-/// At the start of the game, a message is printed with
-/// instructions for the player.
-///
-/// # Examples
-///
-/// Basic usage:
-/// ```
-/// # use std::{collections::HashSet, io};
-/// # use wordle_rs::{
-/// #     players::PlayerInfo,
-/// #     wordle::{self, WordleAnswer},
-/// # };
-/// # fn read_dictionary(filename: &str) -> HashSet<String> {
-/// # HashSet::new()
-/// # }
-/// # fn main() -> io::Result<()> {
-/// let dictionary: HashSet<String> =
-///     read_dictionary("dictionary.txt");
-/// let word = String::from("TRACE");
-/// let answer = WordleAnswer::new(word);
-/// let player = PlayerInfo::from_file("user.txt")?;
-///
-/// if let Some(mut player) = player {
-///     // runs one game of Wordle where the answer is "TRACE"
-///     wordle::run_game(&answer, &mut player, &dictionary);
-/// }
-/// # Ok(())
-/// # }
-/// ```
-pub fn run_game(answer: &WordleAnswer, player: &mut PlayerInfo, dictionary: &HashSet<String>) {
-    println!("Guess the 5-letter word in 6 or fewer guesses.");
-    println!("After each guess, each letter will be given a color:");
-    println!("G = Green:\tletter is in that position in the word");
-    println!("Y = Yellow:\tletter is in the word, but not that position");
-    println!("X = Black:\tthere are no more instances of the letter in the word");
-    println!();
-
-    let won_game = (1..=6).find_map(|i| {
-        let mut guess = String::new();
-        let mut read = true;
-        while read {
-            print!("[{i}] ");
-            io::stdout().flush().unwrap();
-
-            guess.clear();
-            match io::stdin().read_line(&mut guess) {
-                Ok(_) => {}
-                /* user likely quit the program with Ctrl-C */
-                Err(_) => return Some(-1),
-            }
-            guess = guess.trim().to_uppercase();
-            if guess.len() != 5 {
-                println!("Error: guess must be 5 letters");
-            } else if !dictionary.contains(&guess) {
-                println!("Error: guess must be a word in the dictionary");
-            } else {
-                /* valid guess, stop the read loop */
-                read = false;
-            }
-        }
-
-        let colors = answer.check_guess(&guess);
-        print!("    ");
-        colors.iter().for_each(|c| print!("{c}"));
-        println!();
-
-        if colors.iter().all(|c| *c == WordleGuess::Correct) {
-            Some(i)
-        } else {
-            None
-        }
-    });
-
-    match won_game {
-        Some(i) if i > 0 => {
-            player.add_won_word(answer.get_word().to_owned(), i as usize);
-            print!("{}! ", WIN_MESSAGES[i as usize - 1]);
-        }
-        None => {
-            player.add_lost_word(answer.get_word().to_owned());
-            print!("Too bad! ");
-        }
-        /* user likely quit the program with Ctrl-C */
-        Some(_) => return,
-    }
-    println!("The word was: {}", answer.get_word());
-    println!();
-}
 
 #[cfg(test)]
 mod test {

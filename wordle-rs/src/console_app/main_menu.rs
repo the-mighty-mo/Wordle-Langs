@@ -8,10 +8,7 @@ use std::{
     io::{self, stdin, Write},
 };
 
-use crate::{
-    players::PlayerInfo,
-    wordle::{self, WordleAnswer},
-};
+use crate::{console_app::game, players::PlayerInfo, wordle::WordleAnswer};
 
 /// Possible states of the main Wordle program.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -68,7 +65,7 @@ impl TryFrom<isize> for UserSelection {
 /// Basic usage:
 /// ```
 /// # use std::collections::BTreeSet;
-/// # use wordle_rs::main_menu;
+/// # use wordle_rs::console_app::main_menu;
 /// # fn read_usernames(filename: &str) -> BTreeSet<String> {
 /// # BTreeSet::new()
 /// # }
@@ -119,7 +116,7 @@ pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo
 /// Basic usage:
 /// ```ignore
 /// # use std::collections::BTreeSet;
-/// # use wordle_rs::main_menu;
+/// # use wordle_rs::console_app::main_menu;
 /// # fn read_usernames(filename: &str) -> BTreeSet<String> {
 /// # BTreeSet::new()
 /// # }
@@ -182,7 +179,7 @@ fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
 /// Basic usage:
 /// ```no_run
 /// # use std::collections::{BTreeSet, HashSet};
-/// # use wordle_rs::main_menu;
+/// # use wordle_rs::console_app::main_menu;
 /// # fn read_dictionary(filename: &str) -> HashSet<String> {
 /// # HashSet::new()
 /// # }
@@ -211,7 +208,7 @@ pub fn run(current_player: &mut PlayerInfo, dictionary: &HashSet<String>) -> Pro
         UserSelection::PlayGame => {
             /* run a game of Wordle */
             let answer = WordleAnswer::new(current_player.get_random_word(dictionary));
-            wordle::run_game(&answer, current_player, dictionary);
+            game::run(&answer, current_player, dictionary);
             /* print the player's statistics after the game ends */
             println!("{}", current_player.get_stats());
             /* save the user's new statistics to their database */
@@ -267,7 +264,7 @@ pub fn run(current_player: &mut PlayerInfo, dictionary: &HashSet<String>) -> Pro
 ///
 /// Basic usage:
 /// ```ignore
-/// # use wordle_rs::main_menu;
+/// # use wordle_rs::console_app::main_menu;
 /// let user_selection = main_menu::request_user_selection();
 /// match (user_selection) {
 ///     Some(user_selection) => { /* run selection */ },

@@ -27,7 +27,7 @@ impl<T, V> DatabaseEntry<T, V> {
     ///
     /// Basic usage:
     /// ```ignore
-    /// # use wordle_rs::database::DatabaseEntry;
+    /// # use wordle_rs::players::database::DatabaseEntry;
     /// let entry = DatabaseEntry::<&str, &str>::new(String::from("Name"), "value");
     /// assert_eq!(entry.name.as_str(), "Name");
     /// assert_eq!(entry.value, "value");
@@ -53,7 +53,7 @@ impl<T> DatabaseEntry<T, T> {
     /// Basic usage:
     /// ```ignore
     /// # use std::{convert::identity, marker::PhantomData};
-    /// # use wordle_rs::database::DatabaseEntry;
+    /// # use wordle_rs::players::database::DatabaseEntry;
     /// let str_entry = DatabaseEntry::from_line("String Test: data", identity);
     /// assert_eq!(
     ///     str_entry.unwrap(),
@@ -83,7 +83,7 @@ impl<T> DatabaseEntry<T, T> {
     /// Basic usage:
     /// ```ignore
     /// # use std::marker::PhantomData;
-    /// # use wordle_rs::database::DatabaseEntry;
+    /// # use wordle_rs::players::database::DatabaseEntry;
     /// # fn main() -> Result<(), std::num::ParseIntError> {
     /// let int_entry = DatabaseEntry::try_from_line("Int Test: 3", str::parse::<i32>)?;
     /// assert_eq!(
@@ -129,7 +129,7 @@ where
     /// #     convert::identity,
     /// #     marker::PhantomData,
     /// # };
-    /// # use wordle_rs::database::DatabaseEntry;
+    /// # use wordle_rs::players::database::DatabaseEntry;
     /// let str_vec_entry =
     ///     DatabaseEntry::from_collection("String Test: data1,data2", identity);
     /// assert_eq!(
@@ -174,7 +174,7 @@ where
     /// Basic usage:
     /// ```ignore
     /// # use std::{collections::HashSet, marker::PhantomData};
-    /// # use wordle_rs::database::DatabaseEntry;
+    /// # use wordle_rs::players::database::DatabaseEntry;
     /// # fn main() -> Result<(), std::num::ParseIntError> {
     /// let int_vec_entry =
     ///     DatabaseEntry::try_from_collection("Int Test: 4,3,4,5", str::parse::<i32>)?;
