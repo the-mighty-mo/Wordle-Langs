@@ -15,6 +15,6 @@ This repository contains command-line implementations of Wordle in various progr
     `cargo build --release`
 - CWordle - C (C11)
   - To build on Windows, in a Developer Command Prompt from the CWordle folder:  
-    `mkdir build\obj & cl /std:c11 /O2 src/c/*.c src/c/collections/*.c src/c/console_app/*.c src/c/players/*.c /Isrc/include/ /Fobuild/obj/ /link /out:build/CWordle.exe`
-  - To build on Linux, from the CWordle folder:
+    `mkdir build\obj & cl /std:c11 /O2 src/c/*.c src/c/collections/*.c src/c/console_app/*.c src/c/players/*.c /Isrc/include/ /Fobuild/obj/ /Febuild/CWordle`
+  - To build on Linux, from the CWordle folder:  
     `gcc -O2 -std=gnu11 -o CWordle src/c/*.c src/c/**/*.c -Isrc/include -lm; strip -s -R .comment -w -R .note* CWordle`
