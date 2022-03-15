@@ -1,9 +1,7 @@
 #pragma once
 
-#include "collections/string.h"
 #include "collections/hashset.h"
-
-#include <stdint.h>
+#include "collections/string.h"
 
 #define MAX_NUM_GUESSES 6
 

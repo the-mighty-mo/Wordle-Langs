@@ -13,7 +13,7 @@ typedef struct _type_info_t {
     hash_fn hash;
 } type_info_t;
 
-static inline void *move(void *value, type_info_t *type_info)
+static inline void const *move(void const *value, type_info_t *type_info)
 {
     type_info->drop = NULL;
     return value;

@@ -12,4 +12,4 @@ typedef enum _ProgramState {
 } ProgramState;
 
 player_info_t *request_user_login(treeset_t *usernames);
-ProgramState run_menu(player_info_t *current_player, hashset_t *const dictionary);
+ProgramState run_menu(player_info_t *current_player, hashset_t const *dictionary);

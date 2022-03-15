@@ -1,11 +1,7 @@
 #include "console_app/console_app.h"
-
-#include "collections/hashset.h"
 #include "collections/string.h"
-#include "collections/treeset.h"
 
 #include <stdio.h>
-#include <stdlib.h>
 
 static int read_file(string_t *buffer, FILE *file);
 
@@ -30,14 +26,14 @@ int main(int argc, char **argv)
     FILE *dict_file = fopen(dict_file_name, "r");
     if (dict_file == NULL) {
         printf("Error: could not read dictionary file\n");
-        return;
+        return -1;
     }
 
     FILE *usernames_file = fopen(USERNAMES_FILENAME, "a+");
     if (dict_file == NULL) {
         printf("Error: could not read user database\n");
         fclose(dict_file);
-        return;
+        return -1;
     }
 
     hashset_t dictionary = hashset_with_capacity(string_type_info(), 1024);

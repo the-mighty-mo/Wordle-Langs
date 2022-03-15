@@ -1,8 +1,5 @@
 #include "players/database.h"
 
-#include <stdlib.h>
-#include <string.h>
-
 #define DELIM ": "
 
 void database_entry_drop(database_entry_t *entry)

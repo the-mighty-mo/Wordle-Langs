@@ -148,9 +148,10 @@ void string_trim_trailing(string_t *string)
     }
 
     char *str_ptr = string->buf + string->len - 1;
-    for (; isspace(*str_ptr); --str_ptr) {}
-    *(str_ptr + 1) = '\0';
-    string->len = str_ptr - string->buf + 1;
+    for (; str_ptr >= string->buf && isspace(*str_ptr); --str_ptr) {}
+    ++str_ptr;
+    *str_ptr = '\0';
+    string->len = str_ptr - string->buf;
 }
 
 void string_trim_newline(string_t *string)
@@ -160,9 +161,10 @@ void string_trim_newline(string_t *string)
     }
 
     char *str_ptr = string->buf + string->len - 1;
-    for (; *str_ptr == '\n' || *str_ptr == '\r'; --str_ptr) {}
-    *(str_ptr + 1) = '\0';
-    string->len = str_ptr - string->buf + 1;
+    for (; str_ptr >= string->buf && (*str_ptr == '\n' || *str_ptr == '\r'); --str_ptr) {}
+    ++str_ptr;
+    *str_ptr = '\0';
+    string->len = str_ptr - string->buf;
 }
 
 int file_read_to_string(string_t *string, FILE *file)

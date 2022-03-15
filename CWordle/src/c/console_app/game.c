@@ -1,5 +1,4 @@
 #include "console_app/game.h"
-#include "collections/string.h"
 
 #include <stdio.h>
 
@@ -38,12 +37,14 @@ void run_game(wordle_answer_t const *answer, player_info_t *player, hashset_t co
         }
 
         WordleGuess colors[WORDLE_ANSWER_SIZE];
-        wordle_answer_check_guess(&answer, colors, guess.buf);
+        wordle_answer_check_guess(answer, colors, guess.buf);
         printf("    ");
         for (int i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
             printf("%s", wordle_guess_to_str(colors[i]));
         }
         printf("\n");
+
+        string_drop(&guess);
 
         won = 1;
         for (int i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
@@ -59,12 +60,12 @@ void run_game(wordle_answer_t const *answer, player_info_t *player, hashset_t co
     }
 
     if (won) {
-        player_info_add_won_word(&player, string_clone(&answer->word), i);
+        player_info_add_won_word(player, string_clone(&answer->word), i);
         printf("%s! ", WORDLE_WIN_MESSAGES[i - 1]);
     } else {
-        player_info_add_lost_word(&player, string_clone(&answer->word));
+        player_info_add_lost_word(player, string_clone(&answer->word));
         printf("Too bad! ");
     }
-    printf("The word was: %s\n", answer->word);
+    printf("The word was: %s\n", answer->word.buf);
     printf("\n");
 }

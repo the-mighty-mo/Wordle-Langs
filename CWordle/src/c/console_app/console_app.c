@@ -11,7 +11,7 @@ static int save_usernames(treeset_t *usernames, char *filename)
         return -1;
     }
 
-    string_t *username = NULL;
+    string_t const *username = NULL;
     for (int i = 0; i < usernames->len; ++i) {
         username = treeset_get_next(usernames, username);
         fputs(username->buf, file);
@@ -33,6 +33,9 @@ void run_console_app(hashset_t const *dictionary, treeset_t *usernames)
         switch (state) {
         case LogIn:
         {
+            player_info_drop(current_player);
+            free(current_player);
+
             current_player = request_user_login(usernames);
             if (current_player == NULL) {
                 /* user requested to exit, or there was an error */
@@ -56,7 +59,7 @@ void run_console_app(hashset_t const *dictionary, treeset_t *usernames)
         case DeleteUser:
         {
             treeset_t tmp_usernames = treeset_new(usernames->type_info);
-            string_t *elem = NULL;
+            string_t const *elem = NULL;
             for (int i = 0; i < usernames->len; ++i) {
                 elem = treeset_get_next(usernames, elem);
                 if (strcmp(elem->buf, current_player->username.buf) != 0) {
@@ -78,21 +81,16 @@ void run_console_app(hashset_t const *dictionary, treeset_t *usernames)
                 /* user has logged out, go to the login screen */
                 state = LogIn;
             }
-
-            player_info_drop(current_player);
-            free(current_player);
-            current_player = NULL;
         }
         break;
         case Exit:
         {
             run_program = 0;
-
-            player_info_drop(current_player);
-            free(current_player);
-            current_player = NULL;
         }
         break;
         }
     }
+
+    player_info_drop(current_player);
+    free(current_player);
 }

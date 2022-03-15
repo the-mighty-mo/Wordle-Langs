@@ -1,6 +1,6 @@
 #include "collections/treeset.h"
 
-#include <ctype.h>
+#include <stdint.h>
 #include <string.h>
 
 #define DEFAULT_CAP 16
@@ -38,7 +38,7 @@ treeset_t treeset_clone(treeset_t const *treeset)
     
     treeset_t set = treeset_new(treeset->type_info);
 
-    void *elem = NULL;
+    void const *elem = NULL;
     for (int i = 0; i < treeset->len; ++i) {
         elem = treeset_get_next(treeset, elem);
         treeset_insert(&set, elem);

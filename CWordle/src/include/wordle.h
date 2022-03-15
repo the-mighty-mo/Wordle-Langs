@@ -29,4 +29,6 @@ static char const *WORDLE_WIN_MESSAGES[] = {
 };
 
 wordle_answer_t wordle_answer_new(string_t word);
+void wordle_answer_drop(wordle_answer_t *answer);
+
 int wordle_answer_check_guess(wordle_answer_t const *answer, WordleGuess colors[WORDLE_ANSWER_SIZE], char const *guess);

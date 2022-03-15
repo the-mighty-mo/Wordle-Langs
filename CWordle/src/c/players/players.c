@@ -3,11 +3,8 @@
 #include "collections/vec.h"
 #include "util.h"
 
-#include <ctype.h>
 #include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 int player_info_new(player_info_t *player_info, string_t username)
 {
@@ -51,7 +48,7 @@ string_t player_info_get_random_word(player_info_t const *player_info, hashset_t
     size_t unplayed_words = dictionary->len - player_info->words_played.len;
     size_t random_word_idx = rand() % unplayed_words;
 
-    string_t *random_word = NULL;
+    string_t const *random_word = NULL;
     for (int i = 0; i < dictionary->len; ++i) {
         random_word = hashset_get_next(dictionary, random_word);
         if (i == random_word_idx) {
@@ -97,7 +94,7 @@ string_t player_info_to_string(player_info_t const *player_info)
 
     string_push_str(&string, "\nWords Played: ");
     {
-        string_t *str = NULL;
+        string_t const *str = NULL;
         for (int i = 0; i < player_info->words_played.len; ++i) {
             str = hashset_get_next(&player_info->words_played, str);
             string_push_str(&string, str->buf);

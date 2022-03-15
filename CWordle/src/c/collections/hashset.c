@@ -1,7 +1,6 @@
 #include "collections/hashset.h"
 #include "util.h"
 
-#include <ctype.h>
 #include <string.h>
 
 #define DEFAULT_CAP 16

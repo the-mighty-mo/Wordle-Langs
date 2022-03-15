@@ -1,6 +1,5 @@
 #include "console_app/main_menu.h"
 #include "console_app/game.h"
-#include "wordle.h"
 
 typedef enum _UserSelection {
     PlayGame = 1,
@@ -13,7 +12,7 @@ static string_t *request_username(treeset_t *usernames)
 {
     if (!treeset_is_empty(usernames)) {
         printf("List of existing users:\n");
-        string_t *elem = NULL;
+        string_t const *elem = NULL;
         for (int i = 0; i < usernames->len; ++i) {
             elem = treeset_get_next(usernames, elem);
             printf("%s\n", elem->buf);
@@ -67,6 +66,7 @@ player_info_t *request_user_login(treeset_t *usernames)
         /* error reading the database file */
         printf("Error: corrupt player database file: %s\n", filename.buf);
 
+        free(player_info);
         string_drop(&filename);
         string_drop(username);
         free(username);
@@ -78,6 +78,8 @@ player_info_t *request_user_login(treeset_t *usernames)
     /* this might be a new user, create a fresh instance of player_info_t if so */
     if (retval > 0) {
         player_info_new(player_info, *username);
+    } else {
+        string_drop(username);
     }
 
     string_drop(&filename);
@@ -116,13 +118,15 @@ static UserSelection *request_user_selection(void)
             /* invalid selection */
             printf("Error: invalid selection\n");
         }
+
+        string_drop(&selection_str);
     }
     printf("\n");
 
     return user_selection;
 }
 
-ProgramState run_menu(player_info_t *current_player, hashset_t *const dictionary)
+ProgramState run_menu(player_info_t *current_player, hashset_t const *dictionary)
 {
     ProgramState next_state = MainMenu;
 
@@ -138,18 +142,25 @@ ProgramState run_menu(player_info_t *current_player, hashset_t *const dictionary
         /* run a game of Wordle */
         wordle_answer_t answer = wordle_answer_new(player_info_get_random_word(current_player, dictionary));
         run_game(&answer, current_player, dictionary);
+        wordle_answer_drop(&answer);
         /* print the player's statistics after the game ends */
         string_t stats = player_info_get_stats(current_player);
         printf("%s\n", stats.buf);
+        string_drop(&stats);
         /* save the user's new statistics to their database */
-        FILE *player_file = fopen(current_player->username.buf, "w");
+        string_t filename = string_clone(&current_player->username);
+        string_push_str(&filename, ".txt");
+        FILE *player_file = fopen(filename.buf, "w");
         if (player_file == NULL) {
             /* report that we could not write to the database, but do not exit */
             printf("Error: could not write to user database file, progress has not been saved\n");
         } else {
-            fputs(stats.buf, player_file);
+            string_t player_str = player_info_to_string(current_player);
+            fputs(player_str.buf, player_file);
+            string_drop(&player_str);
         }
-        string_drop(&stats);
+        fclose(player_file);
+        string_drop(&filename);
     }
     break;
     case ViewStats:
@@ -177,6 +188,8 @@ ProgramState run_menu(player_info_t *current_player, hashset_t *const dictionary
         } else {
             printf("Action aborted\n");
         }
+
+        string_drop(&user_confirmation);
     }
     break;
     }

@@ -1,7 +1,5 @@
 #include "wordle.h"
 
-#include <string.h>
-
 char const *wordle_guess_to_str(WordleGuess guess)
 {
     switch (guess) {
@@ -24,6 +22,15 @@ wordle_answer_t wordle_answer_new(string_t word)
     }
 
     return answer;
+}
+
+void wordle_answer_drop(wordle_answer_t *answer)
+{
+    if (answer == NULL) {
+        return;
+    }
+    string_drop(&answer->word);
+    memset(answer, 0, sizeof(*answer));
 }
 
 int wordle_answer_check_guess(wordle_answer_t const *answer, WordleGuess colors[WORDLE_ANSWER_SIZE], char const *guess)
