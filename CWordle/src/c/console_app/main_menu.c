@@ -72,6 +72,7 @@ player_info_t *request_user_login(treeset_t *usernames)
         free(username);
         return NULL;
     }
+    string_drop(&filename);
 
     printf("Hello, %s\n", username->buf);
 
@@ -82,9 +83,7 @@ player_info_t *request_user_login(treeset_t *usernames)
         string_drop(username);
     }
 
-    string_drop(&filename);
     free(username);
-
     return player_info;
 }
 
@@ -143,10 +142,12 @@ ProgramState run_menu(player_info_t *current_player, hashset_t const *dictionary
         wordle_answer_t answer = wordle_answer_new(player_info_get_random_word(current_player, dictionary));
         run_game(&answer, current_player, dictionary);
         wordle_answer_drop(&answer);
+
         /* print the player's statistics after the game ends */
         string_t stats = player_info_get_stats(current_player);
         printf("%s\n", stats.buf);
         string_drop(&stats);
+
         /* save the user's new statistics to their database */
         string_t filename = string_clone(&current_player->username);
         string_push_str(&filename, ".txt");
