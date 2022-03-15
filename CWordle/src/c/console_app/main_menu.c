@@ -1,13 +1,46 @@
+/*
+ * Wordle program
+ * Author: Benjamin Hall
+ */
+
 #include "console_app/main_menu.h"
 #include "console_app/game.h"
 
+/**
+ * Possible user selections in the main menu.
+ */
 typedef enum _UserSelection {
+    /**
+     * Play a game of Wordle
+     */
     PlayGame = 1,
+    /**
+     * View the current player's statistics
+     */
     ViewStats,
+    /**
+     * Log off
+     */
     LogOff,
+    /**
+     * Delete the current user
+     */
     _DeleteUser
 } UserSelection;
 
+/**
+ * Requests a user to enter their username.
+ *
+ * The user may choose to quit the program (or forcibly
+ * quit using Ctrl-C), in which case this function returns
+ * None.
+ *
+ * If the user does not yet exist in the given database,
+ * they will be added to it.
+ * 
+ * @param usernames
+ *        A set of existing usernames
+ */
 static string_t *request_username(treeset_t *usernames)
 {
     if (!treeset_is_empty(usernames)) {
@@ -43,6 +76,7 @@ static string_t *request_username(treeset_t *usernames)
     }
 
     if (!treeset_contains(usernames, username)) {
+        /* new user, add to database */
         string_t elem = string_clone(username);
         treeset_insert(usernames, &elem);
     }
@@ -78,7 +112,7 @@ player_info_t *request_user_login(treeset_t *usernames)
 
     /* this might be a new user, create a fresh instance of player_info_t if so */
     if (retval > 0) {
-        player_info_new(player_info, *username);
+        *player_info = player_info_new(*username);
     } else {
         string_drop(username);
     }
@@ -87,6 +121,18 @@ player_info_t *request_user_login(treeset_t *usernames)
     return player_info;
 }
 
+/**
+ * Requests a user to input their selection.
+ *
+ * This function gives the player four options:
+ * - Play a game of Wordle
+ * - View their statistics
+ * - Log out
+ * - Delete their account
+ *
+ * The user can terminate the program early using Ctrl-C,
+ * in which case this function returns null.
+ */
 static UserSelection *request_user_selection(void)
 {
     UserSelection *user_selection = NULL;

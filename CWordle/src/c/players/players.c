@@ -1,3 +1,8 @@
+/*
+ * Wordle program
+ * Author: Benjamin Hall
+ */
+
 #include "players/players.h"
 #include "players/database.h"
 #include "collections/vec.h"
@@ -6,28 +11,29 @@
 #include <math.h>
 #include <stdio.h>
 
-int player_info_new(player_info_t *player_info, string_t username)
+player_info_t player_info_new(string_t username)
 {
-    if (player_info == NULL) {
-        return -1;
-    }
-    memset(player_info, 0, sizeof(*player_info));
-    player_info->username = username;
-    player_info->words_played = hashset_new(string_type_info());
+    player_info_t player_info = {0};
+
+    player_info.username = username;
+    player_info.words_played = hashset_new(string_type_info());
+
+    return player_info;
 }
 
-int player_info_load(player_info_t *player_info, string_t username, hashset_t words_played,
+player_info_t player_info_load(string_t username, hashset_t words_played,
                     uint32_t num_guesses[MAX_NUM_GUESSES], uint32_t max_win_streak,
                     uint32_t cur_win_streak)
 {
-    if (player_info == NULL) {
-        return -1;
-    }
-    player_info->username = username;
-    player_info->words_played = words_played;
-    memcpy(player_info->num_guesses, num_guesses, sizeof(player_info->num_guesses));
-    player_info->max_win_streak = max_win_streak;
-    player_info->cur_win_streak = cur_win_streak;
+    player_info_t player_info = {0};
+
+    player_info.username = username;
+    player_info.words_played = words_played;
+    memcpy(player_info.num_guesses, num_guesses, sizeof(player_info.num_guesses));
+    player_info.max_win_streak = max_win_streak;
+    player_info.cur_win_streak = cur_win_streak;
+
+    return player_info;
 }
 
 void player_info_drop(player_info_t *player_info)
@@ -286,7 +292,7 @@ int player_info_from_file(player_info_t *player_info, char const *filename)
     hashset_t *words_played_set = malloc(sizeof(*words_played_set));
     *words_played_set = hashset_new(string_type_info());
     database_entry_t words_played;
-    retval = database_entry_from_collection(&words_played, file_contents.buf, str_to_owned, hashset_type_info(), words_played_set, hashset_insert);
+    retval = database_entry_from_collection(&words_played, file_contents.buf, str_to_owned, words_played_set, hashset_type_info(), hashset_insert);
     if (retval) {
         goto words_err;
     }
@@ -299,7 +305,7 @@ int player_info_from_file(player_info_t *player_info, char const *filename)
     vec_t *num_guesses_vec = malloc(sizeof(*num_guesses_vec));
     *num_guesses_vec = vec_with_capacity(int_type_info, MAX_NUM_GUESSES);
     database_entry_t num_guesses_list;
-    retval = database_entry_from_collection(&num_guesses_list, file_contents.buf, str_to_uint, vec_type_info(), num_guesses_vec, vec_push_back);
+    retval = database_entry_from_collection(&num_guesses_list, file_contents.buf, str_to_uint, num_guesses_vec, vec_type_info(), vec_push_back);
     if (retval) {
         goto numguess_err;
     }
@@ -326,12 +332,13 @@ int player_info_from_file(player_info_t *player_info, char const *filename)
         goto curwin_err;
     }
 
+    /* parse the number of guesses into an array */
     uint32_t num_guesses[MAX_NUM_GUESSES] = {0};
     for (int i = 0; i < MAX_NUM_GUESSES && i < num_guesses_vec->len; ++i) {
         num_guesses[i] = *(uint32_t *)(num_guesses_vec->buf + i * num_guesses_vec->type_info.type_sz);
     }
 
-    player_info_load(player_info,
+    *player_info = player_info_load(
             *(string_t *)move(username.value, &username.type_info),
             *(hashset_t *)move(words_played.value, &words_played.type_info),
             num_guesses,

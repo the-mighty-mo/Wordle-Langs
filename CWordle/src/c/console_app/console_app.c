@@ -1,3 +1,8 @@
+/*
+ * Wordle program
+ * Author: Benjamin Hall
+ */
+
 #include "console_app/console_app.h"
 #include "console_app/main_menu.h"
 #include "collections/string.h"
@@ -5,6 +10,17 @@
 #include <time.h>
 #include <stdio.h>
 
+/**
+ * Saves a set of usernames to the usernames database file.
+ *
+ * Any errors, such as failing to open the file or not having
+ * read access, will be propagated up to the caller.
+ * 
+ * @param usernames
+ *        A set of usernames to save
+ * @param filename
+ *        The file to which the usernames are saved
+ */
 static int save_usernames(treeset_t *usernames, char *filename)
 {
     FILE *file = fopen(filename, "w");

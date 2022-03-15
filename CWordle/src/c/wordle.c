@@ -1,3 +1,8 @@
+/*
+ * Wordle program
+ * Author: Benjamin Hall
+ */
+
 #include "wordle.h"
 
 char const *wordle_guess_to_str(WordleGuess guess)
@@ -33,14 +38,14 @@ void wordle_answer_drop(wordle_answer_t *answer)
     memset(answer, 0, sizeof(*answer));
 }
 
-int wordle_answer_check_guess(wordle_answer_t const *answer, WordleGuess colors[WORDLE_ANSWER_SIZE], char const *guess)
+void wordle_answer_check_guess(wordle_answer_t const *answer, WordleGuess colors[WORDLE_ANSWER_SIZE], char const *guess)
 {
-    if (answer == NULL || guess == NULL) {
-        return -1;
-    }
-
     for (int i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
         colors[i] = Incorrect;
+    }
+
+    if (answer == NULL || guess == NULL) {
+        return;
     }
 
     uint8_t letter_counts[26];
@@ -65,6 +70,4 @@ int wordle_answer_check_guess(wordle_answer_t const *answer, WordleGuess colors[
             }
         }
     }
-
-    return 0;
 }

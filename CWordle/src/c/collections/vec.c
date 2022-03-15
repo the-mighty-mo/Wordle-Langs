@@ -1,3 +1,7 @@
+/*
+ * Author: Benjamin Hall
+ */
+
 #include "collections/vec.h"
 #include "util.h"
 

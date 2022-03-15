@@ -1,3 +1,7 @@
+/*
+ * Author: Benjamin Hall
+ */
+
 #pragma once
 
 #include <stdlib.h>

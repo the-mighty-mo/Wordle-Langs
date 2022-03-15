@@ -1,10 +1,19 @@
+/*
+ * Wordle program
+ * Author: Benjamin Hall
+ */
+
 #include "console_app/console_app.h"
 #include "collections/string.h"
 
 #include <stdio.h>
 
-static int read_file(string_t *buffer, FILE *file);
-
+/**
+ * Runs the Wordle program.
+ * 
+ * The user must pass in the name of the dictionary
+ * file as a command-line argument to the program.
+ */
 int main(int argc, char **argv)
 {
     if (argc != 2) {
@@ -36,6 +45,7 @@ int main(int argc, char **argv)
         return -1;
     }
 
+    /* read the dictionary file */
     hashset_t dictionary = hashset_with_capacity(string_type_info(), 1024);
     string_t dict_file_contents = string_new();
     while (file_read_line_to_string(&dict_file_contents, dict_file) == 0) {
@@ -50,6 +60,7 @@ int main(int argc, char **argv)
     string_drop(&dict_file_contents);
     fclose(dict_file);
 
+    /* read the usernames file */
     treeset_t usernames = treeset_new(string_type_info());
     string_t usernames_file_contents = string_new();
     while (file_read_line_to_string(&usernames_file_contents, usernames_file) == 0) {
@@ -59,8 +70,10 @@ int main(int argc, char **argv)
     string_drop(&usernames_file_contents);
     fclose(usernames_file);
 
+    /* run the main program */
     run_console_app(&dictionary, &usernames);
 
+    /* cleanup */
     treeset_drop(&usernames);
     hashset_drop(&dictionary);
 

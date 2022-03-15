@@ -1,3 +1,7 @@
+/*
+ * Author: Benjamin Hall
+ */
+
 #include "collections/string.h"
 #include "util.h"
 
@@ -156,6 +160,7 @@ void string_trim_leading(string_t *string)
 
     char *str_ptr = string->buf;
     for (; isspace(*str_ptr); ++str_ptr) {}
+    /* str_ptr points to the string after all leading whitespace */
     size_t str_ptr_offset = str_ptr - string->buf;
     if (str_ptr_offset > 0) {
         memmove(string->buf, str_ptr, string->buf_sz - str_ptr_offset);
@@ -171,6 +176,7 @@ void string_trim_trailing(string_t *string)
 
     char *str_ptr = string->buf + string->len - 1;
     for (; str_ptr >= string->buf && isspace(*str_ptr); --str_ptr) {}
+    /* str_ptr points to the character before the trailing whitespace */
     ++str_ptr;
     *str_ptr = '\0';
     string->len = str_ptr - string->buf;
@@ -184,6 +190,7 @@ void string_trim_newline(string_t *string)
 
     char *str_ptr = string->buf + string->len - 1;
     for (; str_ptr >= string->buf && (*str_ptr == '\n' || *str_ptr == '\r'); --str_ptr) {}
+    /* str_ptr points to the character before the trailing newlines */
     ++str_ptr;
     *str_ptr = '\0';
     string->len = str_ptr - string->buf;
@@ -197,13 +204,15 @@ int file_read_to_string(string_t *string, FILE *file)
         return -1;
     }
     string->len = strlen(string->buf);
-    while (string->len == string->buf_sz - 1 && !isspace(string->buf[string->len - 1])) {
+    /* we might not have allocated a large enough string; loop until fread is done */
+    while (string->len == string->buf_sz - 1) {
         string_reserve(string, 1024);
         if (!fread(string->buf + string->len, 1, string->buf_sz - string->len - 1, file)) {
             return -1;
         }
         string->len = strlen(string->buf);
     }
+    /* trim any trailing newlines */
     string_trim_newline(string);
     return 0;
 }
@@ -216,13 +225,15 @@ int file_read_line_to_string(string_t *string, FILE *file)
         return -1;
     }
     string->len = strlen(string->buf);
-    while (string->len == string->buf_sz - 1 && !isspace(string->buf[string->len - 1])) {
+    /* we might not have allocated a large enough string; loop until we see a newline */
+    while (string->len == string->buf_sz - 1 && !(string->buf[string->len - 1] == '\n' || string->buf[string->len - 1] == '\r')) {
         string_reserve(string, 64);
         if (!fgets(string->buf + string->len, string->buf_sz - string->len, file)) {
             return -1;
         }
         string->len = strlen(string->buf);
     }
+    /* trim the trailing newline */
     string_trim_newline(string);
     return 0;
 }

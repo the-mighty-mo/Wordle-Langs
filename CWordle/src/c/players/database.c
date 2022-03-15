@@ -1,3 +1,8 @@
+/*
+ * Wordle program
+ * Author: Benjamin Hall
+ */
+
 #include "players/database.h"
 
 #define DELIM ": "
@@ -53,7 +58,7 @@ static type_info_t const str_info = {
     NULL
 };
 
-int database_entry_from_collection(database_entry_t *entry, char *line, str_to_value str_to_v, type_info_t type_info, void *collection, insert_to_collection insert)
+int database_entry_from_collection(database_entry_t *entry, char *line, str_to_value str_to_v, void *collection, type_info_t type_info, insert_to_collection insert)
 {
     database_entry_t parsed_row;
 

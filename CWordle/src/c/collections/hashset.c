@@ -1,3 +1,7 @@
+/*
+ * Author: Benjamin Hall
+ */
+
 #include "collections/hashset.h"
 #include "util.h"
 
@@ -39,23 +43,17 @@ hashset_t hashset_from(type_info_t type_info, void const *arr, size_t count)
     void *buf = calloc(buf_len, type_info.type_sz);
     uint8_t *tombstones = calloc(buf_len, sizeof(*tombstones));
 
-    for (int i = 0; i < count; ++i) {
-        int hash_value = type_info.hash(arr + i * type_info.type_sz) % buf_len;
-        while (tombstones[hash_value] != 0) {
-            ++hash_value;
-            hash_value %= buf_len;
-        }
-        memcpy(buf + hash_value * type_info.type_sz, arr + i * type_info.type_sz, type_info.type_sz);
-        tombstones[hash_value] = 1;
-    }
-
     hashset_t hashset = {
-        count,
+        0,
         buf_len,
         buf,
         tombstones,
         type_info
     };
+
+    for (int i = 0; i < count; ++i) {
+        hashset_insert(&hashset, arr + i * type_info.type_sz);
+    }
     return hashset;
 }
 
@@ -89,6 +87,7 @@ void hashset_drop(hashset_t *hashset)
     if (hashset->type_info.drop) {
         for (int i = 0; i < hashset->buf_sz; ++i) {
             if (hashset->tombstones[i] == 1) {
+                /* element exists, drop it */
                 hashset->type_info.drop(hashset->buf + i * hashset->type_info.type_sz);
             }
         }
@@ -102,6 +101,7 @@ static void rehash(hashset_t *hashset, size_t old_buf_sz, void *old_buf, uint8_t
 {
     for (int i = 0; i < old_buf_sz; ++i) {
         if (old_tombstones[i] != 1) {
+            /* empty or dead element */
             continue;
         }
 
@@ -122,6 +122,7 @@ void hashset_reserve(hashset_t *hashset, size_t additional)
     }
 
     if (hashset->len + additional > hashset->buf_sz) {
+        /* cache old buffer and tombstones for rehash */
         size_t buf_sz = hashset->buf_sz;
         void *buf = hashset->buf;
         uint8_t *tombstones = hashset->tombstones;
@@ -132,6 +133,7 @@ void hashset_reserve(hashset_t *hashset, size_t additional)
         hashset->tombstones = calloc(hashset->buf_sz, sizeof(*hashset->tombstones));
 
         rehash(hashset, buf_sz, buf, tombstones);
+        /* free the cached buffer and tombstones */
         free(buf);
         free(tombstones);
     }
@@ -202,11 +204,13 @@ void const *hashset_get_next(hashset_t const *hashset, void const *elem)
 
     int i = 0;
     if (elem != NULL) {
+        /* get the index of the input element */
         i = (elem - hashset->buf) / hashset->type_info.type_sz + 1;
     }
 
     for (; i < hashset->buf_sz; ++i) {
         if (hashset->tombstones[i] == 1) {
+            /* element exists */
             return hashset->buf + i * hashset->type_info.type_sz;
         }
     }

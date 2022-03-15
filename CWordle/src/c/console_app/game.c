@@ -1,3 +1,8 @@
+/*
+ * Wordle program
+ * Author: Benjamin Hall
+ */
+
 #include "console_app/game.h"
 
 #include <stdio.h>
