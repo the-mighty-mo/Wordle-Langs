@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <stdint.h>
-
 #include "collections/string.h"
 
 /**

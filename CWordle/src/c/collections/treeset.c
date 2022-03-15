@@ -4,7 +4,6 @@
 
 #include "collections/treeset.h"
 
-#include <stdint.h>
 #include <string.h>
 
 #define DEFAULT_CAP 16
@@ -28,7 +27,7 @@ treeset_t treeset_from(type_info_t type_info, void const *arr, size_t count)
     };
     
     for (int i = 0; i < count; ++i) {
-        treeset_insert(&treeset, (uint8_t *)arr + i * type_info.type_sz);
+        treeset_insert(&treeset, CAST_BUF(arr) + i * type_info.type_sz);
     }
     return treeset;
 }

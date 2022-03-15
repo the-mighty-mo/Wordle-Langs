@@ -1,0 +1,18 @@
+name: C
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: build
+      run: gcc -O2 -std=gnu11 -o CWordle src/c/*.c src/c/**/*.c -Isrc/include -lm
+      working-directory: CWordle

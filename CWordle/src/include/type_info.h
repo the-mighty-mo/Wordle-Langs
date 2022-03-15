@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <stdint.h>
 #include <stdlib.h>
 
 typedef void (*drop_fn)(void *value);
@@ -22,3 +23,9 @@ static inline void const *move(void const *value, type_info_t *type_info)
     type_info->drop = NULL;
     return value;
 }
+
+#ifdef _MSC_VER
+#define CAST_BUF(ptr) ((uint8_t *)ptr)
+#else
+#define CAST_BUF(ptr) (ptr)
+#endif

@@ -52,7 +52,7 @@ hashset_t hashset_from(type_info_t type_info, void const *arr, size_t count)
     };
 
     for (int i = 0; i < count; ++i) {
-        hashset_insert(&hashset, (uint8_t *)arr + i * type_info.type_sz);
+        hashset_insert(&hashset, CAST_BUF(arr) + i * type_info.type_sz);
     }
     return hashset;
 }
@@ -88,7 +88,7 @@ void hashset_drop(hashset_t *hashset)
         for (int i = 0; i < hashset->buf_sz; ++i) {
             if (hashset->tombstones[i] == 1) {
                 /* element exists, drop it */
-                hashset->type_info.drop((uint8_t *)hashset->buf + i * hashset->type_info.type_sz);
+                hashset->type_info.drop(CAST_BUF(hashset->buf) + i * hashset->type_info.type_sz);
             }
         }
     }
@@ -105,12 +105,12 @@ static void rehash(hashset_t *hashset, size_t old_buf_sz, void *old_buf, uint8_t
             continue;
         }
 
-        int hash_value = hashset->type_info.hash((uint8_t *)old_buf + i * hashset->type_info.type_sz) % hashset->buf_sz;
+        int hash_value = hashset->type_info.hash(CAST_BUF(old_buf) + i * hashset->type_info.type_sz) % hashset->buf_sz;
         while (hashset->tombstones[hash_value] != 0) {
             ++hash_value;
             hash_value %= hashset->buf_sz;
         }
-        memcpy((uint8_t *)hashset->buf + hash_value * hashset->type_info.type_sz, (uint8_t *)old_buf + i * hashset->type_info.type_sz, hashset->type_info.type_sz);
+        memcpy(CAST_BUF(hashset->buf) + hash_value * hashset->type_info.type_sz, CAST_BUF(old_buf) + i * hashset->type_info.type_sz, hashset->type_info.type_sz);
         hashset->tombstones[hash_value] = 1;
     }
 }
@@ -157,7 +157,7 @@ void hashset_insert(hashset_t *hashset, void const *elem)
         ++hash_value;
         hash_value %= hashset->buf_sz;
     }
-    memcpy((uint8_t *)hashset->buf + hash_value * hashset->type_info.type_sz, elem, hashset->type_info.type_sz);
+    memcpy(CAST_BUF(hashset->buf) + hash_value * hashset->type_info.type_sz, elem, hashset->type_info.type_sz);
     hashset->tombstones[hash_value] = 1;
 
     ++hashset->len;
@@ -171,7 +171,7 @@ void hashset_clear(hashset_t *hashset)
 
     if (hashset->type_info.drop) {
         for (int i = 0; i < hashset->len; ++i) {
-            hashset->type_info.drop((uint8_t *)hashset->buf + i * hashset->type_info.type_sz);
+            hashset->type_info.drop(CAST_BUF(hashset->buf) + i * hashset->type_info.type_sz);
         }
     }
     memset(hashset->tombstones, 0, hashset->buf_sz * sizeof(*hashset->tombstones));
@@ -186,7 +186,7 @@ int hashset_contains(hashset_t const *hashset, void const *elem)
 
     int hash_value = hashset->type_info.hash(elem) % hashset->buf_sz;
     while (hashset->tombstones[hash_value]) {
-        void const *hashset_elem = (uint8_t *)hashset->buf + hash_value * hashset->type_info.type_sz;
+        void const *hashset_elem = CAST_BUF(hashset->buf) + hash_value * hashset->type_info.type_sz;
         if (hashset->type_info.compare(hashset_elem, elem) == 0) {
             return 1;
         } else {
@@ -205,13 +205,13 @@ void const *hashset_get_next(hashset_t const *hashset, void const *elem)
     int i = 0;
     if (elem != NULL) {
         /* get the index of the input element */
-        i = ((uint8_t *)elem - hashset->buf) / hashset->type_info.type_sz + 1;
+        i = (CAST_BUF(elem) - hashset->buf) / hashset->type_info.type_sz + 1;
     }
 
     for (; i < hashset->buf_sz; ++i) {
         if (hashset->tombstones[i] == 1) {
             /* element exists */
-            return (uint8_t *)hashset->buf + i * hashset->type_info.type_sz;
+            return CAST_BUF(hashset->buf) + i * hashset->type_info.type_sz;
         }
     }
     return NULL;
