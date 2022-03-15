@@ -3,28 +3,39 @@
 
 #include <ctype.h>
 
-#define DEFAULT_CAP 16
+#define DEFAULT_NONZERO_CAP (16 + 1)
 
 string_t string_new(void)
 {
-    return string_with_capacity(DEFAULT_CAP);
+    return string_with_capacity(0);
 }
 
 string_t string_with_capacity(size_t cap)
 {
-    string_t string = {
-        0,
-        cap + 1,
-        calloc(cap + 1, sizeof(*string.buf))
-    };
-    return string;
+    if (cap == 0) {
+        string_t string = {
+            0, 0, NULL
+        };
+        return string;
+    } else {
+        string_t string = {
+            0,
+            cap + 1,
+            calloc(cap + 1, sizeof(*string.buf))
+        };
+        return string;
+    }
 }
 
 string_t string_from(char const *str)
 {
     size_t str_len = strlen(str);
 
-    size_t buf_len = max(str_len, DEFAULT_CAP) + 1;
+    if (str_len == 0) {
+        return string_new();
+    }
+
+    size_t buf_len = max(str_len + 1, DEFAULT_NONZERO_CAP);
     char *buf = calloc(buf_len, sizeof(*buf));
     strcpy(buf, str);
 
@@ -39,7 +50,9 @@ string_t string_from(char const *str)
 string_t string_clone(string_t const *string)
 {
     if (string == NULL) {
-        return string_with_capacity(0);
+        return string_new();
+    } else if (string->buf_sz == 0) {
+        return string_new();
     }
 
     string_t str = {
@@ -67,7 +80,8 @@ void string_reserve(string_t *string, size_t additional)
     }
 
     if (string->len + additional >= string->buf_sz) {
-        string->buf_sz = max(string->len + additional + 1, (string->buf_sz << 1) - 1);
+        string->buf_sz = max(string->len + additional + 1, string->buf_sz << 1);
+        string->buf_sz = max(string->buf_sz, DEFAULT_NONZERO_CAP);
         string->buf = realloc(string->buf, string->buf_sz * sizeof(*string->buf));
     }
 }
@@ -84,6 +98,10 @@ void string_push_str(string_t *string, char const *str)
     }
 
     size_t str_len = strlen(str);
+    if (str_len == 0) {
+        return;
+    }
+
     string_reserve(string, str_len);
 
     strcpy(string->buf + string->len, str);
@@ -92,13 +110,17 @@ void string_push_str(string_t *string, char const *str)
 
 void string_clear(string_t *string)
 {
+    if (string_is_empty(string)) {
+        return;
+    }
+
     string->len = 0;
     *string->buf = '\0';
 }
 
 void string_to_lowercase(string_t *string)
 {
-    if (string == NULL) {
+    if (string == NULL || string_is_empty(string)) {
         return;
     }
 
@@ -110,7 +132,7 @@ void string_to_lowercase(string_t *string)
 
 void string_to_uppercase(string_t *string)
 {
-    if (string == NULL) {
+    if (string == NULL || string_is_empty(string)) {
         return;
     }
 
@@ -128,7 +150,7 @@ void string_trim(string_t *string)
 
 void string_trim_leading(string_t *string)
 {
-    if (string == NULL) {
+    if (string == NULL || string_is_empty(string)) {
         return;
     }
 
@@ -143,7 +165,7 @@ void string_trim_leading(string_t *string)
 
 void string_trim_trailing(string_t *string)
 {
-    if (string == NULL) {
+    if (string == NULL || string_is_empty(string)) {
         return;
     }
 
@@ -156,7 +178,7 @@ void string_trim_trailing(string_t *string)
 
 void string_trim_newline(string_t *string)
 {
-    if (string == NULL) {
+    if (string == NULL || string_is_empty(string)) {
         return;
     }
 
@@ -170,6 +192,7 @@ void string_trim_newline(string_t *string)
 int file_read_to_string(string_t *string, FILE *file)
 {
     string_clear(string);
+    string_reserve(string, 1024);
     if (!fread(string->buf, 1, string->buf_sz - 1, file)) {
         return -1;
     }
@@ -188,6 +211,7 @@ int file_read_to_string(string_t *string, FILE *file)
 int file_read_line_to_string(string_t *string, FILE *file)
 {
     string_clear(string);
+    string_reserve(string, 64);
     if (!fgets(string->buf, string->buf_sz, file)) {
         return -1;
     }
@@ -205,11 +229,23 @@ int file_read_line_to_string(string_t *string, FILE *file)
 
 static int string_compare(string_t const *string, string_t const *other)
 {
-    return strcmp(string->buf, other->buf);
+    if (string_is_empty(string) && string_is_empty(other)) {
+        return 0;
+    } else if (string_is_empty(string)) {
+        return strcmp("", other->buf);
+    } else if (string_is_empty(other)) {
+        return strcmp(string->buf, "");
+    } else {
+        return strcmp(string->buf, other->buf);
+    }
 }
 
 static int string_hash(string_t const *string)
 {
+    if (string_is_empty(string)) {
+        return 0;
+    }
+
     int hash = 5381;
     int c;
 

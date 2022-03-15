@@ -3,28 +3,39 @@
 
 #include <string.h>
 
-#define DEFAULT_CAP 16
+#define DEFAULT_NONZERO_CAP 16
 
 hashset_t hashset_new(type_info_t type_info)
 {
-    return hashset_with_capacity(type_info, DEFAULT_CAP);
+    return hashset_with_capacity(type_info, 0);
 }
 
 hashset_t hashset_with_capacity(type_info_t type_info, size_t cap)
 {
-    hashset_t hashset = {
-        0,
-        cap,
-        calloc(cap, type_info.type_sz),
-        calloc(cap, sizeof(*hashset.tombstones)),
-        type_info
-    };
-    return hashset;
+    if (cap == 0) {
+        hashset_t hashset = {
+            0, 0, NULL, NULL, type_info
+        };
+        return hashset;
+    } else {
+        hashset_t hashset = {
+            0,
+            cap,
+            calloc(cap, type_info.type_sz),
+            calloc(cap, sizeof(*hashset.tombstones)),
+            type_info
+        };
+        return hashset;
+    }
 }
 
 hashset_t hashset_from(type_info_t type_info, void const *arr, size_t count)
 {
-    size_t buf_len = max(count, DEFAULT_CAP);
+    if (count == 0) {
+        return hashset_new(type_info);
+    }
+
+    size_t buf_len = max(count, DEFAULT_NONZERO_CAP);
     void *buf = calloc(buf_len, type_info.type_sz);
     uint8_t *tombstones = calloc(buf_len, sizeof(*tombstones));
 
@@ -52,7 +63,9 @@ hashset_t hashset_clone(hashset_t const *hashset)
 {
     if (hashset == NULL) {
         type_info_t info = {0, NULL, NULL, NULL};
-        return hashset_with_capacity(info, 1);
+        return hashset_new(info);
+    } else if (hashset->buf_sz == 0) {
+        return hashset_new(hashset->type_info);
     }
 
     hashset_t set = {
@@ -114,6 +127,7 @@ void hashset_reserve(hashset_t *hashset, size_t additional)
         uint8_t *tombstones = hashset->tombstones;
 
         hashset->buf_sz = max(hashset->len + additional, hashset->buf_sz << 1);
+        hashset->buf_sz = max(hashset->buf_sz, DEFAULT_NONZERO_CAP);
         hashset->buf = calloc(hashset->buf_sz, hashset->type_info.type_sz);
         hashset->tombstones = calloc(hashset->buf_sz, sizeof(*hashset->tombstones));
 
@@ -149,6 +163,10 @@ void hashset_insert(hashset_t *hashset, void const *elem)
 
 void hashset_clear(hashset_t *hashset)
 {
+    if (hashset_is_empty(hashset)) {
+        return;
+    }
+
     if (hashset->type_info.drop) {
         for (int i = 0; i < hashset->len; ++i) {
             hashset->type_info.drop(hashset->buf + i * hashset->type_info.type_sz);
@@ -160,7 +178,7 @@ void hashset_clear(hashset_t *hashset)
 
 int hashset_contains(hashset_t const *hashset, void const *elem)
 {
-    if (hashset == NULL || elem == NULL) {
+    if (hashset == NULL || elem == NULL || hashset_is_empty(hashset)) {
         return 0;
     }
 
@@ -178,7 +196,7 @@ int hashset_contains(hashset_t const *hashset, void const *elem)
 
 void const *hashset_get_next(hashset_t const *hashset, void const *elem)
 {
-    if (hashset == NULL) {
+    if (hashset == NULL || hashset_is_empty(hashset)) {
         return NULL;
     }
 

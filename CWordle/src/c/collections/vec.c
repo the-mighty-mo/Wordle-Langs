@@ -3,27 +3,38 @@
 
 #include <string.h>
 
-#define DEFAULT_CAP 16
+#define DEFAULT_NONZERO_CAP 16
 
 vec_t vec_new(type_info_t type_info)
 {
-    return vec_with_capacity(type_info, DEFAULT_CAP);
+    return vec_with_capacity(type_info, 0);
 }
 
 vec_t vec_with_capacity(type_info_t type_info, size_t cap)
 {
-    vec_t vec = {
-        0,
-        cap,
-        calloc(cap, type_info.type_sz),
-        type_info
-    };
-    return vec;
+    if (cap == 0) {
+        vec_t vec = {
+            0, 0, NULL, type_info
+        };
+        return vec;
+    } else {
+        vec_t vec = {
+            0,
+            cap,
+            calloc(cap, type_info.type_sz),
+            type_info
+        };
+        return vec;
+    }
 }
 
 vec_t vec_from(type_info_t type_info, void const *arr, size_t count)
 {
-    size_t buf_len = max(count, DEFAULT_CAP);
+    if (count == 0) {
+        return vec_new(type_info);
+    }
+
+    size_t buf_len = max(count, DEFAULT_NONZERO_CAP);
     void *buf = calloc(buf_len, type_info.type_sz);
     memcpy(buf, arr, count * type_info.type_sz);
 
@@ -40,7 +51,9 @@ vec_t vec_clone(vec_t const *vec)
 {
     if (vec == NULL) {
         type_info_t type_info = {0, NULL, NULL, NULL};
-        return vec_with_capacity(type_info, 1);
+        return vec_new(type_info);
+    } else if (vec->buf_sz == 0) {
+        return vec_new(vec->type_info);
     }
 
     vec_t vector = {
@@ -76,6 +89,7 @@ void vec_reserve(vec_t *vec, size_t additional)
 
     if (vec->len + additional > vec->buf_sz) {
         vec->buf_sz = max(vec->len + additional, vec->buf_sz << 1);
+        vec->buf_sz = max(vec->buf_sz, DEFAULT_NONZERO_CAP);
         vec->buf = realloc(vec->buf, vec->buf_sz * vec->type_info.type_sz);
     }
 }
@@ -111,6 +125,10 @@ void vec_push_all(vec_t *vec, void const *arr, size_t count)
 
 void vec_clear(vec_t *vec)
 {
+    if (vec_is_empty(vec)) {
+        return;
+    }
+
     if (vec->type_info.drop) {
         for (int i = 0; i < vec->len; ++i) {
             vec->type_info.drop(vec->buf + i * vec->type_info.type_sz);
@@ -121,7 +139,7 @@ void vec_clear(vec_t *vec)
 
 int vec_contains(vec_t const *vec, void const *elem)
 {
-    if (vec == NULL || elem == NULL) {
+    if (vec == NULL || elem == NULL || vec_is_empty(vec)) {
         return 0;
     }
     

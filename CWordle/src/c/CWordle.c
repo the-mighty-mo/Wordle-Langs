@@ -37,8 +37,8 @@ int main(int argc, char **argv)
     }
 
     hashset_t dictionary = hashset_with_capacity(string_type_info(), 1024);
-    string_t dict_file_contents = string_with_capacity(1024);
-    while (read_file(&dict_file_contents, dict_file) == 0) {
+    string_t dict_file_contents = string_new();
+    while (file_read_line_to_string(&dict_file_contents, dict_file) == 0) {
         string_t line = string_clone(&dict_file_contents);
         if (line.len == 5) {
             string_to_uppercase(&line);
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 
     treeset_t usernames = treeset_new(string_type_info());
     string_t usernames_file_contents = string_new();
-    while (read_file(&usernames_file_contents, usernames_file) == 0) {
+    while (file_read_line_to_string(&usernames_file_contents, usernames_file) == 0) {
         string_t line = string_clone(&usernames_file_contents);
         treeset_insert(&usernames, &line);
     }
@@ -65,10 +65,4 @@ int main(int argc, char **argv)
     hashset_drop(&dictionary);
 
     return 0;
-}
-
-static int read_file(string_t *buffer, FILE *file)
-{
-    string_clear(buffer);
-    return file_read_line_to_string(buffer, file);
 }

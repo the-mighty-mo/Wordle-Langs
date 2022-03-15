@@ -2,6 +2,7 @@
 #include "console_app/main_menu.h"
 #include "collections/string.h"
 
+#include <time.h>
 #include <stdio.h>
 
 static int save_usernames(treeset_t *usernames, char *filename)
@@ -24,6 +25,8 @@ static int save_usernames(treeset_t *usernames, char *filename)
 
 void run_console_app(hashset_t const *dictionary, treeset_t *usernames)
 {
+    srand(time(NULL));
+
     ProgramState state = LogIn;
     uint8_t run_program = 1;
 
