@@ -2,7 +2,6 @@
 #include "util.h"
 
 #include <ctype.h>
-#include <string.h>
 
 #define DEFAULT_CAP 16
 
@@ -151,7 +150,7 @@ void string_trim_trailing(string_t *string)
     char *str_ptr = string->buf + string->len - 1;
     for (; isspace(*str_ptr); --str_ptr) {}
     *(str_ptr + 1) = '\0';
-    string->len = str_ptr - string->buf;
+    string->len = str_ptr - string->buf + 1;
 }
 
 void string_trim_newline(string_t *string)
@@ -163,7 +162,43 @@ void string_trim_newline(string_t *string)
     char *str_ptr = string->buf + string->len - 1;
     for (; *str_ptr == '\n' || *str_ptr == '\r'; --str_ptr) {}
     *(str_ptr + 1) = '\0';
-    string->len = str_ptr - string->buf;
+    string->len = str_ptr - string->buf + 1;
+}
+
+int file_read_to_string(string_t *string, FILE *file)
+{
+    string_clear(string);
+    if (!fread(string->buf, 1, string->buf_sz - 1, file)) {
+        return -1;
+    }
+    string->len = strlen(string->buf);
+    while (string->len == string->buf_sz - 1 && !isspace(string->buf[string->len - 1])) {
+        string_reserve(string, 1024);
+        if (!fread(string->buf + string->len, 1, string->buf_sz - string->len - 1, file)) {
+            return -1;
+        }
+        string->len = strlen(string->buf);
+    }
+    string_trim_newline(string);
+    return 0;
+}
+
+int file_read_line_to_string(string_t *string, FILE *file)
+{
+    string_clear(string);
+    if (!fgets(string->buf, string->buf_sz, file)) {
+        return -1;
+    }
+    string->len = strlen(string->buf);
+    while (string->len == string->buf_sz - 1 && !isspace(string->buf[string->len - 1])) {
+        string_reserve(string, 64);
+        if (!fgets(string->buf + string->len, string->buf_sz - string->len, file)) {
+            return -1;
+        }
+        string->len = strlen(string->buf);
+    }
+    string_trim_newline(string);
+    return 0;
 }
 
 static int string_compare(string_t const *string, string_t const *other)
@@ -173,11 +208,16 @@ static int string_compare(string_t const *string, string_t const *other)
 
 static int string_hash(string_t const *string)
 {
-    size_t sum = 0;
-    for (int i = 0; i < string->len; ++i) {
-        sum += string->buf[i];
+    int hash = 5381;
+    int c;
+
+    char *str = string->buf;
+    while (c = *(str)++) {
+        /* hash * 33 + c */
+        hash = ((hash << 5) + hash) + c;
     }
-    return sum;
+
+    return hash;
 }
 
 static type_info_t const type_info = {

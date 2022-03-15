@@ -51,18 +51,15 @@ string_t player_info_get_random_word(player_info_t const *player_info, hashset_t
     size_t unplayed_words = dictionary->len - player_info->words_played.len;
     size_t random_word_idx = rand() % unplayed_words;
 
-    string_t random_word;
-    for (int i = 0, j = 0; i < dictionary->buf_sz; ++i) {
-        if (dictionary->tombstones[i] == 1) {
-            if (j == random_word_idx) {
-                memcpy(&random_word, dictionary->buf + i * dictionary->type_info.type_sz, sizeof(random_word));
-                break;
-            }
-            ++j;
+    string_t *random_word = NULL;
+    for (int i = 0; i < dictionary->len; ++i) {
+        random_word = hashset_get_next(dictionary, random_word);
+        if (i == random_word_idx) {
+            break;
         }
     }
 
-    return random_word;
+    return string_clone(random_word);
 }
 
 void player_info_add_won_word(player_info_t *player_info, string_t word, uint32_t num_guesses)
@@ -259,24 +256,6 @@ static type_info_t const int_type_info = {
     NULL, NULL, NULL
 };
 
-static int file_read_to_string(string_t *file_contents, FILE *file)
-{
-    string_clear(file_contents);
-    if (!fgets(file_contents->buf, file_contents->buf_sz, file)) {
-        return -1;
-    }
-    file_contents->len = strlen(file_contents->buf);
-    while (file_contents->len == file_contents->buf_sz - 1 && !isspace(file_contents->buf[file_contents->len])) {
-        string_reserve(file_contents, 64);
-        if (!fgets(file_contents->buf + file_contents->len, file_contents->buf_sz - file_contents->len, file)) {
-            return -1;
-        }
-        file_contents->len = strlen(file_contents->buf);
-    }
-    string_trim_newline(file_contents);
-    return 0;
-}
-
 int player_info_from_file(player_info_t *player_info, char const *filename)
 {
     if (player_info == NULL || filename == NULL) {
@@ -286,9 +265,12 @@ int player_info_from_file(player_info_t *player_info, char const *filename)
     int retval = 0;
 
     FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        return 1;
+    }
     string_t file_contents = string_with_capacity(64);
 
-    retval = file_read_to_string(&file_contents, file);
+    retval = file_read_line_to_string(&file_contents, file);
     if (retval) {
         goto read_err;
     }
@@ -299,7 +281,7 @@ int player_info_from_file(player_info_t *player_info, char const *filename)
         goto user_err;
     }
 
-    retval = file_read_to_string(&file_contents, file);
+    retval = file_read_line_to_string(&file_contents, file);
     if (retval) {
         goto user_err;
     }
@@ -312,7 +294,7 @@ int player_info_from_file(player_info_t *player_info, char const *filename)
         goto words_err;
     }
 
-    retval = file_read_to_string(&file_contents, file);
+    retval = file_read_line_to_string(&file_contents, file);
     if (retval) {
         goto words_err;
     }
@@ -325,7 +307,7 @@ int player_info_from_file(player_info_t *player_info, char const *filename)
         goto numguess_err;
     }
 
-    retval = file_read_to_string(&file_contents, file);
+    retval = file_read_line_to_string(&file_contents, file);
     if (retval) {
         goto numguess_err;
     }
@@ -336,7 +318,7 @@ int player_info_from_file(player_info_t *player_info, char const *filename)
         goto maxwin_err;
     }
 
-    retval = file_read_to_string(&file_contents, file);
+    retval = file_read_line_to_string(&file_contents, file);
     if (retval) {
         goto maxwin_err;
     }

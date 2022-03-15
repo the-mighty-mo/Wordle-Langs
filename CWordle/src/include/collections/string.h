@@ -1,7 +1,9 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "type_info.h"
 
@@ -28,5 +30,8 @@ void string_trim(string_t *string);
 void string_trim_leading(string_t *string);
 void string_trim_trailing(string_t *string);
 void string_trim_newline(string_t *string);
+
+int file_read_to_string(string_t *string, FILE *file);
+int file_read_line_to_string(string_t *file_contents, FILE *file);
 
 type_info_t string_type_info(void);

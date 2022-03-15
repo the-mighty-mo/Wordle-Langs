@@ -1,63 +1,78 @@
-#include "players/players.h"
-#include "players/database.h"
+#include "console_app/console_app.h"
 
+#include "collections/hashset.h"
+#include "collections/string.h"
 #include "collections/treeset.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-int str_to_owned(char *str, void **value) {
-    string_t *string = malloc(sizeof(string_t));
-    *string = string_from(str);
-    *value = string;
+static int read_file(string_t *buffer, FILE *file);
+
+int main(int argc, char **argv)
+{
+    if (argc != 2) {
+        /* invalid number of arguments, print a help message */
+        printf("Wordle\n");
+        printf("Author: Benjamin Hall\n");
+        printf("Usage: ./CWordle [dictionary file name]\n");
+        return 0;
+    }
+
+    char *dict_file_name = argv[1];
+
+    /* make sure none of the inputs are empty */
+    if (*dict_file_name == '\0') {
+        printf("Error: no dictionary file specified\n");
+        return -1;
+    }
+
+    FILE *dict_file = fopen(dict_file_name, "r");
+    if (dict_file == NULL) {
+        printf("Error: could not read dictionary file\n");
+        return;
+    }
+
+    FILE *usernames_file = fopen(USERNAMES_FILENAME, "a+");
+    if (dict_file == NULL) {
+        printf("Error: could not read user database\n");
+        fclose(dict_file);
+        return;
+    }
+
+    hashset_t dictionary = hashset_with_capacity(string_type_info(), 1024);
+    string_t dict_file_contents = string_with_capacity(1024);
+    while (read_file(&dict_file_contents, dict_file) == 0) {
+        string_t line = string_clone(&dict_file_contents);
+        if (line.len == 5) {
+            string_to_uppercase(&line);
+            hashset_insert(&dictionary, &line);
+        } else {
+            string_drop(&line);
+        }
+    }
+    string_drop(&dict_file_contents);
+    fclose(dict_file);
+
+    treeset_t usernames = treeset_new(string_type_info());
+    string_t usernames_file_contents = string_new();
+    while (read_file(&usernames_file_contents, usernames_file) == 0) {
+        string_t line = string_clone(&usernames_file_contents);
+        treeset_insert(&usernames, &line);
+    }
+    string_drop(&usernames_file_contents);
+    fclose(usernames_file);
+
+    run_console_app(&dictionary, &usernames);
+
+    treeset_drop(&usernames);
+    hashset_drop(&dictionary);
+
     return 0;
 }
 
-int main()
+static int read_file(string_t *buffer, FILE *file)
 {
-    player_info_t player = {0};
-    player_info_from_file(&player, "player.txt");
-
-    string_t player_stats = player_info_get_stats(&player);
-    printf("%s\n", player_stats.buf);
-    string_drop(&player_stats);
-
-    player_info_write_to_file(&player, "player.txt");
-
-    player_info_drop(&player);
-
-    printf("\n");
-
-    treeset_t treeset = treeset_new(string_type_info());
-    string_t value = string_from("ben");
-    treeset_insert(&treeset, &value);
-    value = string_from("user");
-    treeset_insert(&treeset, &value);
-    value = string_from("trace");
-    treeset_insert(&treeset, &value);
-    value = string_from("insert");
-    treeset_insert(&treeset, &value);
-    value = string_from("crate");
-    treeset_insert(&treeset, &value);
-    value = string_from("funny");
-    treeset_insert(&treeset, &value);
-    value = string_from("fudge");
-    treeset_insert(&treeset, &value);
-    value = string_from("grace");
-    treeset_insert(&treeset, &value);
-    value = string_from("humorous");
-    treeset_insert(&treeset, &value);
-    value = string_from("lame");
-    treeset_insert(&treeset, &value);
-    value = string_from("pours");
-    treeset_insert(&treeset, &value);
-
-    string_t *elem = NULL;
-    for (int i = 0; i < treeset.len; ++i) {
-        elem = treeset_get_next(&treeset, elem);
-        printf("%s\n", elem->buf);
-    }
-
-    treeset_drop(&treeset);
+    string_clear(buffer);
+    return file_read_line_to_string(buffer, file);
 }

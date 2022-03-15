@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-char const *guess_to_str(WordleGuess guess)
+char const *wordle_guess_to_str(WordleGuess guess)
 {
     switch (guess) {
     case Correct:
@@ -15,18 +15,15 @@ char const *guess_to_str(WordleGuess guess)
     }
 }
 
-int wordle_answer_init(wordle_answer_t *answer, char const *word)
+wordle_answer_t wordle_answer_new(string_t word)
 {
-    if (answer == NULL || word == NULL) {
-        return -1;
+    wordle_answer_t answer = {0};
+    answer.word = word;
+    for (char const *c = word.buf; *c != '\0'; ++c) {
+        ++answer.letter_counts[*c - 'A'];
     }
 
-    answer->word = word;
-    for (char const *c = word; *c != '\0'; ++c) {
-        ++answer->letter_counts[*c - 'A'];
-    }
-
-    return 0;
+    return answer;
 }
 
 int wordle_answer_check_guess(wordle_answer_t const *answer, WordleGuess colors[WORDLE_ANSWER_SIZE], char const *guess)
@@ -44,7 +41,7 @@ int wordle_answer_check_guess(wordle_answer_t const *answer, WordleGuess colors[
 
     /* first check for green letters */
     for (int i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
-        if (answer->word[i] == guess[i]) {
+        if (answer->word.buf[i] == guess[i]) {
             --letter_counts[guess[i] - 'A'];
             colors[i] = Correct;
         }
