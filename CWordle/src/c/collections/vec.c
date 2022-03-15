@@ -5,6 +5,7 @@
 #include "collections/vec.h"
 #include "util.h"
 
+#include <stdint.h>
 #include <string.h>
 
 #define DEFAULT_NONZERO_CAP 16
@@ -78,7 +79,7 @@ void vec_drop(vec_t *vec)
 
     if (vec->type_info.drop) {
         for (int i = 0; i < vec->len; ++i) {
-            vec->type_info.drop(vec->buf + i * vec->type_info.type_sz);
+            vec->type_info.drop((uint8_t *)vec->buf + i * vec->type_info.type_sz);
         }
     }
     free(vec->buf);
@@ -111,7 +112,7 @@ void vec_push_back(vec_t *vec, void const *elem)
 
     vec_reserve(vec, 1);
 
-    memcpy(vec->buf + vec->len * vec->type_info.type_sz, elem, vec->type_info.type_sz);
+    memcpy((uint8_t *)vec->buf + vec->len * vec->type_info.type_sz, elem, vec->type_info.type_sz);
     ++vec->len;
 }
 
@@ -123,7 +124,7 @@ void vec_push_all(vec_t *vec, void const *arr, size_t count)
 
     vec_reserve(vec, count);
 
-    memcpy(vec->buf + vec->len * vec->type_info.type_sz, arr, count * vec->type_info.type_sz);
+    memcpy((uint8_t *)vec->buf + vec->len * vec->type_info.type_sz, arr, count * vec->type_info.type_sz);
     vec->len += count;
 }
 
@@ -135,7 +136,7 @@ void vec_clear(vec_t *vec)
 
     if (vec->type_info.drop) {
         for (int i = 0; i < vec->len; ++i) {
-            vec->type_info.drop(vec->buf + i * vec->type_info.type_sz);
+            vec->type_info.drop((uint8_t *)vec->buf + i * vec->type_info.type_sz);
         }
     }
     vec->len = 0;
@@ -148,12 +149,31 @@ int vec_contains(vec_t const *vec, void const *elem)
     }
     
     for (int i = 0; i < vec->len; ++i) {
-        void const *vec_elem = vec->buf + i * vec->type_info.type_sz;
+        void const *vec_elem = (uint8_t *)vec->buf + i * vec->type_info.type_sz;
         if (vec->type_info.compare(vec_elem, elem) == 0) {
             return 1;
         }
     }
     return 0;
+}
+
+void const *vec_get_next(vec_t const *vec, void const *elem)
+{
+    if (vec == NULL || vec_is_empty(vec)) {
+        return NULL;
+    }
+
+    int i = 0;
+    if (elem != NULL) {
+        /* get the index of the input element */
+        i = ((uint8_t *)elem - vec->buf) / vec->type_info.type_sz + 1;
+    }
+
+    if (i < vec->len) {
+        return (uint8_t *)vec->buf + i * vec->type_info.type_sz;
+    } else {
+        return NULL;
+    }
 }
 
 static type_info_t const type_info = {

@@ -28,7 +28,7 @@ treeset_t treeset_from(type_info_t type_info, void const *arr, size_t count)
     };
     
     for (int i = 0; i < count; ++i) {
-        treeset_insert(&treeset, arr + i * type_info.type_sz);
+        treeset_insert(&treeset, (uint8_t *)arr + i * type_info.type_sz);
     }
     return treeset;
 }
@@ -215,7 +215,11 @@ void const *treeset_get_next(treeset_t const *treeset, void const *elem)
         }
     }
 
-    return node->data;
+    if (node) {
+        return node->data;
+    } else {
+        return NULL;
+    }
 }
 
 static treenode_t *fix_red_uncle(treenode_t *cur_node, treenode_t *uncle);

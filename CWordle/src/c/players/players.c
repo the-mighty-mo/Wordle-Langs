@@ -334,8 +334,10 @@ int player_info_from_file(player_info_t *player_info, char const *filename)
 
     /* parse the number of guesses into an array */
     uint32_t num_guesses[MAX_NUM_GUESSES] = {0};
+    uint32_t const *num_guess = NULL;
     for (int i = 0; i < MAX_NUM_GUESSES && i < num_guesses_vec->len; ++i) {
-        num_guesses[i] = *(uint32_t *)(num_guesses_vec->buf + i * num_guesses_vec->type_info.type_sz);
+        num_guess = vec_get_next(num_guesses_vec, num_guess);
+        num_guesses[i] = *num_guess;
     }
 
     *player_info = player_info_load(

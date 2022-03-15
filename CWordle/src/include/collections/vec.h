@@ -124,6 +124,15 @@ void vec_clear(vec_t *vec);
  *        A pointer to the element to find
  */
 int vec_contains(vec_t const *vec, void const *elem);
+/**
+ * Gets the next element in the vector iterator.
+ * 
+ * @param vec
+ *        The vector over which to iterate
+ * @param elem
+ *        A pointer to the last element iterated
+ */
+void const *vec_get_next(vec_t const *vec, void const *elem);
 
 /**
  * Returns type information about a vector.
