@@ -174,7 +174,7 @@ impl WordleAnswer {
 /// guesses (starting at 1), then
 /// WIN_MESSAGES[n - 1] is the message
 /// that should be displayed.
-pub const WIN_MESSAGES: [&'static str; 6] = [
+pub const WIN_MESSAGES: [&str; 6] = [
     "Genius",
     "Magnificent",
     "Impressive",
