@@ -5,9 +5,14 @@
 
 #pragma once
 
-#include "collections/hashset.h"
-#include "players/players.h"
 #include "wordle.h"
+#include "players/players.h"
+
+namespace console_app {
+namespace game {
+
+using players::PlayerInfo;
+using wordle::WordleAnswer;
 
 /**
  * Runs a game of Wordle.
@@ -29,4 +34,7 @@
  * @return
  *        -1 if there was an error
  */
-int run_game(wordle_answer_t const *answer, player_info_t *player, hashset_t const *dictionary);
+int RunGame(WordleAnswer const &answer, PlayerInfo &player, std::unordered_set<std::string> const &dictionary);
+
+}
+}

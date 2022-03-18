@@ -33,7 +33,7 @@ typedef enum _UserSelection {
  *
  * The user may choose to quit the program (or forcibly
  * quit using Ctrl-C), in which case this function returns
- * None.
+ * null.
  *
  * If the user does not yet exist in the given database,
  * they will be added to it.
@@ -186,8 +186,13 @@ ProgramState run_menu(player_info_t *current_player, hashset_t const *dictionary
     {
         /* run a game of Wordle */
         wordle_answer_t answer = wordle_answer_new(player_info_get_random_word(current_player, dictionary));
-        run_game(&answer, current_player, dictionary);
+        int retval = run_game(&answer, current_player, dictionary);
         wordle_answer_drop(&answer);
+
+        if (retval != 0) {
+            next_state = Exit;
+            break;
+        }
 
         /* print the player's statistics after the game ends */
         string_t stats = player_info_get_stats(current_player);
