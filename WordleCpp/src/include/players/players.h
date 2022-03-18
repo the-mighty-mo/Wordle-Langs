@@ -35,6 +35,7 @@ public:
      *        The username of the player
      */
     PlayerInfo(std::string username);
+
     /**
      * Loads data for an existing player.
      * 
@@ -68,7 +69,7 @@ public:
      * @param dictionary
      *        The dictionary from which to find a word
      */
-    std::string GetRandomWord(std::unordered_set<std::string> const &dictionary) const;
+    std::string const &GetRandomWord(std::unordered_set<std::string> const &dictionary) const;
 
     /**
      * Adds a word the player has successfully guessed to their database.
@@ -82,7 +83,8 @@ public:
      * @param num_guesses
      *        The number of guesses the player made
      */
-    void AddWonWord(std::string const &word, uint32_t num_guesses);
+    void AddWonWord(std::string word, uint32_t num_guesses);
+
     /**
      * Adds a word the player has failed to guess to their database.
      * 
@@ -93,12 +95,13 @@ public:
      * @param word
      *        The word the player failed to guess
      */
-    void AddLostWord(std::string const &word);
+    void AddLostWord(std::string word);
 
     /**
      * Returns a string representation of this player's information.
      */
     std::string ToString() const;
+
     /**
      * Returns a string with formatted player statistics.
      * 
@@ -117,6 +120,7 @@ public:
      *        The file to which to write
      */
     int WriteToFile(std::string const &filename) const;
+
     /**
      * Reads a player's information from a file.
      * 

@@ -44,7 +44,7 @@ char const *WordleGuessToString(WordleGuess guess);
  */
 class WordleAnswer {
 private:
-    std::string m_word;
+    std::string const m_word;
     std::array<uint8_t, 26> m_letterCounts{};
 
 public:
@@ -54,7 +54,7 @@ public:
      * @param word
      *        The answer word
      */
-    WordleAnswer(std::string const &word);
+    WordleAnswer(std::string word);
 
     /**
      * Returns the target word for this answer.

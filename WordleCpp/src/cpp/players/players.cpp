@@ -38,7 +38,7 @@ std::string const &PlayerInfo::GetUsername() const
     return m_username;
 }
 
-std::string PlayerInfo::GetRandomWord(std::unordered_set<std::string> const &dictionary) const
+std::string const &PlayerInfo::GetRandomWord(std::unordered_set<std::string> const &dictionary) const
 {
     size_t unplayedWords = dictionary.size() - m_wordsPlayed.size();
     size_t randomWordIdx = rand() % unplayedWords;
@@ -50,17 +50,17 @@ std::string PlayerInfo::GetRandomWord(std::unordered_set<std::string> const &dic
     return *iter;
 }
 
-void PlayerInfo::AddWonWord(std::string const &word, uint32_t numGuesses)
+void PlayerInfo::AddWonWord(std::string word, uint32_t numGuesses)
 {
-    m_wordsPlayed.insert(word);
+    m_wordsPlayed.insert(std::move(word));
     ++m_numGuesses[numGuesses - 1];
     ++m_curWinStreak;
     m_maxWinStreak = std::max(m_maxWinStreak, m_curWinStreak);
 }
 
-void PlayerInfo::AddLostWord(std::string const &word)
+void PlayerInfo::AddLostWord(std::string word)
 {
-    m_wordsPlayed.insert(word);
+    m_wordsPlayed.insert(std::move(word));
     m_curWinStreak = 0;
 }
 

@@ -21,9 +21,8 @@ char const *WordleGuessToString(WordleGuess guess)
     }
 }
 
-WordleAnswer::WordleAnswer(std::string const &word)
+WordleAnswer::WordleAnswer(std::string word) : m_word{std::move(word)}
 {
-    m_word = word;
     for (char c : word) {
         ++m_letterCounts[c - 'A'];
     }
