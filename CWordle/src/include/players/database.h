@@ -56,7 +56,7 @@ int database_entry_from_line(database_entry_t *entry, char *line, str_to_value s
  * The text will be split between field name and data
  * on the ": " delimiter. If the delimiter is not found,
  * then this function returns an error. From there,
- * elements will be separated by the "," delemiter and
+ * elements will be separated by the "," delimiter and
  * added to a collection.
  * 
  * This function takes ownership over the collection.

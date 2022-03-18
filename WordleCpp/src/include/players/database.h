@@ -37,7 +37,7 @@ public:
      *
      * The text will be split between field name and data
      * on the ": " delimiter. If the delimiter is not found,
-     * then this function returns an error.
+     * then this function returns a nullopt.
      * 
      * @param line
      *        The line to parse
@@ -54,6 +54,21 @@ public:
         }
     }
 
+    /**
+     * Creates a database entry from a line of text where
+     * the data field is a vector of elements.
+     *
+     * The text will be split between field name and data
+     * on the ": " delimiter. If the delimiter is not found,
+     * then this function returns a nullopt. From there,
+     * elements will be separated by the "," delimiter and
+     * added to a vector.
+     * 
+     * @param line
+     *        The line to parse
+     * @param stringToT
+     *        A function to convert a string ref to the target type
+     */
     static std::optional<DatabaseEntry<std::vector<T>>> FromVector(std::string const &line, std::function<T(std::string const &)> const &stringToT)
     {
         std::optional<DatabaseEntry<std::string const &>> parsedRow = DatabaseEntry<std::string const &>::FromLine(line, [](auto const &s) { return s; });
@@ -71,6 +86,21 @@ public:
             };
     }
 
+    /**
+     * Creates a database entry from a line of text where
+     * the data field is a set of elements.
+     *
+     * The text will be split between field name and data
+     * on the ": " delimiter. If the delimiter is not found,
+     * then this function returns a nullopt. From there,
+     * elements will be separated by the "," delimiter and
+     * added to a hashset.
+     * 
+     * @param line
+     *        The line to parse
+     * @param stringToT
+     *        A function to convert a string ref to the target type
+     */
     static std::optional<DatabaseEntry<std::unordered_set<T>>> FromHashset(std::string const &line, std::function<T(std::string const &)> const &stringToT)
     {
         std::optional<DatabaseEntry<std::string const &>> parsedRow = DatabaseEntry<std::string const &>::FromLine(line, [](auto const &s) { return s; });
