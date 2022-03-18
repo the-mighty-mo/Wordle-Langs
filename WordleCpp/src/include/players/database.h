@@ -71,15 +71,17 @@ public:
      */
     static std::optional<DatabaseEntry<std::vector<T>>> FromVector(std::string const &line, std::function<T(std::string const &)> const &stringToT)
     {
-        std::optional<DatabaseEntry<std::string const &>> parsedRow = DatabaseEntry<std::string const &>::FromLine(line, [](auto const &s) { return s; });
+        std::optional<DatabaseEntry<std::string>> parsedRow = DatabaseEntry<std::string>::FromLine(line, [](auto const &s) { return s; });
         if (!parsedRow.has_value()) {
             return std::nullopt;
         }
 
         std::vector<T> vec;
-        for (int i = 0, j = 0; (j = parsedRow->value.find(",", i)) != std::string::npos; i = j + 1) {
-            vec.push_back(stringToT(line.substr(i, j)));
+        int start, end;
+        for (start = 0, end = 0; (end = parsedRow->value.find(",", start)) != std::string::npos; start = end + 1) {
+            vec.push_back(stringToT(parsedRow->value.substr(start, end)));
         }
+        vec.push_back(stringToT(parsedRow->value.substr(start, parsedRow->value.length())));
 
         return std::optional{
                 DatabaseEntry<std::vector<T>>{std::move(parsedRow->name), std::move(vec)}
@@ -94,24 +96,27 @@ public:
      * on the ": " delimiter. If the delimiter is not found,
      * then this function returns a nullopt. From there,
      * elements will be separated by the "," delimiter and
-     * added to a hashset.
+     * added to a set.
      * 
      * @param line
      *        The line to parse
      * @param stringToT
      *        A function to convert a string ref to the target type
      */
-    static std::optional<DatabaseEntry<std::unordered_set<T>>> FromHashset(std::string const &line, std::function<T(std::string const &)> const &stringToT)
+    template <template <typename V> typename S>
+    static std::optional<DatabaseEntry<S<T>>> FromSet(std::string const &line, std::function<T(std::string const &)> const &stringToT)
     {
-        std::optional<DatabaseEntry<std::string const &>> parsedRow = DatabaseEntry<std::string const &>::FromLine(line, [](auto const &s) { return s; });
+        std::optional<DatabaseEntry<std::string>> parsedRow = DatabaseEntry<std::string>::FromLine(line, [](auto const &s) { return s; });
         if (!parsedRow.has_value()) {
             return std::nullopt;
         }
 
-        std::unordered_set<T> set;
-        for (int i = 0, j = 0; (j = parsedRow->value.find(",", i)) != std::string::npos; i = j + 1) {
-            set.insert(stringToT(line.substr(i, j)));
+        S<T> set;
+        int start, end;
+        for (start = 0, end = 0; (end = parsedRow->value.find(",", start)) != std::string::npos; start = end + 1) {
+            set.insert(stringToT(parsedRow->value.substr(start, end)));
         }
+        set.insert(stringToT(parsedRow->value.substr(start, parsedRow->value.length())));
 
         return std::optional{
                 DatabaseEntry<std::unordered_set<T>>{std::move(parsedRow->name), std::move(set)}

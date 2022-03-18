@@ -102,10 +102,9 @@ std::optional<PlayerInfo> RequestUserLogin(std::set<std::string> &usernames)
         return std::nullopt;
     }
 
-    std::string filename = *username + ".txt";
     std::optional<PlayerInfo> playerInfo;
     try {
-        playerInfo = PlayerInfo::CreateFromFile(filename);
+        playerInfo = PlayerInfo::CreateFromFile(*username + ".txt");
     } catch (std::string e) {
         printf("%s\n", e.c_str());
         return std::nullopt;

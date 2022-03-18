@@ -119,7 +119,7 @@ std::string PlayerInfo::GetStats() const
 
     for (int i = 0; i < m_numGuesses.size(); ++i) {
         int numBars = (int)std::round(barFactor * m_numGuesses[i]);
-        playerStats << std::endl << (i + 1) << ": " << std::string(numBars, '=') << m_numGuesses[i];
+        playerStats << std::endl << (i + 1) << ": " << std::string(numBars, '=') << " " << m_numGuesses[i];
     }
 
     return playerStats.str();
@@ -160,7 +160,7 @@ int PlayerInfo::WriteToFile(std::string const &filename) const
     if (!std::getline(file, line)) {
         throw errStr;
     }
-    auto wordsPlayed = DatabaseEntry<std::string>::FromHashset(line, [](auto const &s) { return s; });
+    auto wordsPlayed = DatabaseEntry<std::string>::FromSet<std::unordered_set>(line, [](auto const &s) { return s; });
     if (!wordsPlayed.has_value()) {
         throw errStr;
     }
