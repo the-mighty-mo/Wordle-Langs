@@ -4,6 +4,7 @@
 [![Java](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/java.yml/badge.svg)](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/java.yml)
 [![Rust](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/rust.yml/badge.svg)](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/rust.yml)
 [![C](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/c.yml/badge.svg)](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/c.yml)
+[![C++](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/cpp.yml/badge.svg)](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/cpp.yml)
 
 This repository contains command-line implementations of Wordle in various programming languages.
 
