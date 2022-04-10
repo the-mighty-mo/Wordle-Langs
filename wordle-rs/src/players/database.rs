@@ -96,7 +96,6 @@ impl<T> DatabaseEntry<T, T> {
     /// # Ok(())
     /// # }
     /// ```
-    #[must_use]
     pub fn try_from_line<'a, F, E>(line: &'a str, string_to_t: F) -> Result<Option<Self>, E>
     where
         F: Fn(&'a str) -> Result<T, E>,
@@ -196,7 +195,6 @@ where
     /// # Ok(())
     /// # }
     /// ```
-    #[must_use]
     pub fn try_from_collection<'a, F, E>(line: &'a str, string_to_v: F) -> Result<Option<Self>, E>
     where
         F: Fn(&'a str) -> Result<V, E>,

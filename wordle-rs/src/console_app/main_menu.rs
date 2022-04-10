@@ -213,7 +213,7 @@ pub fn run<H: std::hash::BuildHasher>(
     match user_selection {
         UserSelection::PlayGame => {
             /* run a game of Wordle */
-            let answer = WordleAnswer::new(current_player.get_random_word(dictionary));
+            let answer = WordleAnswer::new(current_player.get_random_word(dictionary).to_owned());
             game::run(&answer, current_player, dictionary);
             /* print the player's statistics after the game ends */
             println!("{}", current_player.get_stats());

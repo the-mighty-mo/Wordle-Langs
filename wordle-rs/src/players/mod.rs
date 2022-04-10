@@ -150,13 +150,13 @@ impl PlayerInfo {
     /// let word = player.get_random_word(&dictionary);
     /// ```
     #[must_use]
-    pub fn get_random_word<H: std::hash::BuildHasher>(
+    pub fn get_random_word<'a, H: std::hash::BuildHasher>(
         &self,
-        dictionary: &HashSet<String, H>,
-    ) -> String {
+        dictionary: &'a HashSet<String, H>,
+    ) -> &'a str {
         let unplayed_words_cnt = dictionary.len() - self.words_played.len();
         let random_word_idx = fastrand::usize(0..unplayed_words_cnt);
-        dictionary.iter().nth(random_word_idx).unwrap().clone()
+        dictionary.iter().nth(random_word_idx).unwrap()
     }
 
     /// Adds a word the player has successfully guessed to their database.
@@ -288,7 +288,6 @@ impl PlayerInfo {
     /// # Ok(())
     /// # }
     /// ```
-    #[must_use]
     pub fn from_file(filename: &str) -> io::Result<Option<Self>> {
         let bad_data_err = || {
             io::Error::new(
