@@ -8,10 +8,7 @@ use std::{
     io::{self, Write},
 };
 
-use crate::{
-    players::PlayerInfo,
-    wordle::{WordleAnswer, WordleGuess, WIN_MESSAGES},
-};
+use crate::{players::PlayerInfo, WordleAnswer, WordleGuess, WIN_MESSAGES};
 
 /// Runs a game of Wordle.
 ///
@@ -31,7 +28,7 @@ use crate::{
 /// # use wordle_rs::{
 /// #     console_app::game,
 /// #     players::PlayerInfo,
-/// #     wordle::{WordleAnswer},
+/// #     WordleAnswer,
 /// # };
 /// # fn read_dictionary(filename: &str) -> HashSet<String> {
 /// # HashSet::new()
@@ -50,7 +47,11 @@ use crate::{
 /// # Ok(())
 /// # }
 /// ```
-pub fn run(answer: &WordleAnswer, player: &mut PlayerInfo, dictionary: &HashSet<String>) {
+pub fn run<H: std::hash::BuildHasher>(
+    answer: &WordleAnswer,
+    player: &mut PlayerInfo,
+    dictionary: &HashSet<String, H>,
+) {
     println!("Guess the 5-letter word in 6 or fewer guesses.");
     println!("After each guess, each letter will be given a color:");
     println!("G = Green:\tletter is in that position in the word");

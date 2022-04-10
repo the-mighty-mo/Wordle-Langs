@@ -53,7 +53,10 @@ pub const USERNAMES_FILENAME: &str = "users.txt";
 ///     read_usernames("usernames.txt");
 /// console_app::run(&dictionary, &mut usernames);
 /// ```
-pub fn run(dictionary: &HashSet<String>, usernames: &mut BTreeSet<String>) {
+pub fn run<H: std::hash::BuildHasher>(
+    dictionary: &HashSet<String, H>,
+    usernames: &mut BTreeSet<String>,
+) {
     let mut state = ProgramState::LogIn;
     let mut run_program = true;
 
@@ -78,7 +81,7 @@ pub fn run(dictionary: &HashSet<String>, usernames: &mut BTreeSet<String>) {
                 }
             }
             ProgramState::MainMenu => {
-                state = main_menu::run(current_player.as_mut().unwrap(), dictionary)
+                state = main_menu::run(current_player.as_mut().unwrap(), dictionary);
             }
             ProgramState::DeleteUser => {
                 /* remove the current player from the databse */
@@ -123,9 +126,9 @@ pub fn run(dictionary: &HashSet<String>, usernames: &mut BTreeSet<String>) {
 /// # }
 /// ```
 fn save_usernames(usernames: &BTreeSet<String>, filename: &str) -> io::Result<()> {
+    use std::io::Write;
     let file = File::create(filename)?;
     let mut writer = BufWriter::new(file);
-    use std::io::Write;
     for username in usernames.iter() {
         writeln!(writer, "{}", username)?;
     }

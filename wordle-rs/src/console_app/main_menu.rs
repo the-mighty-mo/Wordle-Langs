@@ -8,7 +8,7 @@ use std::{
     io::{self, stdin, Write},
 };
 
-use crate::{console_app::game, players::PlayerInfo, wordle::WordleAnswer};
+use crate::{console_app::game, players::PlayerInfo, WordleAnswer};
 
 /// Possible states of the main Wordle program.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -85,7 +85,7 @@ pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo
         None => return None,
     };
 
-    let player_info = PlayerInfo::from_file(&(username.to_owned() + ".txt"));
+    let player_info = PlayerInfo::from_file(&(username.clone() + ".txt"));
     let player_info = match player_info {
         Ok(player_info) => player_info,
         /* error reading the database file */
@@ -132,7 +132,9 @@ pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo
 fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
     if !usernames.is_empty() {
         println!("List of existing users:");
-        usernames.iter().for_each(|name| println!("{name}"));
+        for name in usernames.iter() {
+            println!("{name}");
+        }
         println!();
     }
 
@@ -194,7 +196,11 @@ fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
 /// let mut player_info = main_menu::request_user_login(&mut usernames).unwrap();
 /// let next_state = main_menu::run(&mut player_info, &dictionary);
 /// ```
-pub fn run(current_player: &mut PlayerInfo, dictionary: &HashSet<String>) -> ProgramState {
+#[must_use]
+pub fn run<H: std::hash::BuildHasher>(
+    current_player: &mut PlayerInfo,
+    dictionary: &HashSet<String, H>,
+) -> ProgramState {
     let mut next_state = ProgramState::MainMenu;
 
     let user_selection = request_user_selection();
@@ -239,7 +245,7 @@ pub fn run(current_player: &mut PlayerInfo, dictionary: &HashSet<String>) -> Pro
             let mut user_confirmation = String::new();
             match stdin().read_line(&mut user_confirmation) {
                 Ok(_) if user_confirmation.trim().to_lowercase() == "y" => {
-                    next_state = ProgramState::DeleteUser
+                    next_state = ProgramState::DeleteUser;
                 }
                 _ => println!("Action aborted"),
             }

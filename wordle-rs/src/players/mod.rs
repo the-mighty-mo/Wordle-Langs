@@ -65,6 +65,8 @@ impl PlayerInfo {
     /// # use wordle_rs::players::PlayerInfo;
     /// let player = PlayerInfo::new(String::from("user"));
     /// ```
+    #[inline]
+    #[must_use]
     pub fn new(username: String) -> Self {
         PlayerInfo::load(username, HashSet::new(), [0; 6], 0, 0)
     }
@@ -94,6 +96,8 @@ impl PlayerInfo {
     ///     cur_win_streak
     /// );
     /// ```
+    #[inline]
+    #[must_use]
     pub fn load(
         username: String,
         words_played: HashSet<String>,
@@ -121,6 +125,8 @@ impl PlayerInfo {
     /// let player = PlayerInfo::new(username.to_owned());
     /// assert_eq!(player.get_username(), username);
     /// ```
+    #[inline]
+    #[must_use]
     pub fn get_username(&self) -> &str {
         self.username.as_str()
     }
@@ -143,10 +149,14 @@ impl PlayerInfo {
     ///     read_dictionary("dictionary.txt");
     /// let word = player.get_random_word(&dictionary);
     /// ```
-    pub fn get_random_word(&self, dictionary: &HashSet<String>) -> String {
+    #[must_use]
+    pub fn get_random_word<H: std::hash::BuildHasher>(
+        &self,
+        dictionary: &HashSet<String, H>,
+    ) -> String {
         let unplayed_words_cnt = dictionary.len() - self.words_played.len();
         let random_word_idx = fastrand::usize(0..unplayed_words_cnt);
-        dictionary.iter().nth(random_word_idx).unwrap().to_owned()
+        dictionary.iter().nth(random_word_idx).unwrap().clone()
     }
 
     /// Adds a word the player has successfully guessed to their database.
@@ -207,6 +217,7 @@ impl PlayerInfo {
     /// let player = PlayerInfo::new(String::from("user"));
     /// println!("{}", player.get_stats());
     /// ```
+    #[must_use]
     pub fn get_stats(&self) -> String {
         let mut stats = String::new();
         writeln!(stats, "Number of Words Played: {}", self.words_played.len()).unwrap();
@@ -255,9 +266,9 @@ impl PlayerInfo {
     /// # }
     /// ```
     pub fn write_to_file(&self, filename: &str) -> io::Result<()> {
+        use std::io::Write;
         let file = File::create(filename)?;
         let mut writer = BufWriter::new(file);
-        use std::io::Write;
         writer.write_all(self.to_string().as_bytes())
     }
 
@@ -277,6 +288,7 @@ impl PlayerInfo {
     /// # Ok(())
     /// # }
     /// ```
+    #[must_use]
     pub fn from_file(filename: &str) -> io::Result<Option<Self>> {
         let bad_data_err = || {
             io::Error::new(

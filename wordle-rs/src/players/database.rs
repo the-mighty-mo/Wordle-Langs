@@ -32,6 +32,8 @@ impl<T, V> DatabaseEntry<T, V> {
     /// assert_eq!(entry.name.as_str(), "Name");
     /// assert_eq!(entry.value, "value");
     /// ```
+    #[inline]
+    #[must_use]
     fn new(name: String, value: T) -> Self {
         Self {
             name,
@@ -60,6 +62,7 @@ impl<T> DatabaseEntry<T, T> {
     ///     DatabaseEntry::new(String::from("String Test"), "data")
     /// );
     /// ```
+    #[must_use]
     pub fn from_line<'a, F>(line: &'a str, string_to_t: F) -> Option<Self>
     where
         F: Fn(&'a str) -> T,
@@ -93,6 +96,7 @@ impl<T> DatabaseEntry<T, T> {
     /// # Ok(())
     /// # }
     /// ```
+    #[must_use]
     pub fn try_from_line<'a, F, E>(line: &'a str, string_to_t: F) -> Result<Option<Self>, E>
     where
         F: Fn(&'a str) -> Result<T, E>,
@@ -143,6 +147,7 @@ where
     ///     DatabaseEntry::new(String::from("String Test"), HashSet::from(["data1", "data2"]))
     /// );
     /// ```
+    #[must_use]
     pub fn from_collection<'a, F>(line: &'a str, string_to_v: F) -> Option<Self>
     where
         F: Fn(&'a str) -> V,
@@ -191,6 +196,7 @@ where
     /// # Ok(())
     /// # }
     /// ```
+    #[must_use]
     pub fn try_from_collection<'a, F, E>(line: &'a str, string_to_v: F) -> Result<Option<Self>, E>
     where
         F: Fn(&'a str) -> Result<V, E>,
