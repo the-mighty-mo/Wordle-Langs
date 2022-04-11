@@ -13,7 +13,7 @@ This repository contains command-line implementations of Wordle in various progr
     `javac -d build/ src/*.java; jar cfve Wordle.jar WordleProgram -C build/ .`
 - wordle-rs - Rust 2021 edition
   - To build, from the wordle-rs folder:  
-    `cargo build --release`
+    `cargo build --release --all-features`
 - CWordle - C11
   - To build on Windows, in a Developer Command Prompt from the CWordle folder:  
     `mkdir build\obj & cl /std:c11 /O2 src/c/*.c src/c/collections/*.c src/c/console_app/*.c src/c/players/*.c /Isrc/include/ /Fobuild/obj/ /Febuild/CWordle`

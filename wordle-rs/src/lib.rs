@@ -1,9 +1,18 @@
 //! This crate provides methods and structs to manage
 //! a game of Wordle.
+//! 
+//! # Optional features
+//! 
+//! - **`player_db`** - Methods and structs to manage
+//!   information about a Wordle player
+//! - **`console_app`** *(requires: player_db)* - Methods
+//!   to run a game of Wordle as a console application
 //!
 //! Author: Benjamin Hall
 
+#[cfg(feature = "console_app")]
 pub mod console_app;
+#[cfg(feature = "player_db")]
 pub mod players;
 
 use std::fmt;

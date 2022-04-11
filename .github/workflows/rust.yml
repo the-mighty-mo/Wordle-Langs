@@ -21,8 +21,8 @@ jobs:
       with:
           toolchain: stable
     - name: Build
-      run: cargo build --verbose
+      run: cargo build --all-features --verbose
       working-directory: wordle-rs
     - name: Run tests
-      run: cargo test --verbose
+      run: cargo test --all-features --verbose
       working-directory: wordle-rs

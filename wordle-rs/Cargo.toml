@@ -7,5 +7,14 @@ edition = "2021"
 [lib]
 name = "wordle"
 
+[[bin]]
+name = "wordle-rs"
+required-features = ["console_app"]
+
 [dependencies]
-fastrand = "1.7"
+fastrand = { version = "1.7", optional = true }
+
+[features]
+default = []
+player_db = ["dep:fastrand"]
+console_app = ["player_db"]
