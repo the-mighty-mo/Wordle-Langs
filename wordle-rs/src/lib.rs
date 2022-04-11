@@ -51,7 +51,7 @@ pub struct WordleAnswer {
 ///
 /// Basic usage:
 /// ```
-/// # use wordle_rs::{guess_result, WordleGuess};
+/// # use wordle::{guess_result, WordleGuess};
 /// assert_eq!(guess_result![G G G G G], [WordleGuess::Correct; 5]);
 /// ```
 #[macro_export]
@@ -71,7 +71,7 @@ impl WordleAnswer {
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle_rs::WordleAnswer;
+    /// # use wordle::WordleAnswer;
     /// let word = String::from("TRACE");
     /// let answer = WordleAnswer::new(word);
     /// ```
@@ -93,7 +93,7 @@ impl WordleAnswer {
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle_rs::WordleAnswer;
+    /// # use wordle::WordleAnswer;
     /// let word = "TRACE";
     /// let answer = WordleAnswer::new(word.to_owned());
     /// assert_eq!(answer.get_word(), word);
@@ -118,7 +118,7 @@ impl WordleAnswer {
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle_rs::{guess_result, WordleAnswer};
+    /// # use wordle::{guess_result, WordleAnswer};
     /// let answer = WordleAnswer::new(String::from("TRACE"));
     ///
     /// let all_correct = answer.check_guess("TRACE");
@@ -132,7 +132,7 @@ impl WordleAnswer {
     /// ```
     /// Examples with duplicate letters:
     /// ```
-    /// # use wordle_rs::{guess_result, WordleAnswer};
+    /// # use wordle::{guess_result, WordleAnswer};
     /// let answer = WordleAnswer::new(String::from("AABBB"));
     /// let some_yellow = answer.check_guess("CAACC");
     /// assert_eq!(some_yellow, guess_result![X G Y X X]);
@@ -179,7 +179,7 @@ impl WordleAnswer {
 ///
 /// If the user guessed the word in n
 /// guesses (starting at 1), then
-/// WIN_MESSAGES[n - 1] is the message
+/// `WIN_MESSAGES[n - 1]` is the message
 /// that should be displayed.
 pub const WIN_MESSAGES: [&str; 6] = [
     "Genius",

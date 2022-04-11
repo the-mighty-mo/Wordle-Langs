@@ -45,7 +45,7 @@ fn main() {
         .read(true)
         .write(true)
         .create(true)
-        .open(wordle_rs::console_app::USERNAMES_FILENAME);
+        .open(wordle::console_app::USERNAMES_FILENAME);
     let usernames_file_contents = match read_file(usernames_file) {
         Ok(usernames_file_contents) => usernames_file_contents,
         Err(_) => {
@@ -63,7 +63,7 @@ fn main() {
     let mut usernames: BTreeSet<String> =
         usernames_file_contents.lines().map(str::to_owned).collect();
 
-    wordle_rs::console_app::run(&dictionary, &mut usernames);
+    wordle::console_app::run(&dictionary, &mut usernames);
 }
 
 /// Loads data from a file into a String.

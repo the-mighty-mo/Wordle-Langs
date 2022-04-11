@@ -62,7 +62,7 @@ impl PlayerInfo {
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle_rs::players::PlayerInfo;
+    /// # use wordle::players::PlayerInfo;
     /// let player = PlayerInfo::new(String::from("user"));
     /// ```
     #[inline]
@@ -78,7 +78,7 @@ impl PlayerInfo {
     /// Basic usage:
     /// ```
     /// # use std::collections::HashSet;
-    /// # use wordle_rs::players::PlayerInfo;
+    /// # use wordle::players::PlayerInfo;
     /// let mut words_played = HashSet::new();
     /// words_played.insert(String::from("TRACE"));
     ///
@@ -120,7 +120,7 @@ impl PlayerInfo {
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle_rs::players::PlayerInfo;
+    /// # use wordle::players::PlayerInfo;
     /// let username = "user";
     /// let player = PlayerInfo::new(username.to_owned());
     /// assert_eq!(player.get_username(), username);
@@ -138,7 +138,7 @@ impl PlayerInfo {
     /// Basic usage:
     /// ```
     /// # use std::collections::HashSet;
-    /// # use wordle_rs::players::PlayerInfo;
+    /// # use wordle::players::PlayerInfo;
     /// # fn read_dictionary(filename: &str) -> HashSet<String> {
     /// # let mut dict = HashSet::new();
     /// # dict.insert(String::from("TRACE"));
@@ -169,7 +169,7 @@ impl PlayerInfo {
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle_rs::players::PlayerInfo;
+    /// # use wordle::players::PlayerInfo;
     /// let mut player = PlayerInfo::new(String::from("user"));
     /// // player got TRACE in 3 guesses
     /// player.add_won_word(String::from("TRACE"), 3);
@@ -191,7 +191,7 @@ impl PlayerInfo {
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle_rs::players::PlayerInfo;
+    /// # use wordle::players::PlayerInfo;
     /// let mut player = PlayerInfo::new(String::from("user"));
     /// // player could not guess BEBOP within 6 guesses
     /// player.add_lost_word(String::from("BEBOP"));
@@ -213,7 +213,7 @@ impl PlayerInfo {
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle_rs::players::PlayerInfo;
+    /// # use wordle::players::PlayerInfo;
     /// let player = PlayerInfo::new(String::from("user"));
     /// println!("{}", player.get_stats());
     /// ```
@@ -258,7 +258,7 @@ impl PlayerInfo {
     /// Basic usage:
     /// ```no_run
     /// # use std::io;
-    /// # use wordle_rs::players::PlayerInfo;
+    /// # use wordle::players::PlayerInfo;
     /// # fn main() -> io::Result<()> {
     /// let player = PlayerInfo::new(String::from("user"));
     /// player.write_to_file("user.txt")?;
@@ -282,7 +282,7 @@ impl PlayerInfo {
     /// Basic usage:
     /// ```no_run
     /// # use std::io;
-    /// # use wordle_rs::players::PlayerInfo;
+    /// # use wordle::players::PlayerInfo;
     /// # fn main() -> io::Result<()> {
     /// let player = PlayerInfo::from_file("user.txt")?;
     /// # Ok(())

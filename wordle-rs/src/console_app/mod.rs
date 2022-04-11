@@ -40,7 +40,7 @@ pub const USERNAMES_FILENAME: &str = "users.txt";
 /// Basic usage:
 /// ```no_run
 /// # use std::collections::{BTreeSet, HashSet};
-/// # use wordle_rs::console_app;
+/// # use wordle::console_app;
 /// # fn read_dictionary(filename: &str) -> HashSet<String> {
 /// # HashSet::new()
 /// # }
@@ -117,7 +117,7 @@ pub fn run<H: std::hash::BuildHasher>(
 /// #     collections::BTreeSet,
 /// #     io
 /// # };
-/// # use wordle_rs::console_app;
+/// # use wordle::console_app;
 /// # fn main() -> io::Result<()> {
 /// let mut usernames = BTreeSet::new();
 /// usernames.insert(String::from("user"));

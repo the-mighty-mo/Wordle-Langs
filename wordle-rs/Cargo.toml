@@ -1,9 +1,11 @@
 [package]
 name = "wordle-rs"
-version = "0.1.2"
+version = "0.3.2"
+authors = ["Benjamin Hall <hallb1016@gmail.com>"]
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "wordle"
 
 [dependencies]
-fastrand = "1.7.0"
+fastrand = "1.7"

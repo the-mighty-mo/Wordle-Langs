@@ -25,7 +25,7 @@ use crate::{players::PlayerInfo, WordleAnswer, WordleGuess, WIN_MESSAGES};
 /// Basic usage:
 /// ```no_run
 /// # use std::{collections::HashSet, io};
-/// # use wordle_rs::{
+/// # use wordle::{
 /// #     console_app::game,
 /// #     players::PlayerInfo,
 /// #     WordleAnswer,
