@@ -12,9 +12,9 @@
 //! of usernames and a dictionary of valid five-letter words.
 //! From there, the calling program can start the main state
 //! machine of the program.
-//! 
+//!
 //! ## Required features
-//! 
+//!
 //! **`console_app`**
 //!
 //! Author: Benjamin Hall

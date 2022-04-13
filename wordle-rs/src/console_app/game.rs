@@ -52,12 +52,22 @@ pub fn run<H: std::hash::BuildHasher>(
     player: &mut PlayerInfo,
     dictionary: &HashSet<String, H>,
 ) {
-    println!("Guess the 5-letter word in 6 or fewer guesses.");
-    println!("After each guess, each letter will be given a color:");
-    println!("G = Green:\tletter is in that position in the word");
-    println!("Y = Yellow:\tletter is in the word, but not that position");
-    println!("X = Black:\tthere are no more instances of the letter in the word");
-    println!();
+    let stdout = io::stdout();
+    let mut lock = stdout.lock();
+    writeln!(lock, "Guess the 5-letter word in 6 or fewer guesses.").unwrap();
+    writeln!(lock, "After each guess, each letter will be given a color:").unwrap();
+    writeln!(lock, "G = Green:\tletter is in that position in the word").unwrap();
+    writeln!(
+        lock,
+        "Y = Yellow:\tletter is in the word, but not that position"
+    )
+    .unwrap();
+    writeln!(
+        lock,
+        "X = Black:\tthere are no more instances of the letter in the word"
+    )
+    .unwrap();
+    writeln!(lock).unwrap();
 
     let won_game = (1..=6).find_map(|i| {
         let mut guess = String::new();
@@ -84,9 +94,15 @@ pub fn run<H: std::hash::BuildHasher>(
         }
 
         let colors = answer.check_guess(&guess);
-        print!("    ");
-        colors.iter().for_each(|c| print!("{c}"));
-        println!();
+
+        let stdout = io::stdout();
+        let mut lock = stdout.lock();
+
+        write!(lock, "    ").unwrap();
+        for color in colors {
+            write!(lock, "{color}").unwrap();
+        }
+        writeln!(lock).unwrap();
 
         if colors.iter().all(|c| *c == WordleGuess::Correct) {
             Some(i)
@@ -95,18 +111,21 @@ pub fn run<H: std::hash::BuildHasher>(
         }
     });
 
+    let stdout = io::stdout();
+    let mut lock = stdout.lock();
+
     match won_game {
         Some(i) if i > 0 => {
             player.add_won_word(answer.get_word().to_owned(), i as usize);
-            print!("{}! ", WIN_MESSAGES[i as usize - 1]);
+            write!(lock, "{}! ", WIN_MESSAGES[i as usize - 1]).unwrap();
         }
         None => {
             player.add_lost_word(answer.get_word().to_owned());
-            print!("Too bad! ");
+            write!(lock, "Too bad! ").unwrap();
         }
         /* user likely quit the program with Ctrl-C */
         Some(_) => return,
     }
-    println!("The word was: {}", answer.get_word());
-    println!();
+    writeln!(lock, "The word was: {}", answer.get_word()).unwrap();
+    writeln!(lock).unwrap();
 }

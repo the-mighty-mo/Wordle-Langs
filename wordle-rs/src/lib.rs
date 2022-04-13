@@ -1,8 +1,8 @@
 //! This crate provides methods and structs to manage
 //! a game of Wordle.
-//! 
+//!
 //! # Optional features
-//! 
+//!
 //! - **`player_db`** - Methods and structs to manage
 //!   information about a Wordle player
 //! - **`console_app`** *(requires: player_db)* - Methods

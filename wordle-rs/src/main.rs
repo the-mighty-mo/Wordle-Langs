@@ -7,7 +7,7 @@ use std::{
     collections::{BTreeSet, HashSet},
     env,
     fs::{File, OpenOptions},
-    io::{self, BufReader, Read},
+    io::{self, BufReader, Read, Write},
 };
 
 /// Runs the Wordle program.
@@ -18,9 +18,11 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
         /* invalid number of arguments, print a help message */
-        println!("Wordle");
-        println!("Author: Benjamin Hall");
-        println!("Usage: ./wordle-rs [dictionary file name]");
+        let stdout = io::stdout();
+        let mut lock = stdout.lock();
+        writeln!(lock, "Wordle").unwrap();
+        writeln!(lock, "Author: Benjamin Hall").unwrap();
+        writeln!(lock, "Usage: ./wordle-rs [dictionary file name]").unwrap();
         return;
     }
 
