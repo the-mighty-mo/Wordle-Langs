@@ -71,8 +71,7 @@ pub fn run<H: std::hash::BuildHasher>(
 
     let won_game = (1..=6).find_map(|i| {
         let mut guess = String::new();
-        let mut read = true;
-        while read {
+        loop {
             print!("[{i}] ");
             io::stdout().flush().unwrap();
 
@@ -89,7 +88,7 @@ pub fn run<H: std::hash::BuildHasher>(
                 println!("Error: guess must be a word in the dictionary");
             } else {
                 /* valid guess, stop the read loop */
-                read = false;
+                break;
             }
         }
 

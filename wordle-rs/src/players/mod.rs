@@ -334,13 +334,16 @@ impl PlayerInfo {
             .ok_or_else(bad_data_err)?;
 
         /* parse the number of guesses into an array */
-        let mut num_guesses = [0; 6];
-        num_guesses_list
-            .value
-            .iter()
-            .take(num_guesses.len())
-            .enumerate()
-            .for_each(|(i, num_guess)| num_guesses[i] = *num_guess);
+        let num_guesses = {
+            let mut num_guesses = [0; 6];
+            num_guesses_list
+                .value
+                .iter()
+                .take(num_guesses.len())
+                .enumerate()
+                .for_each(|(i, num_guess)| num_guesses[i] = *num_guess);
+            num_guesses
+        };
 
         let player = PlayerInfo::load(
             username.value,

@@ -203,8 +203,6 @@ pub fn run<H: std::hash::BuildHasher>(
     current_player: &mut PlayerInfo,
     dictionary: &HashSet<String, H>,
 ) -> ProgramState {
-    let mut next_state = ProgramState::MainMenu;
-
     let user_selection = request_user_selection();
     let user_selection = match user_selection {
         Some(user_selection) => user_selection,
@@ -229,13 +227,15 @@ pub fn run<H: std::hash::BuildHasher>(
                     "Error: could not write to user database file, progress has not been saved"
                 );
             }
+            ProgramState::MainMenu
         }
         UserSelection::ViewStats => {
             println!("{}", current_player.get_stats());
+            ProgramState::MainMenu
         }
         UserSelection::LogOff => {
             /* user is logged off, go back to login screen */
-            next_state = ProgramState::LogIn;
+            ProgramState::LogIn
         }
         UserSelection::DeleteUser => {
             print!(
@@ -246,15 +246,14 @@ pub fn run<H: std::hash::BuildHasher>(
 
             let mut user_confirmation = String::new();
             match stdin().read_line(&mut user_confirmation) {
-                Ok(_) if user_confirmation.trim().to_lowercase() == "y" => {
-                    next_state = ProgramState::DeleteUser;
+                Ok(_) if user_confirmation.trim().to_lowercase() == "y" => ProgramState::DeleteUser,
+                _ => {
+                    println!("Action aborted");
+                    ProgramState::MainMenu
                 }
-                _ => println!("Action aborted"),
             }
         }
     }
-
-    next_state
 }
 
 /// Requests a user to input their selection.
@@ -280,7 +279,7 @@ pub fn run<H: std::hash::BuildHasher>(
 /// }
 /// ```
 fn request_user_selection() -> Option<UserSelection> {
-    let mut user_selection = None;
+    let mut user_selection;
 
     let stdout = io::stdout();
     let mut lock = stdout.lock();
@@ -290,8 +289,7 @@ fn request_user_selection() -> Option<UserSelection> {
     writeln!(lock, "[3] Log off").unwrap();
     writeln!(lock, "[4] Delete user").unwrap();
 
-    let mut read = true;
-    while read {
+    loop {
         print!("Selection: ");
         io::stdout().flush().unwrap();
 
@@ -308,7 +306,7 @@ fn request_user_selection() -> Option<UserSelection> {
                 user_selection = UserSelection::try_from(selection).ok();
                 match user_selection {
                     /* valid selection, stop the read loop */
-                    Some(_) => read = false,
+                    Some(_) => break,
                     /* selection out of range */
                     None => println!("Error: invalid selection"),
                 }

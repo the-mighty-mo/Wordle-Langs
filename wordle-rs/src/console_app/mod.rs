@@ -62,49 +62,51 @@ pub fn run<H: std::hash::BuildHasher>(
     usernames: &mut BTreeSet<String>,
 ) {
     let mut state = ProgramState::LogIn;
-    let mut run_program = true;
-
     let mut current_player = None;
 
-    while run_program {
-        (|| match state {
+    loop {
+        state = match state {
             ProgramState::LogIn => {
                 current_player = main_menu::request_user_login(usernames);
                 match current_player {
                     Some(_) => {
                         if save_usernames(usernames, USERNAMES_FILENAME).is_err() {
                             println!("Error: could not write to the user database");
-                            state = ProgramState::Exit;
-                            return;
+                            ProgramState::Exit
+                        } else {
+                            /* user has logged in, continue to the main menu */
+                            ProgramState::MainMenu
                         }
-                        /* user has logged in, continue to the main menu */
-                        state = ProgramState::MainMenu;
                     }
                     /* user requested to exit, or there was an error */
-                    None => state = ProgramState::Exit,
+                    None => ProgramState::Exit,
                 }
             }
             ProgramState::MainMenu => {
-                state = main_menu::run(current_player.as_mut().unwrap(), dictionary);
+                /* cannot enter this state unless current_player is Some */
+                let current_player = unsafe { current_player.as_mut().unwrap_unchecked() };
+                main_menu::run(current_player, dictionary)
             }
             ProgramState::DeleteUser => {
+                /* cannot enter this state unless current_player is Some */
+                let current_player = unsafe { current_player.as_ref().unwrap_unchecked() };
                 /* remove the current player from the databse */
-                let username = current_player.as_ref().unwrap().get_username();
+                let username = current_player.get_username();
                 usernames.remove(username);
                 _ = fs::remove_file(username.to_owned() + ".txt").is_err();
 
                 /* save the username database */
                 if save_usernames(usernames, USERNAMES_FILENAME).is_err() {
                     println!("Error: could not write to the user database");
-                    state = ProgramState::Exit;
-                    return;
+                    ProgramState::Exit
+                } else {
+                    /* user has logged out, go to the login screen */
+                    ProgramState::LogIn
                 }
-                /* user has logged out, go to the login screen */
-                state = ProgramState::LogIn;
             }
             /* end the main loop */
-            ProgramState::Exit => run_program = false,
-        })();
+            ProgramState::Exit => break,
+        };
     }
 }
 
