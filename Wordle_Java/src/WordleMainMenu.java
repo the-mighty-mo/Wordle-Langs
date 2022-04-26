@@ -189,6 +189,7 @@ public class WordleMainMenu {
 
             if (userConfirmation != null && userConfirmation.equals("y")) {
                 /* tell the caller to delete the current user */
+                System.out.println();
                 nextState = ProgramState.DeleteUser;
             } else {
                 System.out.println("Action aborted");

@@ -236,6 +236,7 @@ ProgramState run_menu(player_info_t *current_player, hashset_t const *dictionary
         string_to_lowercase(&user_confirmation);
 
         if (strcmp(user_confirmation.buf, "y") == 0) {
+            printf("\n");
             next_state = DeleteUser;
         } else {
             printf("Action aborted\n");

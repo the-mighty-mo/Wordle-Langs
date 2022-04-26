@@ -223,6 +223,7 @@ ProgramState RunMenu(PlayerInfo &currentPlayer, std::unordered_set<std::string> 
             });
 
         if (userConfirmation.compare("y") == 0) {
+            printf("\n");
             nextState = ProgramState::DeleteUser;
         } else {
             printf("Action aborted\n");
