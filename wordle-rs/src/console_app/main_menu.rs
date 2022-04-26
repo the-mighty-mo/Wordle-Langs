@@ -246,7 +246,15 @@ pub fn run<H: std::hash::BuildHasher>(
 
             let mut user_confirmation = String::new();
             match stdin().read_line(&mut user_confirmation) {
-                Ok(_) if user_confirmation.trim().to_lowercase() == "y" => ProgramState::DeleteUser,
+                Ok(_)
+                    if {
+                        user_confirmation.make_ascii_lowercase();
+                        user_confirmation.trim()
+                    } == "y" =>
+                {
+                    println!();
+                    ProgramState::DeleteUser
+                }
                 _ => {
                     println!("Action aborted");
                     ProgramState::MainMenu
@@ -279,8 +287,6 @@ pub fn run<H: std::hash::BuildHasher>(
 /// }
 /// ```
 fn request_user_selection() -> Option<UserSelection> {
-    let mut user_selection;
-
     let stdout = io::stdout();
     let mut lock = stdout.lock();
     writeln!(lock).unwrap();
@@ -289,24 +295,24 @@ fn request_user_selection() -> Option<UserSelection> {
     writeln!(lock, "[3] Log off").unwrap();
     writeln!(lock, "[4] Delete user").unwrap();
 
-    loop {
+    let user_selection = loop {
         print!("Selection: ");
         io::stdout().flush().unwrap();
 
         let mut selection_str = String::new();
         if stdin().read_line(&mut selection_str).is_err() {
             /* user likely quit the program with Ctrl-C */
-            return None;
+            break None;
         }
 
         let selection = selection_str.trim().parse::<isize>();
 
         match selection {
             Ok(selection) => {
-                user_selection = UserSelection::try_from(selection).ok();
+                let user_selection = UserSelection::try_from(selection).ok();
                 match user_selection {
                     /* valid selection, stop the read loop */
-                    Some(_) => break,
+                    Some(_) => break user_selection,
                     /* selection out of range */
                     None => println!("Error: invalid selection"),
                 }
@@ -315,7 +321,7 @@ fn request_user_selection() -> Option<UserSelection> {
                 println!("Error: selection must be an integer");
             }
         }
-    }
+    };
     println!();
 
     user_selection

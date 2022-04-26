@@ -71,28 +71,28 @@ pub fn run<H: std::hash::BuildHasher>(
 
     let won_game = (1..=6).find_map(|i| {
         let mut guess = String::new();
-        loop {
+        let guess = loop {
             print!("[{i}] ");
             io::stdout().flush().unwrap();
 
             guess.clear();
-            match io::stdin().read_line(&mut guess) {
-                Ok(_) => {}
+            if io::stdin().read_line(&mut guess).is_err() {
                 /* user likely quit the program with Ctrl-C */
-                Err(_) => return Some(-1),
+                return Some(-1);
             }
-            guess = guess.trim().to_uppercase();
+            guess.make_ascii_uppercase();
+            let guess = guess.trim();
             if guess.len() != 5 {
                 println!("Error: guess must be 5 letters");
-            } else if !dictionary.contains(&guess) {
+            } else if !dictionary.contains(guess) {
                 println!("Error: guess must be a word in the dictionary");
             } else {
                 /* valid guess, stop the read loop */
-                break;
+                break guess;
             }
-        }
+        };
 
-        let colors = answer.check_guess(&guess);
+        let colors = answer.check_guess(guess);
 
         let stdout = io::stdout();
         let mut lock = stdout.lock();
