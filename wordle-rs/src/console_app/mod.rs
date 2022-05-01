@@ -135,7 +135,7 @@ fn save_usernames(usernames: &BTreeSet<String>, filename: &str) -> io::Result<()
     use std::io::Write;
     let file = File::create(filename)?;
     let mut writer = BufWriter::new(file);
-    for username in usernames.iter() {
+    for username in usernames {
         writeln!(writer, "{}", username)?;
     }
 

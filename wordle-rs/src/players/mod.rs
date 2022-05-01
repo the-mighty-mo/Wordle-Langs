@@ -338,10 +338,10 @@ impl PlayerInfo {
             let mut num_guesses = [0; 6];
             num_guesses_list
                 .value
-                .iter()
+                .into_iter()
                 .take(num_guesses.len())
                 .enumerate()
-                .for_each(|(i, num_guess)| num_guesses[i] = *num_guess);
+                .for_each(|(i, num_guess)| num_guesses[i] = num_guess);
             num_guesses
         };
 

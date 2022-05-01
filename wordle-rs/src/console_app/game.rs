@@ -103,7 +103,7 @@ pub fn run<H: std::hash::BuildHasher>(
         }
         writeln!(lock).unwrap();
 
-        if colors.iter().all(|c| *c == WordleGuess::Correct) {
+        if colors.into_iter().all(|c| c == WordleGuess::Correct) {
             Some(i)
         } else {
             None
