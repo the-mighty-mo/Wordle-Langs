@@ -4,6 +4,7 @@
 //! Author: Benjamin Hall
 
 use std::{
+    borrow::Borrow,
     collections::{BTreeSet, HashSet},
     io::{self, stdin, Write},
 };
@@ -78,7 +79,7 @@ impl TryFrom<isize> for UserSelection {
 ///     None => { /* exit program */ }
 /// }
 /// ```
-pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo> {
+pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo<String>> {
     let username = match request_username(usernames) {
         Some(username) => username,
         /* user requested to exit the game */
@@ -199,10 +200,14 @@ fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
 /// let next_state = main_menu::run(&mut player_info, &dictionary);
 /// ```
 #[must_use]
-pub fn run<H: std::hash::BuildHasher>(
-    current_player: &mut PlayerInfo,
+pub fn run<S, H>(
+    current_player: &mut PlayerInfo<S>,
     dictionary: &HashSet<String, H>,
-) -> ProgramState {
+) -> ProgramState
+where
+    S: Borrow<str>,
+    H: std::hash::BuildHasher,
+{
     let user_selection = request_user_selection();
     let user_selection = match user_selection {
         Some(user_selection) => user_selection,
@@ -213,7 +218,7 @@ pub fn run<H: std::hash::BuildHasher>(
     match user_selection {
         UserSelection::PlayGame => {
             /* run a game of Wordle */
-            let answer = WordleAnswer::new(current_player.get_random_word(dictionary).to_owned());
+            let answer = WordleAnswer::new(current_player.get_random_word(dictionary));
             game::run(&answer, current_player, dictionary);
             /* print the player's statistics after the game ends */
             println!("{}", current_player.get_stats());

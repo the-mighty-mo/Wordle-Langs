@@ -4,6 +4,7 @@
 //! Author: Benjamin Hall
 
 use std::{
+    borrow::Borrow,
     collections::HashSet,
     io::{self, Write},
 };
@@ -47,11 +48,15 @@ use crate::{players::PlayerInfo, WordleAnswer, WordleGuess, WIN_MESSAGES};
 /// # Ok(())
 /// # }
 /// ```
-pub fn run<H: std::hash::BuildHasher>(
-    answer: &WordleAnswer,
-    player: &mut PlayerInfo,
+pub fn run<SW, SP, H>(
+    answer: &WordleAnswer<SW>,
+    player: &mut PlayerInfo<SP>,
     dictionary: &HashSet<String, H>,
-) {
+) where
+    SW: Borrow<str>,
+    SP: Borrow<str>,
+    H: std::hash::BuildHasher,
+{
     let stdout = io::stdout();
     let mut lock = stdout.lock();
     writeln!(lock, "Guess the 5-letter word in 6 or fewer guesses.").unwrap();

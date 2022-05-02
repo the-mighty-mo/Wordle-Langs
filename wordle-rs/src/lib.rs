@@ -15,7 +15,7 @@ pub mod console_app;
 #[cfg(feature = "player_db")]
 pub mod players;
 
-use std::fmt;
+use std::{borrow::Borrow, fmt};
 
 /// Possible guess results for a letter in a game of Wordle.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -44,8 +44,11 @@ impl fmt::Display for WordleGuess {
 /// uses preprocessing so it can run in linear time. This results
 /// in an array containing the counts of each letter.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct WordleAnswer {
-    word: String,
+pub struct WordleAnswer<S>
+where
+    S: Borrow<str>,
+{
+    word: S,
     letter_counts: [u8; 26],
 }
 
@@ -73,7 +76,10 @@ macro_rules! guess_result {
     ]}
 }
 
-impl WordleAnswer {
+impl<S> WordleAnswer<S>
+where
+    S: Borrow<str>,
+{
     /// Creates a new Wordle answer.
     ///
     /// # Examples
@@ -81,14 +87,15 @@ impl WordleAnswer {
     /// Basic usage:
     /// ```
     /// # use wordle::WordleAnswer;
-    /// let word = String::from("TRACE");
+    /// let word = "TRACE";
     /// let answer = WordleAnswer::new(word);
     /// ```
     #[inline]
     #[must_use]
-    pub fn new(word: String) -> Self {
+    pub fn new(word: S) -> Self {
         let mut letter_counts = [0; 26];
-        word.chars()
+        word.borrow()
+            .chars()
             .for_each(|c| letter_counts[c as usize - 'A' as usize] += 1);
         Self {
             word,
@@ -104,13 +111,13 @@ impl WordleAnswer {
     /// ```
     /// # use wordle::WordleAnswer;
     /// let word = "TRACE";
-    /// let answer = WordleAnswer::new(word.to_owned());
+    /// let answer = WordleAnswer::new(word);
     /// assert_eq!(answer.get_word(), word);
     /// ```
     #[inline]
     #[must_use]
     pub fn get_word(&self) -> &str {
-        &self.word
+        self.word.borrow()
     }
 
     /// Calculates the correctness of a guess.
@@ -128,7 +135,7 @@ impl WordleAnswer {
     /// Basic usage:
     /// ```
     /// # use wordle::{guess_result, WordleAnswer};
-    /// let answer = WordleAnswer::new(String::from("TRACE"));
+    /// let answer = WordleAnswer::new("TRACE");
     ///
     /// let all_correct = answer.check_guess("TRACE");
     /// assert_eq!(all_correct, guess_result![G G G G G]);
@@ -142,15 +149,15 @@ impl WordleAnswer {
     /// Examples with duplicate letters:
     /// ```
     /// # use wordle::{guess_result, WordleAnswer};
-    /// let answer = WordleAnswer::new(String::from("AABBB"));
+    /// let answer = WordleAnswer::new("AABBB");
     /// let some_yellow = answer.check_guess("CAACC");
     /// assert_eq!(some_yellow, guess_result![X G Y X X]);
     ///
-    /// let answer = WordleAnswer::new(String::from("AZZAZ"));
+    /// let answer = WordleAnswer::new("AZZAZ");
     /// let some_green = answer.check_guess("AAABB");
     /// assert_eq!(some_green, guess_result![G Y X X X]);
     ///
-    /// let answer = WordleAnswer::new(String::from("BACCC"));
+    /// let answer = WordleAnswer::new("BACCC");
     /// let no_yellow = answer.check_guess("AADDD");
     /// assert_eq!(no_yellow, guess_result![X G X X X]);
     /// ```
@@ -160,7 +167,7 @@ impl WordleAnswer {
         let mut letter_counts = self.letter_counts;
 
         /* first check for green letters */
-        for (i, (a, g)) in self.word.chars().zip(guess.chars()).enumerate() {
+        for (i, (a, g)) in self.word.borrow().chars().zip(guess.chars()).enumerate() {
             if a == g {
                 letter_counts[g as usize - 'A' as usize] -= 1;
                 colors[i] = WordleGuess::Correct;
@@ -206,49 +213,49 @@ mod test {
 
         #[test]
         fn all_green() {
-            let answer = WordleAnswer::new("ABCDE".to_owned());
+            let answer = WordleAnswer::new("ABCDE");
             assert_eq!(answer.check_guess("ABCDE"), guess_result![G G G G G]);
         }
 
         #[test]
         fn all_yellow() {
-            let answer = WordleAnswer::new("EABCD".to_owned());
+            let answer = WordleAnswer::new("EABCD");
             assert_eq!(answer.check_guess("ABCDE"), guess_result![Y Y Y Y Y]);
         }
 
         #[test]
         fn all_black() {
-            let answer = WordleAnswer::new("FGHIJ".to_owned());
+            let answer = WordleAnswer::new("FGHIJ");
             assert_eq!(answer.check_guess("ABCDE"), guess_result![X X X X X]);
         }
 
         #[test]
         fn repeat_green() {
-            let answer = WordleAnswer::new("AABBB".to_owned());
+            let answer = WordleAnswer::new("AABBB");
             assert_eq!(answer.check_guess("AACCC"), guess_result![G G X X X]);
         }
 
         #[test]
         fn repeat_yellow() {
-            let answer = WordleAnswer::new("AABBB".to_owned());
+            let answer = WordleAnswer::new("AABBB");
             assert_eq!(answer.check_guess("CCAAC"), guess_result![X X Y Y X]);
         }
 
         #[test]
         fn repeat_some_green() {
-            let answer = WordleAnswer::new("AABBB".to_owned());
+            let answer = WordleAnswer::new("AABBB");
             assert_eq!(answer.check_guess("CAACC"), guess_result![X G Y X X]);
         }
 
         #[test]
         fn repeat_some_yellow() {
-            let answer = WordleAnswer::new("AZZAZ".to_owned());
+            let answer = WordleAnswer::new("AZZAZ");
             assert_eq!(answer.check_guess("AAABB"), guess_result![G Y X X X]);
         }
 
         #[test]
         fn green_no_yellow() {
-            let answer = WordleAnswer::new("BACCC".to_owned());
+            let answer = WordleAnswer::new("BACCC");
             assert_eq!(answer.check_guess("AADDD"), guess_result![X G X X X]);
         }
     }

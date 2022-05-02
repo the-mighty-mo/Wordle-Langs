@@ -15,7 +15,7 @@ use std::{
 /// The user must pass in the name of the dictionary
 /// file as a command-line argument to the program.
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let args: Vec<_> = env::args().collect();
     if args.len() != 2 {
         /* invalid number of arguments, print a help message */
         let stdout = io::stdout();

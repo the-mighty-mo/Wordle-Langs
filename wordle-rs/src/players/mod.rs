@@ -10,6 +10,7 @@
 
 use core::fmt;
 use std::{
+    borrow::Borrow,
     collections::HashSet,
     fmt::Write,
     fs::File,
@@ -29,17 +30,23 @@ use self::database::DatabaseEntry;
 /// - maximum win streak
 /// - current win streak
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct PlayerInfo {
-    username: String,
+pub struct PlayerInfo<S>
+where
+    S: Borrow<str>,
+{
+    username: S,
     words_played: HashSet<String>,
     num_guesses: [usize; 6],
     max_win_streak: usize,
     cur_win_streak: usize,
 }
 
-impl fmt::Display for PlayerInfo {
+impl<S> fmt::Display for PlayerInfo<S>
+where
+    S: Borrow<str>,
+{
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        writeln!(f, "Username: {}", self.username)?;
+        writeln!(f, "Username: {}", self.username.borrow())?;
         writeln!(
             f,
             "Words Played: {}",
@@ -59,7 +66,10 @@ impl fmt::Display for PlayerInfo {
     }
 }
 
-impl PlayerInfo {
+impl<S> PlayerInfo<S>
+where
+    S: Borrow<str>,
+{
     /// Initializes data for a new player.
     ///
     /// # Examples
@@ -67,11 +77,11 @@ impl PlayerInfo {
     /// Basic usage:
     /// ```
     /// # use wordle::players::PlayerInfo;
-    /// let player = PlayerInfo::new(String::from("user"));
+    /// let player = PlayerInfo::new("user");
     /// ```
     #[inline]
     #[must_use]
-    pub fn new(username: String) -> Self {
+    pub fn new(username: S) -> Self {
         PlayerInfo::load(username, HashSet::new(), [0; 6], 0, 0)
     }
 
@@ -93,7 +103,7 @@ impl PlayerInfo {
     /// let cur_win_streak = 1;
     ///
     /// let player = PlayerInfo::load(
-    ///     String::from("user"),
+    ///     "user",
     ///     words_played,
     ///     num_guesses,
     ///     max_win_streak,
@@ -103,7 +113,7 @@ impl PlayerInfo {
     #[inline]
     #[must_use]
     pub fn load(
-        username: String,
+        username: S,
         words_played: HashSet<String>,
         num_guesses: [usize; 6],
         max_win_streak: usize,
@@ -126,13 +136,13 @@ impl PlayerInfo {
     /// ```
     /// # use wordle::players::PlayerInfo;
     /// let username = "user";
-    /// let player = PlayerInfo::new(username.to_owned());
+    /// let player = PlayerInfo::new(username);
     /// assert_eq!(player.get_username(), username);
     /// ```
     #[inline]
     #[must_use]
     pub fn get_username(&self) -> &str {
-        self.username.as_str()
+        self.username.borrow()
     }
 
     /// Gets a random word this player has not yet played.
@@ -148,7 +158,7 @@ impl PlayerInfo {
     /// # dict.insert(String::from("TRACE"));
     /// # dict
     /// # }
-    /// let player = PlayerInfo::new(String::from("user"));
+    /// let player = PlayerInfo::new("user");
     /// let dictionary: HashSet<String> =
     ///     read_dictionary("dictionary.txt");
     /// let word = player.get_random_word(&dictionary);
@@ -174,7 +184,7 @@ impl PlayerInfo {
     /// Basic usage:
     /// ```
     /// # use wordle::players::PlayerInfo;
-    /// let mut player = PlayerInfo::new(String::from("user"));
+    /// let mut player = PlayerInfo::new("user");
     /// // player got TRACE in 3 guesses
     /// player.add_won_word(String::from("TRACE"), 3);
     /// ```
@@ -196,7 +206,7 @@ impl PlayerInfo {
     /// Basic usage:
     /// ```
     /// # use wordle::players::PlayerInfo;
-    /// let mut player = PlayerInfo::new(String::from("user"));
+    /// let mut player = PlayerInfo::new("user");
     /// // player could not guess BEBOP within 6 guesses
     /// player.add_lost_word(String::from("BEBOP"));
     /// ```
@@ -218,7 +228,7 @@ impl PlayerInfo {
     /// Basic usage:
     /// ```
     /// # use wordle::players::PlayerInfo;
-    /// let player = PlayerInfo::new(String::from("user"));
+    /// let player = PlayerInfo::new("user");
     /// println!("{}", player.get_stats());
     /// ```
     #[must_use]
@@ -264,7 +274,7 @@ impl PlayerInfo {
     /// # use std::io;
     /// # use wordle::players::PlayerInfo;
     /// # fn main() -> io::Result<()> {
-    /// let player = PlayerInfo::new(String::from("user"));
+    /// let player = PlayerInfo::new("user");
     /// player.write_to_file("user.txt")?;
     /// # Ok(())
     /// # }
@@ -275,7 +285,9 @@ impl PlayerInfo {
         let mut writer = BufWriter::new(file);
         writer.write_all(self.to_string().as_bytes())
     }
+}
 
+impl PlayerInfo<String> {
     /// Reads a player's info from a file.
     ///
     /// All errors with reading the file, including any errors
@@ -318,20 +330,25 @@ impl PlayerInfo {
         }
 
         /* parse the lines in the file */
-        let username =
-            DatabaseEntry::from_line(lines_in_file[0], str::to_owned).ok_or_else(bad_data_err)?;
-        let words_played = DatabaseEntry::from_collection(lines_in_file[1], str::to_owned)
+        let username = DatabaseEntry::<_, _, &str>::from_line(lines_in_file[0], str::to_owned)
             .ok_or_else(bad_data_err)?;
-        let num_guesses_list: DatabaseEntry<Vec<_>, _> =
-            DatabaseEntry::try_from_collection(lines_in_file[2], str::parse::<usize>)
+        let words_played =
+            DatabaseEntry::<_, _, &str>::from_collection(lines_in_file[1], str::to_owned)
+                .ok_or_else(bad_data_err)?;
+        let num_guesses_list = DatabaseEntry::<Vec<_>, _, &str>::try_from_collection(
+            lines_in_file[2],
+            str::parse::<usize>,
+        )
+        .map_err(|_| bad_data_err())?
+        .ok_or_else(bad_data_err)?;
+        let max_win_streak =
+            DatabaseEntry::<_, _, &str>::try_from_line(lines_in_file[3], str::parse::<usize>)
                 .map_err(|_| bad_data_err())?
                 .ok_or_else(bad_data_err)?;
-        let max_win_streak = DatabaseEntry::try_from_line(lines_in_file[3], str::parse::<usize>)
-            .map_err(|_| bad_data_err())?
-            .ok_or_else(bad_data_err)?;
-        let cur_win_streak = DatabaseEntry::try_from_line(lines_in_file[4], str::parse::<usize>)
-            .map_err(|_| bad_data_err())?
-            .ok_or_else(bad_data_err)?;
+        let cur_win_streak =
+            DatabaseEntry::<_, _, &str>::try_from_line(lines_in_file[4], str::parse::<usize>)
+                .map_err(|_| bad_data_err())?
+                .ok_or_else(bad_data_err)?;
 
         /* parse the number of guesses into an array */
         let num_guesses = {
