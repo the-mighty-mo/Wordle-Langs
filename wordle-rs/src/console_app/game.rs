@@ -37,8 +37,7 @@ use crate::{players::PlayerInfo, WordleAnswer, WordleGuess, WIN_MESSAGES};
 /// # fn main() -> io::Result<()> {
 /// let dictionary: HashSet<String> =
 ///     read_dictionary("dictionary.txt");
-/// let word = String::from("TRACE");
-/// let answer = WordleAnswer::new(word);
+/// let answer = WordleAnswer::new("TRACE");
 /// let player = PlayerInfo::from_file("user.txt")?;
 ///
 /// if let Some(mut player) = player {

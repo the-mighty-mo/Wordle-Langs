@@ -76,7 +76,7 @@ fn main() {
 /// # Example
 ///
 /// Basic usage:
-/// ```
+/// ```no_run
 /// # use std::{fs::File, io};
 /// # fn main() -> io::Result<()> {
 /// let file = File::open("file.txt");

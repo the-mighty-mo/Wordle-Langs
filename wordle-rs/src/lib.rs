@@ -65,6 +65,8 @@ where
 /// ```
 /// # use wordle::{guess_result, WordleGuess};
 /// assert_eq!(guess_result![G G G G G], [WordleGuess::Correct; 5]);
+/// assert_eq!(guess_result![Y Y Y Y Y], [WordleGuess::Present; 5]);
+/// assert_eq!(guess_result![X X X X X], [WordleGuess::Incorrect; 5]);
 /// ```
 #[macro_export]
 macro_rules! guess_result {
@@ -208,55 +210,53 @@ pub const WIN_MESSAGES: [&str; 6] = [
 
 #[cfg(test)]
 mod test {
-    mod wordle {
-        use crate::{guess_result, WordleAnswer};
+    use super::*;
 
-        #[test]
-        fn all_green() {
-            let answer = WordleAnswer::new("ABCDE");
-            assert_eq!(answer.check_guess("ABCDE"), guess_result![G G G G G]);
-        }
+    #[test]
+    fn all_green() {
+        let answer = WordleAnswer::new("ABCDE");
+        assert_eq!(answer.check_guess("ABCDE"), guess_result![G G G G G]);
+    }
 
-        #[test]
-        fn all_yellow() {
-            let answer = WordleAnswer::new("EABCD");
-            assert_eq!(answer.check_guess("ABCDE"), guess_result![Y Y Y Y Y]);
-        }
+    #[test]
+    fn all_yellow() {
+        let answer = WordleAnswer::new("EABCD");
+        assert_eq!(answer.check_guess("ABCDE"), guess_result![Y Y Y Y Y]);
+    }
 
-        #[test]
-        fn all_black() {
-            let answer = WordleAnswer::new("FGHIJ");
-            assert_eq!(answer.check_guess("ABCDE"), guess_result![X X X X X]);
-        }
+    #[test]
+    fn all_black() {
+        let answer = WordleAnswer::new("FGHIJ");
+        assert_eq!(answer.check_guess("ABCDE"), guess_result![X X X X X]);
+    }
 
-        #[test]
-        fn repeat_green() {
-            let answer = WordleAnswer::new("AABBB");
-            assert_eq!(answer.check_guess("AACCC"), guess_result![G G X X X]);
-        }
+    #[test]
+    fn repeat_green() {
+        let answer = WordleAnswer::new("AABBB");
+        assert_eq!(answer.check_guess("AACCC"), guess_result![G G X X X]);
+    }
 
-        #[test]
-        fn repeat_yellow() {
-            let answer = WordleAnswer::new("AABBB");
-            assert_eq!(answer.check_guess("CCAAC"), guess_result![X X Y Y X]);
-        }
+    #[test]
+    fn repeat_yellow() {
+        let answer = WordleAnswer::new("AABBB");
+        assert_eq!(answer.check_guess("CCAAC"), guess_result![X X Y Y X]);
+    }
 
-        #[test]
-        fn repeat_some_green() {
-            let answer = WordleAnswer::new("AABBB");
-            assert_eq!(answer.check_guess("CAACC"), guess_result![X G Y X X]);
-        }
+    #[test]
+    fn repeat_some_green() {
+        let answer = WordleAnswer::new("AABBB");
+        assert_eq!(answer.check_guess("CAACC"), guess_result![X G Y X X]);
+    }
 
-        #[test]
-        fn repeat_some_yellow() {
-            let answer = WordleAnswer::new("AZZAZ");
-            assert_eq!(answer.check_guess("AAABB"), guess_result![G Y X X X]);
-        }
+    #[test]
+    fn repeat_some_yellow() {
+        let answer = WordleAnswer::new("AZZAZ");
+        assert_eq!(answer.check_guess("AAABB"), guess_result![G Y X X X]);
+    }
 
-        #[test]
-        fn green_no_yellow() {
-            let answer = WordleAnswer::new("BACCC");
-            assert_eq!(answer.check_guess("AADDD"), guess_result![X G X X X]);
-        }
+    #[test]
+    fn green_no_yellow() {
+        let answer = WordleAnswer::new("BACCC");
+        assert_eq!(answer.check_guess("AADDD"), guess_result![X G X X X]);
     }
 }

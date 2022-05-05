@@ -162,6 +162,7 @@ where
     /// let dictionary: HashSet<String> =
     ///     read_dictionary("dictionary.txt");
     /// let word = player.get_random_word(&dictionary);
+    /// assert!(dictionary.contains(word));
     /// ```
     #[must_use]
     pub fn get_random_word<'a, H: std::hash::BuildHasher>(
@@ -321,8 +322,21 @@ impl PlayerInfo<String> {
         let mut file_contents = String::new();
         let mut file_reader = BufReader::new(file);
         file_reader.read_to_string(&mut file_contents)?;
+
+        Self::from_str(&file_contents, bad_data_err)
+    }
+
+    /// Reads a player's info from a string.
+    ///
+    /// All errors with parsing the data, is
+    /// propagated up to the caller.
+    fn from_str<E, F>(player_data: &str, bad_data_err: F) -> Result<Option<Self>, E>
+    where
+        E: std::error::Error,
+        F: Fn() -> E + Copy,
+    {
         /* read all the lines in the file */
-        let lines_in_file: Vec<&str> = file_contents.lines().collect();
+        let lines_in_file: Vec<&str> = player_data.lines().collect();
 
         if lines_in_file.len() != 5 {
             /* corrupt database file */
@@ -370,5 +384,36 @@ impl PlayerInfo<String> {
             cur_win_streak.value,
         );
         Ok(Some(player))
+    }
+}
+
+/// from_file isn't doc tested since it requires a file. The
+/// from_str function is private, so it also isn't doc tested.
+/// Therefore, we need to test it independently.
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::io;
+
+    #[test]
+    fn from_str_is_parsed() {
+        let player_data = "Username: player\n\
+            Words Played: TRACE\n\
+            Number of Guesses: 0,0,0,0,0,0\n\
+            Maximum Win Streak: 0\n\
+            Current Win Streak: 0";
+        let bad_data_err = || {
+            io::Error::new(
+                io::ErrorKind::InvalidData,
+                "Error: corrupt player data",
+            )
+        };
+
+        let player = PlayerInfo::from_str(player_data, bad_data_err).unwrap();
+
+        let mut expected_player = PlayerInfo::new(String::from("player"));
+        expected_player.add_lost_word(String::from("TRACE"));
+
+        assert_eq!(player.unwrap(), expected_player);
     }
 }
