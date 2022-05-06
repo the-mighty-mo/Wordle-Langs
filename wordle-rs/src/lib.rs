@@ -5,7 +5,7 @@
 //!
 //! - **`player_db`** - Methods and structs to manage
 //!   information about a Wordle player
-//! - **`console_app`** *(requires: player_db)* - Methods
+//! - **`console_app`** *(requires: `player_db`)* - Methods
 //!   to run a game of Wordle as a console application
 //!
 //! Author: Benjamin Hall

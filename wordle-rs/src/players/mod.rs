@@ -402,12 +402,8 @@ mod test {
             Number of Guesses: 0,0,0,0,0,0\n\
             Maximum Win Streak: 0\n\
             Current Win Streak: 0";
-        let bad_data_err = || {
-            io::Error::new(
-                io::ErrorKind::InvalidData,
-                "Error: corrupt player data",
-            )
-        };
+        let bad_data_err =
+            || io::Error::new(io::ErrorKind::InvalidData, "Error: corrupt player data");
 
         let player = PlayerInfo::from_str(player_data, bad_data_err).unwrap();
 

@@ -132,19 +132,21 @@ pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo
 /// ```
 fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
     let stdout = io::stdout();
-    let mut lock = stdout.lock();
-    if !usernames.is_empty() {
-        writeln!(lock, "List of existing users:").unwrap();
-        for name in usernames.iter() {
-            writeln!(lock, "{name}").unwrap();
+    {
+        let mut lock = stdout.lock();
+        if !usernames.is_empty() {
+            writeln!(lock, "List of existing users:").unwrap();
+            for name in usernames.iter() {
+                writeln!(lock, "{name}").unwrap();
+            }
+            writeln!(lock).unwrap();
         }
-        writeln!(lock).unwrap();
-    }
 
-    writeln!(lock, "Note: usernames are case-insensitive").unwrap();
-    writeln!(lock, "Type \":q\" to exit").unwrap();
-    write!(lock, "Username: ").unwrap();
-    lock.flush().unwrap();
+        writeln!(lock, "Note: usernames are case-insensitive").unwrap();
+        writeln!(lock, "Type \":q\" to exit").unwrap();
+        write!(lock, "Username: ").unwrap();
+        lock.flush().unwrap();
+    }
 
     let mut username = String::new();
     if stdin().read_line(&mut username).is_err() {
@@ -293,12 +295,14 @@ where
 /// ```
 fn request_user_selection() -> Option<UserSelection> {
     let stdout = io::stdout();
-    let mut lock = stdout.lock();
-    writeln!(lock).unwrap();
-    writeln!(lock, "[1] Play a game of Wordle").unwrap();
-    writeln!(lock, "[2] View player statistics").unwrap();
-    writeln!(lock, "[3] Log off").unwrap();
-    writeln!(lock, "[4] Delete user").unwrap();
+    {
+        let mut lock = stdout.lock();
+        writeln!(lock).unwrap();
+        writeln!(lock, "[1] Play a game of Wordle").unwrap();
+        writeln!(lock, "[2] View player statistics").unwrap();
+        writeln!(lock, "[3] Log off").unwrap();
+        writeln!(lock, "[4] Delete user").unwrap();
+    }
 
     let user_selection = loop {
         print!("Selection: ");

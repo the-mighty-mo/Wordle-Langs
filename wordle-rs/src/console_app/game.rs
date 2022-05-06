@@ -57,21 +57,23 @@ pub fn run<SW, SP, H>(
     H: std::hash::BuildHasher,
 {
     let stdout = io::stdout();
-    let mut lock = stdout.lock();
-    writeln!(lock, "Guess the 5-letter word in 6 or fewer guesses.").unwrap();
-    writeln!(lock, "After each guess, each letter will be given a color:").unwrap();
-    writeln!(lock, "G = Green:\tletter is in that position in the word").unwrap();
-    writeln!(
-        lock,
-        "Y = Yellow:\tletter is in the word, but not that position"
-    )
-    .unwrap();
-    writeln!(
-        lock,
-        "X = Black:\tthere are no more instances of the letter in the word"
-    )
-    .unwrap();
-    writeln!(lock).unwrap();
+    {
+        let mut lock = stdout.lock();
+        writeln!(lock, "Guess the 5-letter word in 6 or fewer guesses.").unwrap();
+        writeln!(lock, "After each guess, each letter will be given a color:").unwrap();
+        writeln!(lock, "G = Green:\tletter is in that position in the word").unwrap();
+        writeln!(
+            lock,
+            "Y = Yellow:\tletter is in the word, but not that position"
+        )
+        .unwrap();
+        writeln!(
+            lock,
+            "X = Black:\tthere are no more instances of the letter in the word"
+        )
+        .unwrap();
+        writeln!(lock).unwrap();
+    }
 
     let won_game = (1..=6).find_map(|i| {
         let mut guess = String::new();
@@ -97,15 +99,14 @@ pub fn run<SW, SP, H>(
         };
 
         let colors = answer.check_guess(guess);
-
-        let stdout = io::stdout();
-        let mut lock = stdout.lock();
-
-        write!(lock, "    ").unwrap();
-        for color in colors {
-            write!(lock, "{color}").unwrap();
+        {
+            let mut lock = stdout.lock();
+            write!(lock, "    ").unwrap();
+            for color in colors {
+                write!(lock, "{color}").unwrap();
+            }
+            writeln!(lock).unwrap();
         }
-        writeln!(lock).unwrap();
 
         if colors.into_iter().all(|c| c == WordleGuess::Correct) {
             Some(i)
@@ -114,7 +115,6 @@ pub fn run<SW, SP, H>(
         }
     });
 
-    let stdout = io::stdout();
     let mut lock = stdout.lock();
 
     match won_game {
