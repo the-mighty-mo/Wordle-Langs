@@ -57,10 +57,10 @@ pub const USERNAMES_FILENAME: &str = "users.txt";
 ///     read_usernames("usernames.txt");
 /// console_app::run(&dictionary, &mut usernames);
 /// ```
-pub fn run<H>(dictionary: &HashSet<String, H>, usernames: &mut BTreeSet<String>)
-where
-    H: std::hash::BuildHasher,
-{
+pub fn run(
+    dictionary: &HashSet<String, impl std::hash::BuildHasher>,
+    usernames: &mut BTreeSet<String>,
+) {
     let mut state = ProgramState::LogIn;
     let mut current_player = None;
 

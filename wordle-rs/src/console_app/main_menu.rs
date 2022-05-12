@@ -202,14 +202,10 @@ fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
 /// let next_state = main_menu::run(&mut player_info, &dictionary);
 /// ```
 #[must_use]
-pub fn run<S, H>(
-    current_player: &mut PlayerInfo<S>,
-    dictionary: &HashSet<String, H>,
-) -> ProgramState
-where
-    S: Borrow<str>,
-    H: std::hash::BuildHasher,
-{
+pub fn run(
+    current_player: &mut PlayerInfo<impl Borrow<str>>,
+    dictionary: &HashSet<String, impl std::hash::BuildHasher>,
+) -> ProgramState {
     let user_selection = request_user_selection();
     let user_selection = match user_selection {
         Some(user_selection) => user_selection,

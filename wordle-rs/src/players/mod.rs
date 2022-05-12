@@ -165,9 +165,9 @@ where
     /// assert!(dictionary.contains(word));
     /// ```
     #[must_use]
-    pub fn get_random_word<'a, H: std::hash::BuildHasher>(
+    pub fn get_random_word<'a>(
         &self,
-        dictionary: &'a HashSet<String, H>,
+        dictionary: &'a HashSet<String, impl std::hash::BuildHasher>,
     ) -> &'a str {
         let unplayed_words_cnt = dictionary.len() - self.words_played.len();
         let random_word_idx = fastrand::usize(0..unplayed_words_cnt);
@@ -330,11 +330,10 @@ impl PlayerInfo<String> {
     ///
     /// All errors with parsing the data, is
     /// propagated up to the caller.
-    fn from_str<E, F>(player_data: &str, bad_data_err: F) -> Result<Option<Self>, E>
-    where
-        E: std::error::Error,
-        F: Fn() -> E + Copy,
-    {
+    fn from_str<E>(
+        player_data: &str,
+        bad_data_err: impl Fn() -> E + Copy,
+    ) -> Result<Option<Self>, E> {
         /* read all the lines in the file */
         let lines_in_file: Vec<&str> = player_data.lines().collect();
 

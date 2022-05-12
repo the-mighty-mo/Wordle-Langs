@@ -72,10 +72,7 @@ where
     /// );
     /// ```
     #[must_use]
-    pub fn from_line<F>(line: &'a str, string_to_t: F) -> Option<Self>
-    where
-        F: Fn(&'a str) -> T,
-    {
+    pub fn from_line(line: &'a str, string_to_t: impl Fn(&'a str) -> T) -> Option<Self> {
         let split_str = line.split_once(DELIM);
         split_str.map(|(key, value)| DatabaseEntry::new(key.into(), string_to_t(value)))
     }
@@ -105,10 +102,10 @@ where
     /// # Ok(())
     /// # }
     /// ```
-    pub fn try_from_line<F, E>(line: &'a str, string_to_t: F) -> Result<Option<Self>, E>
-    where
-        F: Fn(&'a str) -> Result<T, E>,
-    {
+    pub fn try_from_line<E>(
+        line: &'a str,
+        string_to_t: impl Fn(&'a str) -> Result<T, E>,
+    ) -> Result<Option<Self>, E> {
         let split_str = line.split_once(DELIM);
         split_str
             .map(|(key, value)| {
@@ -157,10 +154,7 @@ where
     /// );
     /// ```
     #[must_use]
-    pub fn from_collection<F>(line: &'a str, string_to_v: F) -> Option<Self>
-    where
-        F: Fn(&'a str) -> V,
-    {
+    pub fn from_collection(line: &'a str, string_to_v: impl Fn(&'a str) -> V) -> Option<Self> {
         let parsed_row = DatabaseEntry::<_, _, &str>::from_line(line, identity);
         parsed_row.map(|parsed_row| {
             let items = parsed_row.value.split(',').map(string_to_v).collect();
@@ -205,10 +199,10 @@ where
     /// # Ok(())
     /// # }
     /// ```
-    pub fn try_from_collection<F, E>(line: &'a str, string_to_v: F) -> Result<Option<Self>, E>
-    where
-        F: Fn(&'a str) -> Result<V, E>,
-    {
+    pub fn try_from_collection<E>(
+        line: &'a str,
+        string_to_v: impl Fn(&'a str) -> Result<V, E>,
+    ) -> Result<Option<Self>, E> {
         let parsed_row = DatabaseEntry::<_, _, &str>::from_line(line, identity);
         parsed_row
             .map(|parsed_row| {

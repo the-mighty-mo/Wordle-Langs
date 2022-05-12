@@ -47,15 +47,11 @@ use crate::{players::PlayerInfo, WordleAnswer, WordleGuess, WIN_MESSAGES};
 /// # Ok(())
 /// # }
 /// ```
-pub fn run<SW, SP, H>(
-    answer: &WordleAnswer<SW>,
-    player: &mut PlayerInfo<SP>,
-    dictionary: &HashSet<String, H>,
-) where
-    SW: Borrow<str>,
-    SP: Borrow<str>,
-    H: std::hash::BuildHasher,
-{
+pub fn run(
+    answer: &WordleAnswer<impl Borrow<str>>,
+    player: &mut PlayerInfo<impl Borrow<str>>,
+    dictionary: &HashSet<String, impl std::hash::BuildHasher>,
+) {
     let stdout = io::stdout();
     {
         let mut lock = stdout.lock();
