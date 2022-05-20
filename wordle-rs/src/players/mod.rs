@@ -112,7 +112,7 @@ where
     /// ```
     #[inline]
     #[must_use]
-    pub fn load(
+    pub const fn load(
         username: S,
         words_played: HashSet<String>,
         num_guesses: [usize; 6],

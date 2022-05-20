@@ -52,9 +52,8 @@ pub fn run(
     player: &mut PlayerInfo<impl Borrow<str>>,
     dictionary: &HashSet<String, impl std::hash::BuildHasher>,
 ) {
-    let stdout = io::stdout();
     {
-        let mut lock = stdout.lock();
+        let mut lock = io::stdout().lock();
         writeln!(lock, "Guess the 5-letter word in 6 or fewer guesses.").unwrap();
         writeln!(lock, "After each guess, each letter will be given a color:").unwrap();
         writeln!(lock, "G = Green:\tletter is in that position in the word").unwrap();
@@ -96,7 +95,7 @@ pub fn run(
 
         let colors = answer.check_guess(guess);
         {
-            let mut lock = stdout.lock();
+            let mut lock = io::stdout().lock();
             write!(lock, "    ").unwrap();
             for color in colors {
                 write!(lock, "{color}").unwrap();
@@ -111,7 +110,7 @@ pub fn run(
         }
     });
 
-    let mut lock = stdout.lock();
+    let mut lock = io::stdout().lock();
 
     match won_game {
         Some(i) if i > 0 => {

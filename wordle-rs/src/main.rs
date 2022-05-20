@@ -18,8 +18,7 @@ fn main() {
     let args: Vec<_> = env::args().collect();
     if args.len() != 2 {
         /* invalid number of arguments, print a help message */
-        let stdout = io::stdout();
-        let mut lock = stdout.lock();
+        let mut lock = io::stdout().lock();
         writeln!(lock, "Wordle").unwrap();
         writeln!(lock, "Author: Benjamin Hall").unwrap();
         writeln!(lock, "Usage: ./wordle-rs [dictionary file name]").unwrap();

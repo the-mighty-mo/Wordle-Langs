@@ -40,7 +40,7 @@ where
     /// ```
     #[inline]
     #[must_use]
-    fn new(name: S, value: T) -> Self {
+    const fn new(name: S, value: T) -> Self {
         Self {
             name,
             value,

@@ -131,9 +131,8 @@ pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo
 /// }
 /// ```
 fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
-    let stdout = io::stdout();
     {
-        let mut lock = stdout.lock();
+        let mut lock = io::stdout().lock();
         if !usernames.is_empty() {
             writeln!(lock, "List of existing users:").unwrap();
             for name in usernames.iter() {
@@ -290,9 +289,8 @@ pub fn run(
 /// }
 /// ```
 fn request_user_selection() -> Option<UserSelection> {
-    let stdout = io::stdout();
     {
-        let mut lock = stdout.lock();
+        let mut lock = io::stdout().lock();
         writeln!(lock).unwrap();
         writeln!(lock, "[1] Play a game of Wordle").unwrap();
         writeln!(lock, "[2] View player statistics").unwrap();
