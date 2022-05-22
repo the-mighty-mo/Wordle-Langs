@@ -34,7 +34,18 @@ enum class WordleGuess {
  * @param guess
  *        The Wordle guess
  */
-char const *WordleGuessToString(WordleGuess guess);
+constexpr char const *WordleGuessToString(WordleGuess guess)
+{
+    switch (guess) {
+    case WordleGuess::Correct:
+        return "G";
+    case WordleGuess::Present:
+        return "Y";
+    case WordleGuess::Incorrect:
+    default:
+        return "X";
+    }
+}
 
 /**
  * Manages information about an answer to a game of Wordle.
@@ -45,7 +56,7 @@ char const *WordleGuessToString(WordleGuess guess);
 class WordleAnswer {
 private:
     std::string const m_word;
-    std::array<uint8_t, 26> m_letterCounts{};
+    std::array<uint8_t, 26> const m_letterCounts;
 
 public:
     /**
@@ -59,7 +70,10 @@ public:
     /**
      * Returns the target word for this answer.
      */
-    std::string const &GetWord() const;
+    constexpr std::string const &GetWord() const
+    {
+        return m_word;
+    }
 
     /**
      * Calculates the correctness of a guess.
@@ -75,7 +89,7 @@ public:
      * @param guess
      *        The guess
      */
-    std::array<WordleGuess, 5> CheckGuess(std::string const &guess) const;
+    std::array<WordleGuess, 5> CheckGuess(std::string_view guess) const;
 };
 
 /**
@@ -87,7 +101,7 @@ public:
  * WIN_MESSAGES[n - 1] is the message
  * that should be displayed.
  */
-static char const *WORDLE_WIN_MESSAGES[] = {
+static constexpr char const *WORDLE_WIN_MESSAGES[] = {
     "Genius",
     "Magnificent",
     "Impressive",

@@ -14,7 +14,7 @@ namespace console_app {
 /**
  * Name of the usernames database file.
  */
-static constexpr char *USERNAMES_FILENAME = "users.txt";
+static constexpr char const *USERNAMES_FILENAME = "users.txt";
 
 /**
  * Runs the main state machine of the Wordle console program.

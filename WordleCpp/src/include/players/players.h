@@ -61,8 +61,11 @@ public:
     /**
      * Returns this player's username.
      */
-    std::string const &GetUsername() const;
-    
+    constexpr std::string const &GetUsername() const
+    {
+        return m_username;
+    }
+
     /**
      * Gets a random word the player has not yet played.
      * 

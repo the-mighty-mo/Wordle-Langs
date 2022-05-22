@@ -25,7 +25,7 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    char *dictFileName = argv[1];
+    char const *dictFileName = argv[1];
 
     /* make sure none of the inputs are empty */
     if (*dictFileName == '\0') {

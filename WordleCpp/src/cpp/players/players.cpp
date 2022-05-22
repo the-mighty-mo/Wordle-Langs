@@ -15,28 +15,21 @@
 
 namespace players {
 
-PlayerInfo::PlayerInfo(std::string username)
-{
-    m_username = std::move(username);
-}
+PlayerInfo::PlayerInfo(std::string username) :
+    m_username{std::move(username)}
+{}
 
 PlayerInfo::PlayerInfo(std::string username,
                     std::unordered_set<std::string> wordsPlayed,
                     std::array<uint32_t, MAX_NUM_GUESSES> numGuesses,
                     uint32_t maxWinStreak,
-                    uint32_t curWinStreak)
-{
-    m_username = std::move(username);
-    m_wordsPlayed = std::move(wordsPlayed);
-    m_numGuesses = std::move(numGuesses);
-    m_maxWinStreak = maxWinStreak;
-    m_curWinStreak = curWinStreak;
-}
-
-std::string const &PlayerInfo::GetUsername() const
-{
-    return m_username;
-}
+                    uint32_t curWinStreak) :
+    m_username{std::move(username)},
+    m_wordsPlayed{std::move(wordsPlayed)},
+    m_numGuesses{std::move(numGuesses)},
+    m_maxWinStreak{maxWinStreak},
+    m_curWinStreak{curWinStreak}
+{}
 
 std::string const &PlayerInfo::GetRandomWord(std::unordered_set<std::string> const &dictionary) const
 {
@@ -152,7 +145,7 @@ int PlayerInfo::WriteToFile(std::string const &filename) const
     if (!std::getline(file, line)) {
         throw errStr;
     }
-    auto username = DatabaseEntry<std::string>::FromLine(line, [](auto const &s) { return s; });
+    auto username = DatabaseEntry<std::string>::FromLine(line, [](auto s) { return std::string{s}; });
     if (!username.has_value()) {
         throw errStr;
     }
@@ -160,7 +153,7 @@ int PlayerInfo::WriteToFile(std::string const &filename) const
     if (!std::getline(file, line)) {
         throw errStr;
     }
-    auto wordsPlayed = DatabaseEntry<std::string>::FromSet<std::unordered_set>(line, [](auto const &s) { return s; });
+    auto wordsPlayed = DatabaseEntry<std::string>::FromSet<std::unordered_set>(line, [](auto s) { return std::string{s}; });
     if (!wordsPlayed.has_value()) {
         throw errStr;
     }
@@ -168,7 +161,7 @@ int PlayerInfo::WriteToFile(std::string const &filename) const
     if (!std::getline(file, line)) {
         throw errStr;
     }
-    auto numGuessesList = DatabaseEntry<uint32_t>::FromVector(line, [](auto const &s) { return std::stol(s); });
+    auto numGuessesList = DatabaseEntry<uint32_t>::FromVector(line, [](auto s) { return std::stol(std::string{s}); });
     if (!numGuessesList.has_value()) {
         throw errStr;
     }
@@ -176,7 +169,7 @@ int PlayerInfo::WriteToFile(std::string const &filename) const
     if (!std::getline(file, line)) {
         throw errStr;
     }
-    auto maxWinStreak = DatabaseEntry<uint32_t>::FromLine(line, [](auto const &s) { return std::stol(s); });
+    auto maxWinStreak = DatabaseEntry<uint32_t>::FromLine(line, [](auto s) { return std::stol(std::string{s}); });
     if (!maxWinStreak.has_value()) {
         throw errStr;
     }
@@ -184,7 +177,7 @@ int PlayerInfo::WriteToFile(std::string const &filename) const
     if (!std::getline(file, line)) {
         throw errStr;
     }
-    auto curWinStreak = DatabaseEntry<uint32_t>::FromLine(line, [](auto const &s) { return std::stol(s); });
+    auto curWinStreak = DatabaseEntry<uint32_t>::FromLine(line, [](auto s) { return std::stol(std::string{s}); });
     if (!curWinStreak.has_value()) {
         throw errStr;
     }

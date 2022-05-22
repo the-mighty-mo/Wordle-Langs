@@ -8,32 +8,18 @@
 
 namespace wordle {
 
-char const *WordleGuessToString(WordleGuess guess)
-{
-    switch (guess) {
-    case WordleGuess::Correct:
-        return "G";
-    case WordleGuess::Present:
-        return "Y";
-    case WordleGuess::Incorrect:
-    default:
-        return "X";
-    }
-}
+WordleAnswer::WordleAnswer(std::string word) :
+    m_word{std::move(word)},
+    m_letterCounts{[&] {
+        std::array<uint8_t, 26> letterCounts{};
+        for (char c : m_word) {
+            ++letterCounts[c - 'A'];
+        }
+        return letterCounts;
+    }()}
+{}
 
-WordleAnswer::WordleAnswer(std::string word) : m_word{std::move(word)}
-{
-    for (char c : word) {
-        ++m_letterCounts[c - 'A'];
-    }
-}
-
-std::string const &WordleAnswer::GetWord() const
-{
-    return m_word;
-}
-
-std::array<WordleGuess, 5> WordleAnswer::CheckGuess(std::string const &guess) const
+std::array<WordleGuess, 5> WordleAnswer::CheckGuess(std::string_view guess) const
 {
     std::array<WordleGuess, 5> colors;
     colors.fill(WordleGuess::Incorrect);
