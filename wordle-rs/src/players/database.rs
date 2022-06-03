@@ -74,7 +74,7 @@ where
     #[must_use]
     pub fn from_line(line: &'a str, string_to_t: impl Fn(&'a str) -> T) -> Option<Self> {
         let split_str = line.split_once(DELIM);
-        split_str.map(|(key, value)| DatabaseEntry::new(key.into(), string_to_t(value)))
+        split_str.map(|(key, value)| Self::new(key.into(), string_to_t(value)))
     }
 
     /// Creates a simple database entry from a line of text where
@@ -110,7 +110,7 @@ where
         split_str
             .map(|(key, value)| {
                 let value = string_to_t(value)?;
-                Ok(DatabaseEntry::new(key.into(), value))
+                Ok(Self::new(key.into(), value))
             })
             .map_or(Ok(None), |r| r.map(Some))
     }
@@ -159,7 +159,7 @@ where
         parsed_row.map(|parsed_row| {
             let items = parsed_row.value.split(',').map(string_to_v).collect();
 
-            DatabaseEntry::new(parsed_row.name.into(), items)
+            Self::new(parsed_row.name.into(), items)
         })
     }
 
@@ -212,7 +212,7 @@ where
                     .map(string_to_v)
                     .collect::<Result<_, _>>()?;
 
-                Ok(DatabaseEntry::new(parsed_row.name.into(), items))
+                Ok(Self::new(parsed_row.name.into(), items))
             })
             .map_or(Ok(None), |r| r.map(Some))
     }

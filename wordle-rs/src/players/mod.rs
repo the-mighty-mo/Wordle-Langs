@@ -82,7 +82,7 @@ where
     #[inline]
     #[must_use]
     pub fn new(username: S) -> Self {
-        PlayerInfo::load(username, HashSet::new(), [0; 6], 0, 0)
+        Self::load(username, HashSet::new(), [0; 6], 0, 0)
     }
 
     /// Loads data for an existing player.
@@ -119,7 +119,7 @@ where
         max_win_streak: usize,
         cur_win_streak: usize,
     ) -> Self {
-        PlayerInfo {
+        Self {
             username,
             words_played,
             num_guesses,
@@ -375,7 +375,7 @@ impl PlayerInfo<String> {
             num_guesses
         };
 
-        let player = PlayerInfo::load(
+        let player = Self::load(
             username.value,
             words_played.value,
             num_guesses,

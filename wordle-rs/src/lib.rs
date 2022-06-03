@@ -31,9 +31,9 @@ pub enum WordleGuess {
 impl fmt::Display for WordleGuess {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            WordleGuess::Correct => write!(f, "G"),
-            WordleGuess::Present => write!(f, "Y"),
-            WordleGuess::Incorrect => write!(f, "X"),
+            Self::Correct => write!(f, "G"),
+            Self::Present => write!(f, "Y"),
+            Self::Incorrect => write!(f, "X"),
         }
     }
 }

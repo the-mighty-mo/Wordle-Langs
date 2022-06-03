@@ -42,10 +42,10 @@ impl TryFrom<isize> for UserSelection {
 
     fn try_from(v: isize) -> Result<Self, Self::Error> {
         match v {
-            x if x == UserSelection::PlayGame as isize => Ok(UserSelection::PlayGame),
-            x if x == UserSelection::ViewStats as isize => Ok(UserSelection::ViewStats),
-            x if x == UserSelection::LogOff as isize => Ok(UserSelection::LogOff),
-            x if x == UserSelection::DeleteUser as isize => Ok(UserSelection::DeleteUser),
+            x if x == Self::PlayGame as isize => Ok(Self::PlayGame),
+            x if x == Self::ViewStats as isize => Ok(Self::ViewStats),
+            x if x == Self::LogOff as isize => Ok(Self::LogOff),
+            x if x == Self::DeleteUser as isize => Ok(Self::DeleteUser),
             _ => Err(()),
         }
     }
