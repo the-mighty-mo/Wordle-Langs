@@ -47,13 +47,13 @@ public:
      * @param stringToT
      *        A function to convert a string ref to the target type
      */
-    static std::optional<BaseDatabaseEntry> FromLine(std::string_view line, std::function<T(std::string_view)> const &stringToT)
+    static std::optional<BaseDatabaseEntry<T>> FromLine(std::string_view line, std::function<T(std::string_view)> const &stringToT)
     {
         size_t delimIdx = line.find(DELIM);
         if (delimIdx == std::string_view::npos) {
             return std::nullopt;
         } else {
-            return std::optional{BaseDatabaseEntry{std::string{line.substr(0, delimIdx)}, stringToT(line.substr(delimIdx + 2, line.length()))}};
+            return std::optional{BaseDatabaseEntry<T>{std::string{line.substr(0, delimIdx)}, stringToT(line.substr(delimIdx + 2, line.length()))}};
         }
     }
 };
@@ -61,8 +61,7 @@ public:
 template <typename T>
 class DatabaseEntry : public BaseDatabaseEntry<T> {};
 
-template <>
-class DatabaseEntry<std::string> : public BaseDatabaseEntry<std::string> {};
+template class DatabaseEntry<std::string>;
 
 template <typename T>
 class DatabaseEntry<std::vector<T>> : public BaseDatabaseEntry<std::vector<T>> {
@@ -82,7 +81,7 @@ public:
      * @param stringToT
      *        A function to convert a string ref to the target type
      */
-    static std::optional<BaseDatabaseEntry> FromVector(std::string_view line, std::function<T(std::string_view)> const &stringToT)
+    static std::optional<BaseDatabaseEntry<std::vector<T>>> FromVector(std::string_view line, std::function<T(std::string_view)> const &stringToT)
     {
         auto parsedRow = DatabaseEntry<std::string_view>::FromLine(line, [](auto s) { return s; });
         if (!parsedRow.has_value()) {
@@ -97,12 +96,12 @@ public:
         vec.push_back(stringToT(parsedRow->value.substr(start, parsedRow->value.length())));
 
         return std::optional{
-                BaseDatabaseEntry{std::move(parsedRow->name), std::move(vec)}
+                BaseDatabaseEntry<std::vector<T>>{std::move(parsedRow->name), std::move(vec)}
             };
     }
 };
 
-template <template <typename...> typename S, typename T, typename... Us>
+template <template <typename...> class S, typename T, typename... Us>
 class DatabaseEntry<S<T, Us...>> : public BaseDatabaseEntry<S<T, Us...>> {
 public:
     /**
@@ -120,7 +119,7 @@ public:
      * @param stringToT
      *        A function to convert a string ref to the target type
      */
-    static std::optional<BaseDatabaseEntry> FromSet(std::string_view line, std::function<T(std::string_view)> const &stringToT)
+    static std::optional<BaseDatabaseEntry<S<T, Us...>>> FromSet(std::string_view line, std::function<T(std::string_view)> const &stringToT)
     {
         auto parsedRow = DatabaseEntry<std::string_view>::FromLine(line, [](auto s) { return s; });
         if (!parsedRow.has_value()) {
@@ -135,7 +134,7 @@ public:
         set.insert(stringToT(parsedRow->value.substr(start, parsedRow->value.length())));
 
         return std::optional{
-                BaseDatabaseEntry{std::move(parsedRow->name), std::move(set)}
+                BaseDatabaseEntry<S<T, Us...>>{std::move(parsedRow->name), std::move(set)}
             };
     }
 };

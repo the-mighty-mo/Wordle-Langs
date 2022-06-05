@@ -23,4 +23,4 @@ This repository contains command-line implementations of Wordle in various progr
   - To build on Windows, in a Developer Command Prompt from the WordleCpp folder:  
     `mkdir build\obj & cl /EHsc /std:c++17 /O2 src/*.cpp src/console_app/*.cpp src/players/*.cpp /Iinclude/ /Fobuild/obj/ /Febuild/WordleCpp`
   - To build on Linux, from the WordleCpp folder:  
-    `g++ -O2 -std=gnu++17 -o WordleCpp src/*.cpp src/**/*.cpp -Iinclude; strip -s -R .comment -w -R .note* WordleCpp`
+    `g++ -O2 -std=gnu++17 -fpermissive -o WordleCpp src/*.cpp src/**/*.cpp -Iinclude; strip -s -R .comment -w -R .note* WordleCpp`

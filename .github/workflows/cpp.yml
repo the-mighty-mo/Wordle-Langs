@@ -14,5 +14,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: build
-      run: g++ -O2 -std=gnu++17 -o WordleCpp src/*.cpp src/**/*.cpp -Iinclude
+      run: g++ -O3 -std=gnu++17 -fpermissive -o WordleCpp src/*.cpp src/**/*.cpp -Iinclude
       working-directory: WordleCpp
