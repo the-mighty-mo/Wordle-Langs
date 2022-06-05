@@ -14,5 +14,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: build
-      run: gcc -O2 -std=gnu11 -o CWordle src/c/*.c src/c/**/*.c -Isrc/include -lm
+      run: gcc -O2 -std=gnu11 -o CWordle src/*.c src/**/*.c -Iinclude -lm
       working-directory: CWordle

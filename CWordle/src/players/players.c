@@ -148,7 +148,7 @@ string_t player_info_get_stats(player_info_t const *player_info)
     string_t string = string_with_capacity(64);
 
     string_push_str(&string, "Number of Words Played: ");
-    snprintf(tmp, sizeof(tmp) - 1, "%ld", player_info->words_played.len);
+    snprintf(tmp, sizeof(tmp) - 1, "%zd", player_info->words_played.len);
     string_push_str(&string, tmp);
 
     memset(tmp, 0, sizeof(tmp));

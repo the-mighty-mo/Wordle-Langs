@@ -3,7 +3,6 @@
 #include <functional>
 #include <optional>
 #include <string>
-#include <unordered_set>
 #include <vector>
 
 namespace players {
@@ -15,12 +14,13 @@ namespace players {
  * of the field, and the value of the data.
  */
 template <typename T>
-class DatabaseEntry {
+class BaseDatabaseEntry {
+private:
+    static constexpr char const *DELIM = ": ";
+
 public:
     std::string const name;
     T const value;
-
-    static constexpr char const *DELIM = ": ";
 
     /**
      * Creates a new database entry with the given name and value.
@@ -30,7 +30,7 @@ public:
      * @param value
      *        The value stored in the field
      */
-    DatabaseEntry(std::string name, T value) :
+    BaseDatabaseEntry(std::string name, T value) :
         name{std::move(name)},
         value{std::move(value)}
     {}
@@ -47,16 +47,26 @@ public:
      * @param stringToT
      *        A function to convert a string ref to the target type
      */
-    static std::optional<DatabaseEntry<T>> FromLine(std::string_view line, std::function<T(std::string_view)> const &stringToT)
+    static std::optional<BaseDatabaseEntry> FromLine(std::string_view line, std::function<T(std::string_view)> const &stringToT)
     {
         size_t delimIdx = line.find(DELIM);
         if (delimIdx == std::string_view::npos) {
             return std::nullopt;
         } else {
-            return std::optional{DatabaseEntry{std::string{line.substr(0, delimIdx)}, stringToT(line.substr(delimIdx + 2, line.length()))}};
+            return std::optional{BaseDatabaseEntry{std::string{line.substr(0, delimIdx)}, stringToT(line.substr(delimIdx + 2, line.length()))}};
         }
     }
+};
 
+template <typename T>
+class DatabaseEntry : public BaseDatabaseEntry<T> {};
+
+template <>
+class DatabaseEntry<std::string> : public BaseDatabaseEntry<std::string> {};
+
+template <typename T>
+class DatabaseEntry<std::vector<T>> : public BaseDatabaseEntry<std::vector<T>> {
+public:
     /**
      * Creates a database entry from a line of text where
      * the data field is a vector of elements.
@@ -72,7 +82,7 @@ public:
      * @param stringToT
      *        A function to convert a string ref to the target type
      */
-    static std::optional<DatabaseEntry<std::vector<T>>> FromVector(std::string_view line, std::function<T(std::string_view)> const &stringToT)
+    static std::optional<BaseDatabaseEntry> FromVector(std::string_view line, std::function<T(std::string_view)> const &stringToT)
     {
         auto parsedRow = DatabaseEntry<std::string_view>::FromLine(line, [](auto s) { return s; });
         if (!parsedRow.has_value()) {
@@ -80,17 +90,21 @@ public:
         }
 
         std::vector<T> vec;
-        int start, end;
+        size_t start, end;
         for (start = 0, end = 0; (end = parsedRow->value.find(",", start)) != std::string_view::npos; start = end + 1) {
             vec.push_back(stringToT(parsedRow->value.substr(start, end)));
         }
         vec.push_back(stringToT(parsedRow->value.substr(start, parsedRow->value.length())));
 
         return std::optional{
-                DatabaseEntry<std::vector<T>>{std::move(parsedRow->name), std::move(vec)}
+                BaseDatabaseEntry{std::move(parsedRow->name), std::move(vec)}
             };
     }
+};
 
+template <template <typename...> typename S, typename T, typename... Us>
+class DatabaseEntry<S<T, Us...>> : public BaseDatabaseEntry<S<T, Us...>> {
+public:
     /**
      * Creates a database entry from a line of text where
      * the data field is a set of elements.
@@ -106,8 +120,7 @@ public:
      * @param stringToT
      *        A function to convert a string ref to the target type
      */
-    template <template <typename V> typename S>
-    static std::optional<DatabaseEntry<S<T>>> FromSet(std::string_view line, std::function<T(std::string_view)> const &stringToT)
+    static std::optional<BaseDatabaseEntry> FromSet(std::string_view line, std::function<T(std::string_view)> const &stringToT)
     {
         auto parsedRow = DatabaseEntry<std::string_view>::FromLine(line, [](auto s) { return s; });
         if (!parsedRow.has_value()) {
@@ -115,14 +128,14 @@ public:
         }
 
         S<T> set;
-        int start, end;
+        size_t start, end;
         for (start = 0, end = 0; (end = parsedRow->value.find(",", start)) != std::string_view::npos; start = end + 1) {
             set.insert(stringToT(parsedRow->value.substr(start, end)));
         }
         set.insert(stringToT(parsedRow->value.substr(start, parsedRow->value.length())));
 
         return std::optional{
-                DatabaseEntry<std::unordered_set<T>>{std::move(parsedRow->name), std::move(set)}
+                BaseDatabaseEntry{std::move(parsedRow->name), std::move(set)}
             };
     }
 };

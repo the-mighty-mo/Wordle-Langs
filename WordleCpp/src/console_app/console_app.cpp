@@ -44,7 +44,7 @@ static int SaveUsernames(std::set<std::string> &usernames, std::string const &fi
 
 void RunConsoleApp(std::unordered_set<std::string> const &dictionary, std::set<std::string> &usernames)
 {
-    srand(time(NULL));
+    srand((uint32_t)time(NULL));
 
     ProgramState state = ProgramState::LogIn;
     uint8_t runProgram = 1;

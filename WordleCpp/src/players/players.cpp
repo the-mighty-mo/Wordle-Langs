@@ -76,9 +76,14 @@ std::string PlayerInfo::ToString() const
         playerStr << std::endl;
     }
 
-    playerStr << "Number of Guesses: "
-        << std::accumulate(m_numGuesses.begin(), m_numGuesses.end(), 0, std::plus<uint32_t>())
-        << std::endl;
+    playerStr << "Number of Guesses: ";
+    for (size_t i = 0; i < m_numGuesses.size(); ++i) {
+        if (i != 0) {
+            playerStr << ",";
+        }
+        playerStr << m_numGuesses[i];
+    }
+    playerStr << std::endl;
 
     playerStr << "Maximum Win Streak: " << m_maxWinStreak << std::endl;
     playerStr << "Current Win Streak: " << m_curWinStreak << std::endl;
@@ -153,7 +158,7 @@ int PlayerInfo::WriteToFile(std::string const &filename) const
     if (!std::getline(file, line)) {
         throw errStr;
     }
-    auto wordsPlayed = DatabaseEntry<std::string>::FromSet<std::unordered_set>(line, [](auto s) { return std::string{s}; });
+    auto wordsPlayed = DatabaseEntry<std::unordered_set<std::string>>::FromSet(line, [](auto s) { return std::string{s}; });
     if (!wordsPlayed.has_value()) {
         throw errStr;
     }
@@ -161,7 +166,7 @@ int PlayerInfo::WriteToFile(std::string const &filename) const
     if (!std::getline(file, line)) {
         throw errStr;
     }
-    auto numGuessesList = DatabaseEntry<uint32_t>::FromVector(line, [](auto s) { return std::stol(std::string{s}); });
+    auto numGuessesList = DatabaseEntry<std::vector<uint32_t>>::FromVector(line, [](auto s) { return std::stol(std::string{s}); });
     if (!numGuessesList.has_value()) {
         throw errStr;
     }
