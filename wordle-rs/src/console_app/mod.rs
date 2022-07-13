@@ -93,7 +93,7 @@ pub fn run(
                 /* remove the current player from the databse */
                 let username = current_player.get_username();
                 usernames.remove(username);
-                _ = fs::remove_file(username.to_owned() + ".txt").is_err();
+                _ = fs::remove_file(username.to_owned() + ".txt");
 
                 /* save the username database */
                 if save_usernames(usernames, USERNAMES_FILENAME).is_err() {
