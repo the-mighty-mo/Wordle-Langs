@@ -1,4 +1,5 @@
-﻿using Wordle_CS.ConsoleApp;
+﻿using Wordle_CS;
+using Wordle_CS.ConsoleApp;
 
 if (args.Length != 1)
 {
