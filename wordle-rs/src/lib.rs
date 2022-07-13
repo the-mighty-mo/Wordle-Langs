@@ -96,9 +96,9 @@ where
     #[must_use]
     pub fn new(word: S) -> Self {
         let mut letter_counts = [0; 26];
-        word.borrow()
-            .chars()
-            .for_each(|c| letter_counts[c as usize - 'A' as usize] += 1);
+        for c in word.borrow().chars() {
+            letter_counts[c as usize - 'A' as usize] += 1;
+        }
         Self {
             word,
             letter_counts,
@@ -169,20 +169,26 @@ where
         let mut letter_counts = self.letter_counts;
 
         /* first check for green letters */
-        for (i, (a, g)) in self.word.borrow().chars().zip(guess.chars()).enumerate() {
+        for ((a, g), color) in self
+            .word
+            .borrow()
+            .chars()
+            .zip(guess.chars())
+            .zip(colors.iter_mut())
+        {
             if a == g {
                 letter_counts[g as usize - 'A' as usize] -= 1;
-                colors[i] = WordleGuess::Correct;
+                *color = WordleGuess::Correct;
             }
         }
 
         /* then check for yellow letters */
-        for (i, g) in guess.chars().enumerate() {
-            if colors[i] == WordleGuess::Incorrect {
+        for (g, color) in guess.chars().zip(colors.iter_mut()) {
+            if *color == WordleGuess::Incorrect {
                 /* letter has not yet been checked */
                 if letter_counts[g as usize - 'A' as usize] > 0 {
                     /* letter in word but not this position */
-                    colors[i] = WordleGuess::Present;
+                    *color = WordleGuess::Present;
                     letter_counts[g as usize - 'A' as usize] -= 1;
                 }
             }
