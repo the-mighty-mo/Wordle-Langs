@@ -1,7 +1,24 @@
 ﻿namespace Wordle_CS.ConsoleApp;
 
+/// <summary>
+/// Provides methods to run a game of Wordle in a console application.
+/// </summary>
 public static class Game
 {
+    /// <summary>
+    /// Runs a game of Wordle.
+    /// <para/>
+    /// This function manages all user input and output using
+    /// stdin and stdout, respectively, as well as all six
+    /// guesses.The function ends after the user has guessed
+    /// the answer or used all six guesses, whichever is first.
+    /// <para/>
+    /// At the start of the game, a message is printed with
+    /// instructions for the player.
+    /// </summary>
+    /// <param name="answer">The answer to the game of Wordle</param>
+    /// <param name="player">The player playing the game</param>
+    /// <param name="dictionary">A dictionary of valid Wordle guesses</param>
     public static void Run(WordleAnswer answer, Players.PlayerInfo player, HashSet<string> dictionary)
     {
         Console.WriteLine("Guess the 5-letter word in 6 or fewer guesses.");

@@ -1,20 +1,33 @@
 ﻿namespace Wordle_CS;
 
+/// <summary>
+/// Possible guess results for a letter in a game of Wordle
+/// </summary>
 public enum WordleGuess
 {
+    /// <summary>
     /// Green ("G"), the letter is in the word at that position
+    /// </summary>
     Correct,
+    /// <summary>
     /// Yellow ("Y"), the letter is in the word, but not at that position
+    /// </summary>
     Present,
+    /// <summary>
     /// Gray ("X"), there are no more instances of the letter in the word
+    /// </summary>
     Incorrect,
 }
 
+/// <summary>
+/// Extension methods for the WordleGuess enum
+/// </summary>
 public static class WordleGuessExtensions
 {
     /// <summary>
-    /// Returns a string representation of a Wordle guess.
+    /// Returns the string representation of a Wordle guess.
     /// </summary>
+    /// <param name="guess">The Wordle guess</param>
     public static string ToStr(this WordleGuess guess) => guess switch
     {
         WordleGuess.Correct => "G",
@@ -24,6 +37,13 @@ public static class WordleGuessExtensions
     };
 }
 
+/// <summary>
+/// Manages information about an answer to a game of Wordle.
+/// <para/>
+/// A game of Wordle has a target word. The guessing algorithm
+/// uses preprocessing so it can run in linear time. This results
+/// in an array containing the counts of each letter.
+/// </summary>
 public class WordleAnswer
 {
     public string Word { get; init; }
@@ -44,10 +64,10 @@ public class WordleAnswer
 
     /// <summary>
     /// Calculates the correctness of a guess.
-    /// <br/>
+    /// <para/>
     /// This function returns an array containing the correctness
     /// of each letter of the guess.
-    /// <br/>
+    /// <para/>
     /// It is important to note that the sum of Correct and Present
     /// instances for a given letter cannot exceed the total number
     /// of instances of the letter in the answer. Additionally,
@@ -87,6 +107,15 @@ public class WordleAnswer
         return colors;
     }
 
+    /// <summary>
+    /// Contains all the possible messages
+    /// for a won game of Wordle.
+    /// <para/>
+    /// If the user guessed the word in n
+    /// guesses(starting at 1), then
+    /// WIN_MESSAGES[n - 1] is the message
+    /// that should be displayed.
+    /// </summary>
     public static readonly string[] WORDLE_WIN_MESSAGES = new string[]
     {
         "Genius",

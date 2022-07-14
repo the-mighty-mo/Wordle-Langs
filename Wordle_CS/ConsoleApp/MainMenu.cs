@@ -2,32 +2,74 @@
 
 namespace Wordle_CS.ConsoleApp;
 
+/// <summary>
+/// Possible states of the main Wordle program.
+/// </summary>
 public enum ProgramState
 {
+    /// <summary>
     /// Request the user's login information
+    /// </summary>
     LogIn,
+    /// <summary>
     /// Run the main menu
+    /// </summary>
     MainMenu,
+    /// <summary>
     /// Delete the current user
+    /// </summary>
     DeleteUser,
+    /// <summary>
     /// Exit the program
+    /// </summary>
     Exit,
 }
 
+/// <summary>
+/// Possible selections in the main menu.
+/// </summary>
 enum UserSelection
 {
+    /// <summary>
     /// Play a game of Wordle
+    /// </summary>
     PlayGame = 1,
+    /// <summary>
     /// View the current player's statistics
+    /// </summary>
     ViewStats,
+    /// <summary>
     /// Log off
+    /// </summary>
     LogOff,
+    /// <summary>
     /// Delete the current user
+    /// </summary>
     DeleteUser,
 }
 
+/// <summary>
+/// Provides methods to manage the main menu of the Wordle
+/// program, such as user login and running the game.
+/// </summary>
 public class MainMenu
 {
+    /// <summary>
+    /// Requests a user to enter their login information.
+    /// <para/>
+    /// The user may choose to quit the program (or forcibly
+    /// quit using Ctrl-C), in which case this function returns
+    /// None. Otherwise, this function returns information
+    /// about the player.
+    /// <para/>
+    /// If the user does not yet exist in the given databse,
+    /// they will be added to it.
+    /// </summary>
+    /// <param name="usernames">A set of existing usernames</param>
+    /// <returns>
+    /// Information about the player, or <see langword="null"/> if the program
+    /// should exit (either by user request or a database error)
+    /// </returns>
     public static PlayerInfo? RequestUserLogin(SortedSet<string> usernames)
     {
         var username = RequestUsername(usernames);
@@ -39,7 +81,7 @@ public class MainMenu
         PlayerInfo? playerInfo;
         try
         {
-            playerInfo = PlayerInfo.FromFile($"{username}.txt");
+            playerInfo = PlayerInfo.CreateFromFile($"{username}.txt");
         }
         catch (IOException e)
         {
@@ -53,6 +95,21 @@ public class MainMenu
         return player;
     }
 
+    /// <summary>
+    /// Requests a user to enter their username.
+    /// <para/>
+    /// The user may choose to quit the program (or forcibly
+    /// quit using Ctrl-C), in which case this function returns
+    /// a nullopt.
+    /// <para/>
+    /// If the user does not yet exist in the given database,
+    /// they will be added to it.
+    /// </summary>
+    /// <param name="usernames">A set of existing usernames</param>
+    /// <returns>
+    /// The player's username, or <see langword="null"/> if the program should
+    /// exit (either by user request or a database error)
+    /// </returns>
     private static string? RequestUsername(SortedSet<string> usernames)
     {
         if (usernames.Count != 0)
@@ -80,6 +137,25 @@ public class MainMenu
         return username;
     }
 
+    /// <summary>
+    /// Runs the Wordle main menu.
+    /// <para/>
+    /// The main menu gives the player four options:
+    /// <list type="bullet">
+    ///     <item>Play a game of Wordle</item>
+    ///     <item>View their statistics</item>
+    ///     <item>Log out</item>
+    ///     <item>Delete their account</item>
+    /// </list>
+    /// <para/>
+    /// This function lets the caller know what the next
+    /// state of the program should be. For example, if
+    /// the user has logged off, the main program should
+    /// return to the login screen.
+    /// </summary>
+    /// <param name="currentPlayer">The logged-in player</param>
+    /// <param name="dictionary">A dictionary of valid Wordle words</param>
+    /// <returns></returns>
     public static ProgramState Run(PlayerInfo currentPlayer, HashSet<string> dictionary)
     {
         var userSelection = RequestUserSelection();
@@ -131,6 +207,21 @@ public class MainMenu
         return ProgramState.MainMenu;
     }
 
+    /// <summary>
+    /// Requests a user to input their selection.
+    /// <para/>
+    /// This function gives the player four options:
+    /// <list type="bullet">
+    ///     <item>Play a game of Wordle</item>
+    ///     <item>View their statistics</item>
+    ///     <item>Log out</item>
+    ///     <item>Delete their account</item>
+    /// </list>
+    /// <para/>
+    /// The user can terminate the program early using Ctrl-C,
+    /// in which case this function returns a nullopt.
+    /// </summary>
+    /// <returns>The user selection, or <see langword="null"/> if none was given</returns>
     private static UserSelection? RequestUserSelection()
     {
         Console.WriteLine();
