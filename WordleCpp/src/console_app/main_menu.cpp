@@ -3,8 +3,8 @@
  * Author: Benjamin Hall
  */
 
-#include "console_app/main_menu.h"
-#include "console_app/game.h"
+#include "console_app/main_menu.hpp"
+#include "console_app/game.hpp"
 
 #include <algorithm>
 #include <iostream>

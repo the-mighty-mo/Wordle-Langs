@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include "wordle.h"
-#include "players/players.h"
+#include "wordle.hpp"
+#include "players/players.hpp"
 
 namespace console_app {
 namespace game {

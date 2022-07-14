@@ -3,7 +3,7 @@
  * Author: Benjamin Hall
  */
 
-#include "console_app/console_app.h"
+#include "console_app/console_app.hpp"
 
 #include <algorithm>
 #include <fstream>

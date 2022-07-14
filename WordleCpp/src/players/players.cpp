@@ -3,8 +3,8 @@
  * Author: Benjamin Hall
  */
 
-#include "players/players.h"
-#include "players/database.h"
+#include "players/players.hpp"
+#include "players/database.hpp"
 
 #include <algorithm>
 #include <cmath>

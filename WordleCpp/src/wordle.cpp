@@ -3,7 +3,7 @@
  * Author: Benjamin Hall
  */
 
-#include "wordle.h"
+#include "wordle.hpp"
 #include <algorithm>
 
 namespace wordle {
