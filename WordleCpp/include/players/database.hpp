@@ -61,7 +61,7 @@ public:
 template <typename T>
 class DatabaseEntry : public BaseDatabaseEntry<T> {};
 
-template class DatabaseEntry<std::string>;
+template<> class DatabaseEntry<std::string> : public BaseDatabaseEntry<std::string> {};
 
 template <typename T>
 class DatabaseEntry<std::vector<T>> : public BaseDatabaseEntry<std::vector<T>> {
