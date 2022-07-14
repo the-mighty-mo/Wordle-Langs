@@ -5,6 +5,7 @@
 [![Rust](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/rust.yml/badge.svg)](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/rust.yml)
 [![C](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/c.yml/badge.svg)](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/c.yml)
 [![C++](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/cpp.yml/badge.svg)](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/cpp.yml)
+[![C#](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/c%23.yml/badge.svg)](https://github.com/the-mighty-mo/Wordle-Langs/actions/workflows/c%23.yml)
 
 This repository contains command-line implementations of Wordle in various programming languages.
 
@@ -24,3 +25,6 @@ This repository contains command-line implementations of Wordle in various progr
     `mkdir build\obj & cl /EHsc /std:c++17 /O2 src/*.cpp src/console_app/*.cpp src/players/*.cpp /Iinclude/ /Fobuild/obj/ /Febuild/WordleCpp`
   - To build on Linux, from the WordleCpp folder:  
     `g++ -O2 -std=gnu++17 -fpermissive -o WordleCpp src/*.cpp src/**/*.cpp -Iinclude; strip -s -R .comment -w -R .note* WordleCpp`
+- Wordle_CS - C#, .NET 6
+  - To build, from the Wordle_CS folder:  
+    `dotnet build -c Release`
