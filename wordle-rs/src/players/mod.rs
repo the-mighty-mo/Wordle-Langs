@@ -171,7 +171,11 @@ where
     ) -> &'a str {
         let unplayed_words_cnt = dictionary.len() - self.words_played.len();
         let random_word_idx = fastrand::usize(0..unplayed_words_cnt);
-        dictionary.iter().nth(random_word_idx).unwrap()
+        dictionary
+            .iter()
+            .filter(|w| !self.words_played.contains(*w))
+            .nth(random_word_idx)
+            .unwrap()
     }
 
     /// Adds a word the player has successfully guessed to their database.

@@ -37,8 +37,17 @@ std::string const &PlayerInfo::GetRandomWord(std::unordered_set<std::string> con
     size_t randomWordIdx = rand() % unplayedWords;
 
     auto iter = dictionary.begin();
-    for (int i = 0; i < randomWordIdx; ++i) {
-        ++iter;
+    for (size_t i = 0; i < dictionary.size(); ++i) {
+        if (i > 0) {
+            ++iter;
+        }
+        while (m_wordsPlayed.find(*iter) != m_wordsPlayed.end()) {
+            ++iter;
+        }
+
+        if (i == unplayedWords) {
+            break;
+        }
     }
     return *iter;
 }

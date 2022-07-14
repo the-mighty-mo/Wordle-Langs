@@ -1,6 +1,6 @@
 [package]
 name = "wordle-rs"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["Benjamin Hall <hallb1016@gmail.com>"]
 edition = "2021"
 

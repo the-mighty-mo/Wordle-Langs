@@ -55,8 +55,11 @@ string_t player_info_get_random_word(player_info_t const *player_info, hashset_t
     size_t random_word_idx = rand() % unplayed_words;
 
     string_t const *random_word = NULL;
-    for (int i = 0; i < dictionary->len; ++i) {
-        random_word = hashset_get_next(dictionary, random_word);
+    for (size_t i = 0; i < dictionary->len; ++i) {
+        do {
+            random_word = hashset_get_next(dictionary, random_word);
+        } while (hashset_contains(&player_info->words_played, random_word));
+
         if (i == random_word_idx) {
             break;
         }

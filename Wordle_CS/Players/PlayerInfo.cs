@@ -63,7 +63,7 @@ public class PlayerInfo
     {
         var unplayedWordsCnt = dictionary.Count - wordsPlayed.Count;
         var randomWordIdx = rnd.Next(0, unplayedWordsCnt);
-        return dictionary.Skip(randomWordIdx).First();
+        return dictionary.Where(w => !wordsPlayed.Contains(w)).Skip(randomWordIdx).First();
     }
 
     /// <summary>
