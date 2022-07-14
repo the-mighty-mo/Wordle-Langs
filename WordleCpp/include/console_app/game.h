@@ -34,7 +34,7 @@ using wordle::WordleAnswer;
  * @return
  *        -1 if there was an error
  */
-int RunGame(WordleAnswer const &answer, PlayerInfo &player, std::unordered_set<std::string> const &dictionary);
+int Run(WordleAnswer const &answer, PlayerInfo &player, std::unordered_set<std::string> const &dictionary);
 
 }
 }

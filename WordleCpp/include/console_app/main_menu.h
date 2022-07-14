@@ -72,7 +72,7 @@ std::optional<PlayerInfo> RequestUserLogin(std::set<std::string> &usernames);
  * @param dictionary
  *        A dictionary of valid Wordle words
  */
-ProgramState RunMenu(PlayerInfo &currentPlayer, std::unordered_set<std::string> const &dictionary);
+ProgramState Run(PlayerInfo &currentPlayer, std::unordered_set<std::string> const &dictionary);
 
 }
 }

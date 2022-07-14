@@ -42,7 +42,7 @@ static int SaveUsernames(std::set<std::string> &usernames, std::string const &fi
     return 0;
 }
 
-void RunConsoleApp(std::unordered_set<std::string> const &dictionary, std::set<std::string> &usernames)
+void Run(std::unordered_set<std::string> const &dictionary, std::set<std::string> &usernames)
 {
     srand((uint32_t)time(NULL));
 
@@ -72,7 +72,7 @@ void RunConsoleApp(std::unordered_set<std::string> const &dictionary, std::set<s
         break;
         case ProgramState::MainMenu:
         {
-            state = main_menu::RunMenu(*currentPlayer, dictionary);
+            state = main_menu::Run(*currentPlayer, dictionary);
         }
         break;
         case ProgramState::DeleteUser:

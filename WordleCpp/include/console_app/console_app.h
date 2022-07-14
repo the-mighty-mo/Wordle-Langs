@@ -28,6 +28,6 @@ static constexpr char const *USERNAMES_FILENAME = "users.txt";
  * @param usernames
  *        A set of existing usernames
  */
-void RunConsoleApp(std::unordered_set<std::string> const &dictionary, std::set<std::string> &usernames);
+void Run(std::unordered_set<std::string> const &dictionary, std::set<std::string> &usernames);
 
 }

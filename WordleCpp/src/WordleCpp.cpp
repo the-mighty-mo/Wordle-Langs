@@ -74,7 +74,7 @@ int main(int argc, char **argv)
     usernamesFile.close();
 
     /* run the main program */
-    console_app::RunConsoleApp(dictionary, usernames);
+    console_app::Run(dictionary, usernames);
 
     return 0;
 }

@@ -14,7 +14,7 @@ namespace game {
 using wordle::WordleGuess;
 using wordle::WORDLE_WIN_MESSAGES;
 
-int RunGame(WordleAnswer const &answer, PlayerInfo &player, std::unordered_set<std::string> const &dictionary)
+int Run(WordleAnswer const &answer, PlayerInfo &player, std::unordered_set<std::string> const &dictionary)
 {
     printf("Guess the 5-letter word in 6 or fewer guesses.\n");
     printf("After each guess, each letter will be given a color:\n");

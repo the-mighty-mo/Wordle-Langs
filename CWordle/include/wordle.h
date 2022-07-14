@@ -35,7 +35,7 @@ char const *wordle_guess_to_str(WordleGuess guess);
 
 /**
  * Stores information about an answer to a game of Wordle.
- * A game of Worlde has a target word. The guessing algorithm
+ * A game of Wordle has a target word. The guessing algorithm
  * uses preprocessing so it can run in linear time. This results
  * in an array containing the counts of each letter.
  */

@@ -167,7 +167,7 @@ static std::optional<UserSelection> RequestUserSelection()
     return userSelection;
 }
 
-ProgramState RunMenu(PlayerInfo &currentPlayer, std::unordered_set<std::string> const &dictionary)
+ProgramState Run(PlayerInfo &currentPlayer, std::unordered_set<std::string> const &dictionary)
 {
     ProgramState nextState = ProgramState::MainMenu;
 
@@ -182,7 +182,7 @@ ProgramState RunMenu(PlayerInfo &currentPlayer, std::unordered_set<std::string> 
     {
         /* run a game of Wordle */
         WordleAnswer answer{currentPlayer.GetRandomWord(dictionary)};
-        if (game::RunGame(answer, currentPlayer, dictionary) != 0) {
+        if (game::Run(answer, currentPlayer, dictionary) != 0) {
             nextState = ProgramState::Exit;
             break;
         }
