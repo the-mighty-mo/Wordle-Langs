@@ -79,6 +79,7 @@ impl TryFrom<isize> for UserSelection {
 ///     None => { /* exit program */ }
 /// }
 /// ```
+#[must_use]
 pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo<String>> {
     let username = match request_username(usernames) {
         Some(username) => username,
@@ -130,6 +131,7 @@ pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo
 ///     None => { /* exit program */ }
 /// }
 /// ```
+#[must_use]
 fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
     {
         let mut lock = io::stdout().lock();
@@ -288,6 +290,7 @@ pub fn run(
 ///     None => { /* exit program */ }
 /// }
 /// ```
+#[must_use]
 fn request_user_selection() -> Option<UserSelection> {
     {
         let mut lock = io::stdout().lock();

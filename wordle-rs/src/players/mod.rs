@@ -8,11 +8,10 @@
 //!
 //! Author: Benjamin Hall
 
-use core::fmt;
 use std::{
     borrow::Borrow,
     collections::HashSet,
-    fmt::Write,
+    fmt::{self, Write},
     fs::File,
     io::{self, BufReader, BufWriter, Read},
 };
@@ -193,6 +192,7 @@ where
     /// // player got TRACE in 3 guesses
     /// player.add_won_word(String::from("TRACE"), 3);
     /// ```
+    #[inline]
     pub fn add_won_word(&mut self, word: String, num_guesses: usize) {
         self.words_played.insert(word);
         self.num_guesses[num_guesses - 1] += 1;
@@ -215,6 +215,7 @@ where
     /// // player could not guess BEBOP within 6 guesses
     /// player.add_lost_word(String::from("BEBOP"));
     /// ```
+    #[inline]
     pub fn add_lost_word(&mut self, word: String) {
         self.words_played.insert(word);
         self.cur_win_streak = 0;
