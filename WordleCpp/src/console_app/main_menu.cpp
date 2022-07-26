@@ -181,17 +181,23 @@ ProgramState Run(PlayerInfo &currentPlayer, std::unordered_set<std::string> cons
     case UserSelection::PlayGame:
     {
         /* run a game of Wordle */
-        WordleAnswer answer{currentPlayer.GetRandomWord(dictionary)};
-        if (game::Run(answer, currentPlayer, dictionary) != 0) {
-            nextState = ProgramState::Exit;
-            break;
-        }
-        /* print the player's statistics after the game ends */
-        printf("%s\n", currentPlayer.GetStats().c_str());
-        /* save the user's new statistics to their database */
-        if (currentPlayer.WriteToFile(currentPlayer.GetUsername() + ".txt") != 0) {
-            /* report that we could not write to the database, but do not exit */
-            printf("Error: could not write to user database file, progress has not been saved\n");
+        auto randWord = currentPlayer.GetRandomWord(dictionary);
+        if (randWord) {
+            WordleAnswer answer{*randWord};
+            if (game::Run(answer, currentPlayer, dictionary) != 0) {
+                nextState = ProgramState::Exit;
+                break;
+            }
+            /* print the player's statistics after the game ends */
+            printf("%s\n", currentPlayer.GetStats().c_str());
+            /* save the user's new statistics to their database */
+            if (currentPlayer.WriteToFile(currentPlayer.GetUsername() + ".txt") != 0) {
+                /* report that we could not write to the database, but do not exit */
+                printf("Error: could not write to user database file, progress has not been saved\n");
+            }
+        } else {
+            /* couldn't get a word, player has already played every word */
+            printf("There are no remaining words in the dictionary.\n");
         }
     }
     break;

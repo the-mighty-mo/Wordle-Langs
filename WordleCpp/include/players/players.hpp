@@ -72,7 +72,7 @@ public:
      * @param dictionary
      *        The dictionary from which to find a word
      */
-    std::string const &GetRandomWord(std::unordered_set<std::string> const &dictionary) const;
+    std::string const *GetRandomWord(std::unordered_set<std::string> const &dictionary) const;
 
     /**
      * Adds a word the player has successfully guessed to their database.

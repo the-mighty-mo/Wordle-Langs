@@ -157,17 +157,23 @@ public class WordleMainMenu {
         switch (userSelection) {
         case PlayGame:
             /* run a game of Wordle */
-            Wordle wordle = new Wordle(currentPlayer.getRandomWord(dictionary));
-            wordle.run(_reader, currentPlayer, dictionary);
-            /* print the player's statistics after the game ends */
-            System.out.println(currentPlayer.getStats());
-            /* save the user's new statistics to their database */
-            try {
-                currentPlayer.writeToFile(currentPlayer.getUsername() + ".txt");
-            } catch (IOException e) {
-                /* report that we could not write to the database, but do not exit */
-                System.err.println("Error: could not write to user database file," +
-                    "progress has not been saved");
+            String answer = currentPlayer.getRandomWord(dictionary);
+            if (answer != null) {
+                Wordle wordle = new Wordle(answer);
+                wordle.run(_reader, currentPlayer, dictionary);
+                /* print the player's statistics after the game ends */
+                System.out.println(currentPlayer.getStats());
+                /* save the user's new statistics to their database */
+                try {
+                    currentPlayer.writeToFile(currentPlayer.getUsername() + ".txt");
+                } catch (IOException e) {
+                    /* report that we could not write to the database, but do not exit */
+                    System.err.println("Error: could not write to user database file," +
+                        "progress has not been saved");
+                }
+            } else {
+                /* couldn't get a word, player has already played every word */
+                System.out.println("There are no remaining words in the dictionary.");
             }
             break;
 

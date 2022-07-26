@@ -185,34 +185,40 @@ ProgramState run_menu(player_info_t *current_player, hashset_t const *dictionary
     case PlayGame:
     {
         /* run a game of Wordle */
-        wordle_answer_t answer = wordle_answer_new(player_info_get_random_word(current_player, dictionary));
-        int retval = run_game(&answer, current_player, dictionary);
-        wordle_answer_drop(&answer);
+        string_t const *rand_word = player_info_get_random_word(current_player, dictionary);
+        if (rand_word) {
+            wordle_answer_t answer = wordle_answer_new(string_clone(rand_word));
+            int retval = run_game(&answer, current_player, dictionary);
+            wordle_answer_drop(&answer);
 
-        if (retval != 0) {
-            next_state = Exit;
-            break;
-        }
+            if (retval != 0) {
+                next_state = Exit;
+                break;
+            }
 
-        /* print the player's statistics after the game ends */
-        string_t stats = player_info_get_stats(current_player);
-        printf("%s\n", stats.buf);
-        string_drop(&stats);
+            /* print the player's statistics after the game ends */
+            string_t stats = player_info_get_stats(current_player);
+            printf("%s\n", stats.buf);
+            string_drop(&stats);
 
-        /* save the user's new statistics to their database */
-        string_t filename = string_clone(&current_player->username);
-        string_push_str(&filename, ".txt");
-        FILE *player_file = fopen(filename.buf, "w");
-        if (player_file == NULL) {
-            /* report that we could not write to the database, but do not exit */
-            printf("Error: could not write to user database file, progress has not been saved\n");
+            /* save the user's new statistics to their database */
+            string_t filename = string_clone(&current_player->username);
+            string_push_str(&filename, ".txt");
+            FILE *player_file = fopen(filename.buf, "w");
+            if (player_file == NULL) {
+                /* report that we could not write to the database, but do not exit */
+                printf("Error: could not write to user database file, progress has not been saved\n");
+            } else {
+                string_t player_str = player_info_to_string(current_player);
+                fputs(player_str.buf, player_file);
+                string_drop(&player_str);
+            }
+            fclose(player_file);
+            string_drop(&filename);
         } else {
-            string_t player_str = player_info_to_string(current_player);
-            fputs(player_str.buf, player_file);
-            string_drop(&player_str);
+            /* couldn't get a word, player has already played every word */
+            printf("There are no remaining words in the dictionary.\n");
         }
-        fclose(player_file);
-        string_drop(&filename);
     }
     break;
     case ViewStats:

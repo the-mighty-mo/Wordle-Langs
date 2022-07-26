@@ -57,13 +57,15 @@ public class PlayerInfo
 
     /// <summary>
     /// Gets a random word the player has not yet played.
+    /// <para/>
+    /// If there are no unplayed words, this function returns <see langword="null"/>.
     /// </summary>
     /// <param name="dictionary">The dictionary from which to find a word</param>
-    public string GetRandomWord(HashSet<string> dictionary)
+    public string? GetRandomWord(HashSet<string> dictionary)
     {
         var unplayedWordsCnt = dictionary.Count - wordsPlayed.Count;
         var randomWordIdx = rnd.Next(0, unplayedWordsCnt);
-        return dictionary.Where(w => !wordsPlayed.Contains(w)).Skip(randomWordIdx).First();
+        return dictionary.Where(w => !wordsPlayed.Contains(w)).Skip(randomWordIdx).FirstOrDefault();
     }
 
     /// <summary>

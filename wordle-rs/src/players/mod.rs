@@ -144,8 +144,7 @@ where
 
     /// Gets a random word this player has not yet played.
     ///
-    /// If the player has already played all words, this
-    /// function returns [`None`].
+    /// If there are no unplayed words, this function returns [`None`].
     ///
     /// # Examples:
     ///

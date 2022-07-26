@@ -70,6 +70,8 @@ public class PlayerInfo {
 
     /**
      * Gets a random, unplayed word for a new Wordle game.
+     * <p>
+     * If there are no unplayed words, this function returns {@code null}.
      * 
      * @param dictionary
      *        The dictionary from which to find a word
@@ -82,8 +84,9 @@ public class PlayerInfo {
         return dictionary.stream()
             .filter(Predicate.not(_wordsPlayed::contains))
             .skip(randomWordIdx)
-            .findFirst().get()
-            .toUpperCase();
+            .findFirst()
+            .map(String::toUpperCase)
+            .orElse(null);
     }
 
     /**

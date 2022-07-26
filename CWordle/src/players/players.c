@@ -45,27 +45,27 @@ void player_info_drop(player_info_t *player_info)
     hashset_drop(&player_info->words_played);
 }
 
-string_t player_info_get_random_word(player_info_t const *player_info, hashset_t const *dictionary)
+string_t const *player_info_get_random_word(player_info_t const *player_info, hashset_t const *dictionary)
 {
     if (player_info == NULL || dictionary == NULL) {
-        return string_with_capacity(0);
+        return NULL;
     }
 
-    size_t unplayed_words = dictionary->len - player_info->words_played.len;
-    size_t random_word_idx = rand() % unplayed_words;
+    size_t const unplayed_words = dictionary->len - player_info->words_played.len;
+    size_t const random_word_idx = rand() % unplayed_words;
 
     string_t const *random_word = NULL;
-    for (size_t i = 0; i < dictionary->len; ++i) {
+    for (size_t i = 0; i == 0 || random_word; ++i) {
         do {
             random_word = hashset_get_next(dictionary, random_word);
-        } while (hashset_contains(&player_info->words_played, random_word));
+        } while (random_word && hashset_contains(&player_info->words_played, random_word));
 
         if (i == random_word_idx) {
             break;
         }
     }
 
-    return string_clone(random_word);
+    return random_word;
 }
 
 void player_info_add_won_word(player_info_t *player_info, string_t word, uint32_t num_guesses)

@@ -31,25 +31,30 @@ PlayerInfo::PlayerInfo(std::string username,
     m_curWinStreak{curWinStreak}
 {}
 
-std::string const &PlayerInfo::GetRandomWord(std::unordered_set<std::string> const &dictionary) const
+std::string const *PlayerInfo::GetRandomWord(std::unordered_set<std::string> const &dictionary) const
 {
-    size_t unplayedWords = dictionary.size() - m_wordsPlayed.size();
-    size_t randomWordIdx = rand() % unplayedWords;
+    size_t const unplayedWords = dictionary.size() - m_wordsPlayed.size();
+    size_t const randomWordIdx = rand() % unplayedWords;
 
     auto iter = dictionary.begin();
-    for (size_t i = 0; i < dictionary.size(); ++i) {
+    for (size_t i = 0; iter != dictionary.end(); ++i) {
         if (i > 0) {
             ++iter;
         }
-        while (m_wordsPlayed.find(*iter) != m_wordsPlayed.end()) {
+        while (iter != dictionary.end() && m_wordsPlayed.find(*iter) != m_wordsPlayed.end()) {
             ++iter;
         }
 
-        if (i == unplayedWords) {
+        if (i == randomWordIdx) {
             break;
         }
     }
-    return *iter;
+    
+    if (iter != dictionary.end()) {
+        return &*iter;
+    } else {
+        return nullptr;
+    }
 }
 
 void PlayerInfo::AddWonWord(std::string word, uint32_t numGuesses)

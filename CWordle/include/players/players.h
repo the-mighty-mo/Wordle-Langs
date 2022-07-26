@@ -60,12 +60,14 @@ void player_info_drop(player_info_t *player_info);
 /**
  * Gets a random word the player has not yet played.
  * 
+ * If there are no unplayed words, this function returns null.
+ * 
  * @param player_info
  *        The player
  * @param dictionary
  *        The dictionary from which to find a word
  */
-string_t player_info_get_random_word(player_info_t const *player_info, hashset_t const *dictionary);
+string_t const *player_info_get_random_word(player_info_t const *player_info, hashset_t const *dictionary);
 /**
  * Adds a word the player has successfully guessed to their database.
  * 

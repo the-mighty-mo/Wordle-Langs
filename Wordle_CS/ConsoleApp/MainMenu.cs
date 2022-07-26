@@ -167,16 +167,25 @@ public class MainMenu
         switch (userSelection)
         {
             case UserSelection.PlayGame:
-                WordleAnswer answer = new(currentPlayer.GetRandomWord(dictionary));
-                Game.Run(answer, currentPlayer, dictionary);
-                Console.WriteLine(currentPlayer.GetStats());
-                try
+                var randWord = currentPlayer.GetRandomWord(dictionary);
+                if (randWord is not null)
                 {
-                    currentPlayer.WriteToFile($"{currentPlayer.Username}.txt");
+                    WordleAnswer answer = new(randWord);
+                    Game.Run(answer, currentPlayer, dictionary);
+                    Console.WriteLine(currentPlayer.GetStats());
+                    try
+                    {
+                        currentPlayer.WriteToFile($"{currentPlayer.Username}.txt");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Error: could not write to user database file, progress has not been saved");
+                    }
                 }
-                catch (Exception)
+                else
                 {
-                    Console.WriteLine("Error: could not write to user database file, progress has not been saved");
+                    /* couldn't get a word, player has already played every word */
+                    Console.WriteLine("There are no remaining words in the dictionary.");
                 }
 
                 return ProgramState.MainMenu;
