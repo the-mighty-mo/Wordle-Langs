@@ -61,6 +61,10 @@ impl TryFrom<isize> for UserSelection {
 /// If the user does not yet exist in the given databse,
 /// they will be added to it.
 ///
+/// # Panics
+///
+/// Panics if writing to [`io::stdout`] fails.
+///
 /// # Examples
 ///
 /// Basic usage:
@@ -112,6 +116,10 @@ pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo
 ///
 /// If the user does not yet exist in the given database,
 /// they will be added to it.
+///
+/// # Panics
+///
+/// Panics if writing to [`io::stdout`] fails.
 ///
 /// # Examples
 ///
@@ -182,6 +190,10 @@ fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
 /// the user has logged off, the main program should
 /// return to the login screen.
 ///
+/// # Panics
+///
+/// Panics if writing to [`io::stdout`] fails.
+///
 /// # Examples
 ///
 /// Basic usage:
@@ -199,8 +211,10 @@ fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
 /// let mut usernames: BTreeSet<String> =
 ///     read_usernames("usernames.txt");
 ///
-/// let mut player_info = main_menu::request_user_login(&mut usernames).unwrap();
-/// let next_state = main_menu::run(&mut player_info, &dictionary);
+/// let player_info = main_menu::request_user_login(&mut usernames);
+/// if let Some(mut player_info) = player_info {
+///     let next_state = main_menu::run(&mut player_info, &dictionary);
+/// }
 /// ```
 #[must_use]
 pub fn run(
@@ -217,19 +231,24 @@ pub fn run(
     match user_selection {
         UserSelection::PlayGame => {
             /* run a game of Wordle */
-            let answer = WordleAnswer::new(current_player.get_random_word(dictionary));
-            game::run(&answer, current_player, dictionary);
-            /* print the player's statistics after the game ends */
-            println!("{}", current_player.get_stats());
-            /* save the user's new statistics to their database */
-            if current_player
-                .write_to_file(&(current_player.get_username().to_owned() + ".txt"))
-                .is_err()
-            {
-                /* report that we could not write to the database, but do not exit */
-                println!(
-                    "Error: could not write to user database file, progress has not been saved"
-                );
+            if let Some(answer) = current_player.get_random_word(dictionary) {
+                let answer = WordleAnswer::new(answer);
+                game::run(&answer, current_player, dictionary);
+                /* print the player's statistics after the game ends */
+                println!("{}", current_player.get_stats());
+                /* save the user's new statistics to their database */
+                if current_player
+                    .write_to_file(&(current_player.get_username().to_owned() + ".txt"))
+                    .is_err()
+                {
+                    /* report that we could not write to the database, but do not exit */
+                    println!(
+                        "Error: could not write to user database file, progress has not been saved"
+                    );
+                }
+            } else {
+                /* couldn't get a word, player has already played every word */
+                println!("There are no remaining words in the dictionary.");
             }
             ProgramState::MainMenu
         }
@@ -278,6 +297,10 @@ pub fn run(
 ///
 /// The user can terminate the program early using Ctrl-C,
 /// in which case this function returns None.
+///
+/// # Panics
+///
+/// Panics if writing to [`io::stdout`] fails.
 ///
 /// # Examples
 ///

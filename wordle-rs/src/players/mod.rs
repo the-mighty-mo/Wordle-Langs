@@ -144,6 +144,9 @@ where
 
     /// Gets a random word this player has not yet played.
     ///
+    /// If the player has already played all words, this
+    /// function returns [`None`].
+    ///
     /// # Examples:
     ///
     /// Basic usage:
@@ -158,21 +161,21 @@ where
     /// let player = PlayerInfo::new("user");
     /// let dictionary: HashSet<String> =
     ///     read_dictionary("dictionary.txt");
-    /// let word = player.get_random_word(&dictionary);
+    /// let word = player.get_random_word(&dictionary).unwrap();
     /// assert!(dictionary.contains(word));
     /// ```
     #[must_use]
     pub fn get_random_word<'a>(
         &self,
         dictionary: &'a HashSet<String, impl std::hash::BuildHasher>,
-    ) -> &'a str {
+    ) -> Option<&'a str> {
         let unplayed_words_cnt = dictionary.len() - self.words_played.len();
         let random_word_idx = fastrand::usize(0..unplayed_words_cnt);
         dictionary
             .iter()
             .filter(|w| !self.words_played.contains(*w))
             .nth(random_word_idx)
-            .unwrap()
+            .map(String::as_str)
     }
 
     /// Adds a word the player has successfully guessed to their database.
@@ -271,6 +274,11 @@ where
 
     /// Writes this player's data to a file.
     ///
+    /// # Errors
+    ///
+    /// This function will return an error if creating the
+    /// file or writing to the file fails.
+    ///
     /// # Examples
     ///
     /// Basic usage:
@@ -296,6 +304,11 @@ impl PlayerInfo<String> {
     ///
     /// All errors with reading the file, including any errors
     /// with parsing data, is propagated up to the caller.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if opening the file
+    /// or reading from the file fails.
     ///
     /// # Examples
     ///

@@ -21,6 +21,10 @@ use crate::{players::PlayerInfo, WordleAnswer, WordleGuess, WIN_MESSAGES};
 /// At the start of the game, a message is printed with
 /// instructions for the player.
 ///
+/// # Panics
+///
+/// Panics if writing to [`io::stdout`] fails.
+///
 /// # Examples
 ///
 /// Basic usage:
