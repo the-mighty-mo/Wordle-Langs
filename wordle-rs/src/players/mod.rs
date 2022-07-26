@@ -18,8 +18,6 @@ use std::{
 
 mod database;
 
-use self::database::DatabaseEntry;
-
 /// Contains information about a Wordle player.
 ///
 /// A player has a:
@@ -339,6 +337,9 @@ impl PlayerInfo<String> {
         player_data: &str,
         bad_data_err: impl Fn() -> E + Copy,
     ) -> Result<Option<Self>, E> {
+        /* use a borrowed string as the key for all entries */
+        type DatabaseEntry<'a, T, V> = database::Entry<&'a str, T, V>;
+
         /* read all the lines in the file */
         let lines_in_file: Vec<&str> = player_data.lines().collect();
 
@@ -348,25 +349,20 @@ impl PlayerInfo<String> {
         }
 
         /* parse the lines in the file */
-        let username = DatabaseEntry::<_, _, &str>::from_line(lines_in_file[0], str::to_owned)
+        let username =
+            DatabaseEntry::from_line(lines_in_file[0], str::to_owned).ok_or_else(bad_data_err)?;
+        let words_played = DatabaseEntry::from_collection(lines_in_file[1], str::to_owned)
             .ok_or_else(bad_data_err)?;
-        let words_played =
-            DatabaseEntry::<_, _, &str>::from_collection(lines_in_file[1], str::to_owned)
-                .ok_or_else(bad_data_err)?;
-        let num_guesses_list = DatabaseEntry::<Vec<_>, _, &str>::try_from_collection(
-            lines_in_file[2],
-            str::parse::<usize>,
-        )
-        .map_err(|_| bad_data_err())?
-        .ok_or_else(bad_data_err)?;
-        let max_win_streak =
-            DatabaseEntry::<_, _, &str>::try_from_line(lines_in_file[3], str::parse::<usize>)
+        let num_guesses_list =
+            DatabaseEntry::<Vec<_>, _>::try_from_collection(lines_in_file[2], str::parse::<usize>)
                 .map_err(|_| bad_data_err())?
                 .ok_or_else(bad_data_err)?;
-        let cur_win_streak =
-            DatabaseEntry::<_, _, &str>::try_from_line(lines_in_file[4], str::parse::<usize>)
-                .map_err(|_| bad_data_err())?
-                .ok_or_else(bad_data_err)?;
+        let max_win_streak = DatabaseEntry::try_from_line(lines_in_file[3], str::parse::<usize>)
+            .map_err(|_| bad_data_err())?
+            .ok_or_else(bad_data_err)?;
+        let cur_win_streak = DatabaseEntry::try_from_line(lines_in_file[4], str::parse::<usize>)
+            .map_err(|_| bad_data_err())?
+            .ok_or_else(bad_data_err)?;
 
         /* parse the number of guesses into an array */
         let num_guesses = {
