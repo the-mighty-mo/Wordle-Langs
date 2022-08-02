@@ -28,7 +28,7 @@ public class Wordle {
      * Create a new Wordle game.
      * 
      * @param word
-     *        The target word
+     *        The target word; must be uppercase
      */
     public Wordle(String word) {
         _word = word;

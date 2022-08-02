@@ -68,7 +68,7 @@ static char const *WORDLE_WIN_MESSAGES[] = {
  * Creates a new Wordle answer.
  * 
  * @param word
- *        The answer word
+ *        The answer word; must be uppercase
  */
 wordle_answer_t wordle_answer_new(string_t word);
 /**

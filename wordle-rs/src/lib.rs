@@ -83,6 +83,7 @@ where
     S: Borrow<str>,
 {
     /// Creates a new Wordle answer.
+    /// The answer must be uppercase.
     ///
     /// # Examples
     ///

@@ -63,7 +63,7 @@ public:
      * Creates a new Wordle answer.
      * 
      * @param word
-     *        The answer word
+     *        The answer word; must be uppercase
      */
     WordleAnswer(std::string word);
 

@@ -52,7 +52,7 @@ public class WordleAnswer
     /// <summary>
     /// Creates a new Wordle answer.
     /// </summary>
-    /// <param name="word">The answer word</param>
+    /// <param name="word">The answer word; must be uppercase</param>
     public WordleAnswer(string word)
     {
         Word = word;
