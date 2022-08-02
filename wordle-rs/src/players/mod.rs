@@ -197,7 +197,7 @@ where
         self.words_played.insert(word);
         self.num_guesses[num_guesses - 1] += 1;
         self.cur_win_streak += 1;
-        self.max_win_streak = std::cmp::max(self.max_win_streak, self.cur_win_streak);
+        self.max_win_streak = self.max_win_streak.max(self.cur_win_streak);
     }
 
     /// Adds a word the player has failed to guess to their database.
