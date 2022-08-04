@@ -251,17 +251,17 @@ static int string_compare(string_t const *string, string_t const *other)
     }
 }
 
-static int string_hash(string_t const *string)
+static size_t string_hash(string_t const *string)
 {
     if (string_is_empty(string)) {
         return 0;
     }
 
-    int hash = 5381;
-    int c;
+    size_t hash = 5381;
+    char c;
 
     char *str = string->buf;
-    while (c = *(str)++) {
+    while (c = *str++) {
         /* hash * 33 + c */
         hash = ((hash << 5) + hash) + c;
     }

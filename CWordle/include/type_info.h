@@ -9,7 +9,7 @@
 
 typedef void (*drop_fn)(void *value);
 typedef int (*compare_fn)(void const *a, void const *b);
-typedef int (*hash_fn)(void const *value);
+typedef size_t (*hash_fn)(void const *value);
 
 typedef struct _type_info_t {
     size_t type_sz;

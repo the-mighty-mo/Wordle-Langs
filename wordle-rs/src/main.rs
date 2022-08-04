@@ -33,36 +33,40 @@ fn main() {
         return;
     }
 
-    let dict_file = File::open(dict_file_name);
-    let dict_file_contents = match read_file(dict_file) {
-        Ok(dict_file_contents) => dict_file_contents,
-        Err(_) => {
-            println!("Error: could not read dictionary file");
-            return;
-        }
+    let (dictionary, mut usernames) = {
+        let dict_file = File::open(dict_file_name);
+        let dict_file_contents = match read_file(dict_file) {
+            Ok(dict_file_contents) => dict_file_contents,
+            Err(_) => {
+                println!("Error: could not read dictionary file");
+                return;
+            }
+        };
+
+        let usernames_file = OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create(true)
+            .open(wordle::console_app::USERNAMES_FILENAME);
+        let usernames_file_contents = match read_file(usernames_file) {
+            Ok(usernames_file_contents) => usernames_file_contents,
+            Err(_) => {
+                println!("Error: could not read user database");
+                return;
+            }
+        };
+
+        let dictionary: HashSet<String> = dict_file_contents
+            .lines()
+            .filter(|s| s.len() == 5)
+            .map(str::to_uppercase)
+            .collect();
+
+        let usernames: BTreeSet<String> =
+            usernames_file_contents.lines().map(str::to_owned).collect();
+
+        (dictionary, usernames)
     };
-
-    let usernames_file = OpenOptions::new()
-        .read(true)
-        .write(true)
-        .create(true)
-        .open(wordle::console_app::USERNAMES_FILENAME);
-    let usernames_file_contents = match read_file(usernames_file) {
-        Ok(usernames_file_contents) => usernames_file_contents,
-        Err(_) => {
-            println!("Error: could not read user database");
-            return;
-        }
-    };
-
-    let dictionary: HashSet<String> = dict_file_contents
-        .lines()
-        .filter(|s| s.len() == 5)
-        .map(str::to_uppercase)
-        .collect();
-
-    let mut usernames: BTreeSet<String> =
-        usernames_file_contents.lines().map(str::to_owned).collect();
 
     wordle::console_app::run(&dictionary, &mut usernames);
 }

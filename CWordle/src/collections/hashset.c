@@ -105,7 +105,7 @@ static void rehash(hashset_t *hashset, size_t old_buf_sz, void *old_buf, uint8_t
             continue;
         }
 
-        int hash_value = hashset->type_info.hash(CAST_BUF(old_buf) + i * hashset->type_info.type_sz) % hashset->buf_sz;
+        size_t hash_value = hashset->type_info.hash(CAST_BUF(old_buf) + i * hashset->type_info.type_sz) % hashset->buf_sz;
         while (hashset->tombstones[hash_value] != 0) {
             ++hash_value;
             hash_value %= hashset->buf_sz;
@@ -152,7 +152,7 @@ void hashset_insert(hashset_t *hashset, void const *elem)
 
     hashset_reserve(hashset, 1);
 
-    uint32_t hash_value = hashset->type_info.hash(elem) % hashset->buf_sz;
+    size_t hash_value = hashset->type_info.hash(elem) % hashset->buf_sz;
     while (hashset->tombstones[hash_value] != 0) {
         ++hash_value;
         hash_value %= hashset->buf_sz;
@@ -184,7 +184,7 @@ int hashset_contains(hashset_t const *hashset, void const *elem)
         return 0;
     }
 
-    int hash_value = hashset->type_info.hash(elem) % hashset->buf_sz;
+    size_t hash_value = hashset->type_info.hash(elem) % hashset->buf_sz;
     while (hashset->tombstones[hash_value]) {
         void const *hashset_elem = CAST_BUF(hashset->buf) + hash_value * hashset->type_info.type_sz;
         if (hashset->type_info.compare(hashset_elem, elem) == 0) {
