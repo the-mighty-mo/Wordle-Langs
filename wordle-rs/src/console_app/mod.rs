@@ -62,36 +62,27 @@ pub fn run(
     usernames: &mut BTreeSet<String>,
 ) {
     let mut state = ProgramState::LogIn;
-    let mut current_player = None;
 
     loop {
         state = match state {
             ProgramState::LogIn => {
-                current_player = main_menu::request_user_login(usernames);
-                match current_player {
-                    Some(_) => {
-                        if save_usernames(usernames, USERNAMES_FILENAME).is_err() {
-                            println!("Error: could not write to the user database");
-                            ProgramState::Exit
-                        } else {
-                            /* user has logged in, continue to the main menu */
-                            ProgramState::MainMenu
-                        }
+                if let Some(player) = main_menu::request_user_login(usernames) {
+                    if save_usernames(usernames, USERNAMES_FILENAME).is_err() {
+                        println!("Error: could not write to the user database");
+                        ProgramState::Exit
+                    } else {
+                        /* user has logged in, continue to the main menu */
+                        ProgramState::MainMenu(player)
                     }
+                } else {
                     /* user requested to exit, or there was an error */
-                    None => ProgramState::Exit,
+                    ProgramState::Exit
                 }
             }
-            ProgramState::MainMenu => {
-                /* cannot enter this state unless current_player is Some */
-                let current_player = unsafe { current_player.as_mut().unwrap_unchecked() };
-                main_menu::run(current_player, dictionary)
-            }
-            ProgramState::DeleteUser => {
-                /* cannot enter this state unless current_player is Some */
-                let current_player = unsafe { current_player.as_ref().unwrap_unchecked() };
+            ProgramState::MainMenu(player) => main_menu::run(player, dictionary),
+            ProgramState::DeleteUser(player) => {
                 /* remove the current player from the databse */
-                let username = current_player.get_username();
+                let username = player.get_username();
                 usernames.remove(username);
                 _ = fs::remove_file(username.to_owned() + ".txt");
 

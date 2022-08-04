@@ -12,14 +12,17 @@ use std::{
 use crate::{console_app::game, players::PlayerInfo, WordleAnswer};
 
 /// Possible states of the main Wordle program.
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub enum ProgramState {
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ProgramState<S>
+where
+    S: Borrow<str>,
+{
     /// Request the user's login information
     LogIn,
     /// Run the main menu
-    MainMenu,
+    MainMenu(PlayerInfo<S>),
     /// Delete the current user
-    DeleteUser,
+    DeleteUser(PlayerInfo<S>),
     /// Exit the program
     Exit,
 }
@@ -212,15 +215,18 @@ fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
 ///     read_usernames("usernames.txt");
 ///
 /// let player_info = main_menu::request_user_login(&mut usernames);
-/// if let Some(mut player_info) = player_info {
-///     let next_state = main_menu::run(&mut player_info, &dictionary);
+/// if let Some(player_info) = player_info {
+///     let next_state = main_menu::run(player_info, &dictionary);
 /// }
 /// ```
 #[must_use]
-pub fn run(
-    current_player: &mut PlayerInfo<impl Borrow<str>>,
+pub fn run<S>(
+    mut player: PlayerInfo<S>,
     dictionary: &HashSet<String, impl std::hash::BuildHasher>,
-) -> ProgramState {
+) -> ProgramState<S>
+where
+    S: Borrow<str>,
+{
     let user_selection = request_user_selection();
     let user_selection = match user_selection {
         Some(user_selection) => user_selection,
@@ -231,14 +237,14 @@ pub fn run(
     match user_selection {
         UserSelection::PlayGame => {
             /* run a game of Wordle */
-            if let Some(answer) = current_player.get_random_word(dictionary) {
+            if let Some(answer) = player.get_random_word(dictionary) {
                 let answer = WordleAnswer::new(answer);
-                game::run(&answer, current_player, dictionary);
+                game::run(&answer, &mut player, dictionary);
                 /* print the player's statistics after the game ends */
-                println!("{}", current_player.get_stats());
+                println!("{}", player.get_stats());
                 /* save the user's new statistics to their database */
-                if current_player
-                    .write_to_file(&(current_player.get_username().to_owned() + ".txt"))
+                if player
+                    .write_to_file(&(player.get_username().to_owned() + ".txt"))
                     .is_err()
                 {
                     /* report that we could not write to the database, but do not exit */
@@ -250,11 +256,11 @@ pub fn run(
                 /* couldn't get a word, player has already played every word */
                 println!("There are no remaining words in the dictionary.");
             }
-            ProgramState::MainMenu
+            ProgramState::MainMenu(player)
         }
         UserSelection::ViewStats => {
-            println!("{}", current_player.get_stats());
-            ProgramState::MainMenu
+            println!("{}", player.get_stats());
+            ProgramState::MainMenu(player)
         }
         UserSelection::LogOff => {
             /* user is logged off, go back to login screen */
@@ -263,7 +269,7 @@ pub fn run(
         UserSelection::DeleteUser => {
             print!(
                 "Are you sure you would like to delete user: {} [y/N] ",
-                current_player.get_username()
+                player.get_username()
             );
             io::stdout().flush().unwrap();
 
@@ -276,11 +282,11 @@ pub fn run(
                     } == "y" =>
                 {
                     println!();
-                    ProgramState::DeleteUser
+                    ProgramState::DeleteUser(player)
                 }
                 _ => {
                     println!("Action aborted");
-                    ProgramState::MainMenu
+                    ProgramState::MainMenu(player)
                 }
             }
         }
