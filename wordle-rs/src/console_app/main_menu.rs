@@ -12,12 +12,13 @@ use std::{
 use crate::{console_app::game, players::PlayerInfo, WordleAnswer};
 
 /// Possible states of the main Wordle program.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub enum ProgramState<S>
 where
     S: Borrow<str>,
 {
     /// Request the user's login information
+    #[default]
     LogIn,
     /// Run the main menu
     MainMenu(PlayerInfo<S>),

@@ -61,7 +61,7 @@ pub fn run(
     dictionary: &HashSet<String, impl std::hash::BuildHasher>,
     usernames: &mut BTreeSet<String>,
 ) {
-    let mut state = ProgramState::LogIn;
+    let mut state = ProgramState::default();
 
     loop {
         state = match state {
