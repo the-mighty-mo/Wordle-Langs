@@ -94,8 +94,7 @@ pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo
         None => return None,
     };
 
-    let player_info = PlayerInfo::from_file(&(username.clone() + ".txt"));
-    let player_info = match player_info {
+    let player_info = match PlayerInfo::from_file(&(username.clone() + ".txt")) {
         Ok(player_info) => player_info,
         /* error reading the database file */
         Err(msg) => {
@@ -107,8 +106,7 @@ pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo
     println!("Hello, {username}");
 
     /* this might be a new user, create a fresh instance of PlayerInfo if so */
-    let player_info = player_info.unwrap_or_else(|| PlayerInfo::new(username));
-    Some(player_info)
+    player_info.or_else(|| Some(PlayerInfo::new(username)))
 }
 
 /// Requests a user to enter their username.
@@ -227,8 +225,7 @@ pub fn run<S>(
 where
     S: Borrow<str>,
 {
-    let user_selection = request_user_selection();
-    let user_selection = match user_selection {
+    let user_selection = match request_user_selection() {
         Some(user_selection) => user_selection,
         /* user likely quit the program with Ctrl-C */
         None => return ProgramState::Exit,
@@ -262,10 +259,8 @@ where
             println!("{}", player.get_stats());
             ProgramState::MainMenu(player)
         }
-        UserSelection::LogOff => {
-            /* user is logged off, go back to login screen */
-            ProgramState::LogIn
-        }
+        /* user is logged off, go back to login screen */
+        UserSelection::LogOff => ProgramState::LogIn,
         UserSelection::DeleteUser => {
             print!(
                 "Are you sure you would like to delete user: {} [y/N] ",
@@ -340,21 +335,17 @@ fn request_user_selection() -> Option<UserSelection> {
             break None;
         }
 
-        let selection = selection_str.trim().parse::<isize>();
-
-        match selection {
-            Ok(selection) => {
-                let user_selection = UserSelection::try_from(selection).ok();
-                match user_selection {
-                    /* valid selection, stop the read loop */
-                    Some(_) => break user_selection,
-                    /* selection out of range */
-                    None => println!("Error: invalid selection"),
-                }
+        if let Ok(selection) = selection_str.trim().parse::<isize>() {
+            let user_selection = UserSelection::try_from(selection).ok();
+            if user_selection.is_none() {
+                /* selection out of range */
+                println!("Error: invalid selection");
+            } else {
+                /* valid selection, stop the read loop */
+                break user_selection;
             }
-            Err(_) => {
-                println!("Error: selection must be an integer");
-            }
+        } else {
+            println!("Error: selection must be an integer");
         }
     };
     println!();

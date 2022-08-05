@@ -258,8 +258,8 @@ where
 
         /* print the guess distribution with bars, max 12 */
         let bar_factor = match max_num_guesses {
-            Some(max_num_guesses) => 12.0 / *max_num_guesses as f64,
-            None => 0.0,
+            Some(max_num_guesses) if *max_num_guesses != 0 => 12.0 / *max_num_guesses as f64,
+            _ => 0.0,
         };
 
         for (i, num_guess) in self.num_guesses.iter().enumerate() {
@@ -328,8 +328,7 @@ impl PlayerInfo<String> {
             )
         };
 
-        let file = File::open(filename);
-        let file = match file {
+        let file = match File::open(filename) {
             Ok(file) => file,
             Err(_) => return Ok(None),
         };
