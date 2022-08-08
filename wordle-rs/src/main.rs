@@ -92,6 +92,5 @@ fn read_file(file: io::Result<File>) -> io::Result<String> {
 
     let mut buffer = String::new();
     let mut reader = BufReader::new(file);
-    reader.read_to_string(&mut buffer)?;
-    Ok(buffer)
+    reader.read_to_string(&mut buffer).map(|_| buffer)
 }

@@ -101,10 +101,7 @@ where
     ) -> Result<Option<Self>, E> {
         let split_str = line.split_once(DELIM);
         split_str
-            .map(|(key, value)| {
-                let value = string_to_t(value)?;
-                Ok(Self::new(key.into(), value))
-            })
+            .map(|(key, value)| string_to_t(value).map(|value| Self::new(key.into(), value)))
             .map_or(Ok(None), |r| r.map(Some))
     }
 }
@@ -198,13 +195,12 @@ where
         let parsed_row = Entry::<&str, _, _>::from_line(line, identity);
         parsed_row
             .map(|parsed_row| {
-                let items = parsed_row
+                parsed_row
                     .value
                     .split(',')
                     .map(string_to_v)
-                    .collect::<Result<_, _>>()?;
-
-                Ok(Self::new(parsed_row.key.into(), items))
+                    .collect::<Result<_, _>>()
+                    .map(|items| Self::new(parsed_row.key.into(), items))
             })
             .map_or(Ok(None), |r| r.map(Some))
     }
