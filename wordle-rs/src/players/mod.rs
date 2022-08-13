@@ -160,7 +160,9 @@ where
     /// let player = PlayerInfo::new("user");
     /// let dictionary: HashSet<String> =
     ///     read_dictionary("dictionary.txt");
-    /// let word = player.get_random_word(&dictionary).unwrap();
+    /// let word = player
+    ///     .get_random_word(&dictionary)
+    ///     .expect("no words left in dictionary");
     /// assert!(dictionary.contains(word));
     /// ```
     #[must_use]

@@ -38,20 +38,6 @@ impl fmt::Display for WordleGuess {
     }
 }
 
-/// Stores information about an answer to a game of Wordle.
-///
-/// A game of Wordle has a target word. The guessing algorithm
-/// uses preprocessing so it can run in linear time. This results
-/// in an array containing the counts of each letter.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct WordleAnswer<S>
-where
-    S: Borrow<str>,
-{
-    word: S,
-    letter_counts: [u8; 26],
-}
-
 /// Creates an array representing the result
 /// of a guess in a game of Wordle.
 ///
@@ -76,6 +62,20 @@ macro_rules! guess_result {
     ($($c:tt)+) => {[
         $(guess_result!($c)),+
     ]}
+}
+
+/// Stores information about an answer to a game of Wordle.
+///
+/// A game of Wordle has a target word. The guessing algorithm
+/// uses preprocessing so it can run in linear time. This results
+/// in an array containing the counts of each letter.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct WordleAnswer<S>
+where
+    S: Borrow<str>,
+{
+    word: S,
+    letter_counts: [u8; 26],
 }
 
 impl<S> WordleAnswer<S>
