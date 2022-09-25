@@ -1,5 +1,5 @@
 //! This module provides methods to run a game
-//! of Wordle in a console application.
+//! of Wordle in a terminal application.
 //!
 //! Author: Benjamin Hall
 
@@ -31,11 +31,10 @@ use wordle_db::PlayerInfo;
 /// Basic usage:
 /// ```no_run
 /// # use std::{collections::HashSet, io};
-/// # use wordle::{
-/// #     console_app::game,
-/// #     players::PlayerInfo,
-/// #     WordleAnswer,
-/// # };
+/// # use wordle_terminal::game;
+/// use wordle::WordleAnswer;
+/// use wordle_db::PlayerInfo;
+///
 /// # fn read_dictionary(filename: &str) -> HashSet<String> {
 /// # HashSet::new()
 /// # }

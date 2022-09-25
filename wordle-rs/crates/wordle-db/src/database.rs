@@ -27,7 +27,7 @@ impl<S, T, V> Entry<S, T, V> {
     ///
     /// Basic usage:
     /// ```ignore
-    /// # use wordle::players::database::Entry;
+    /// # use wordle_db::database::Entry;
     /// let entry = Entry::<_, _, ()>::new("Key", "value");
     /// assert_eq!(entry.key, "Key");
     /// assert_eq!(entry.value, "value");
@@ -58,7 +58,7 @@ where
     /// Basic usage:
     /// ```ignore
     /// # use std::convert::identity;
-    /// # use wordle::players::database::Entry;
+    /// # use wordle_db::database::Entry;
     /// let str_entry = Entry::from_line("String Test: data", identity);
     /// assert_eq!(
     ///     str_entry.unwrap(),
@@ -85,7 +85,7 @@ where
     ///
     /// Basic usage:
     /// ```ignore
-    /// # use wordle::players::database::Entry;
+    /// # use wordle_db::database::Entry;
     /// # fn main() -> Result<(), std::num::ParseIntError> {
     /// let int_entry = Entry::try_from_line("Int Test: 3", str::parse::<i32>)?;
     /// assert_eq!(
@@ -128,7 +128,7 @@ where
     /// #     collections::HashSet,
     /// #     convert::identity,
     /// # };
-    /// # use wordle::players::database::Entry;
+    /// # use wordle_db::database::Entry;
     /// let str_vec_entry =
     ///     Entry::from_collection("String Test: data1,data2", identity);
     /// assert_eq!(
@@ -171,7 +171,7 @@ where
     /// Basic usage:
     /// ```ignore
     /// # use std::collections::HashSet;
-    /// # use wordle::players::database::Entry;
+    /// # use wordle_db::database::Entry;
     /// # fn main() -> Result<(), std::num::ParseIntError> {
     /// let int_vec_entry =
     ///     Entry::try_from_collection("Int Test: 4,3,4,5", str::parse::<i32>)?;

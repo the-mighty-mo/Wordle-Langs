@@ -1,5 +1,5 @@
-//! This module provides methods to run a game of Wordle
-//! as a console application.
+//! This crate provides methods to run a game of Wordle
+//! as a terminal application.
 //!
 //! To run a game of Wordle, the user must first login by
 //! either selecting a username from an existing list of
@@ -12,10 +12,6 @@
 //! of usernames and a dictionary of valid five-letter words.
 //! From there, the calling program can start the main state
 //! machine of the program.
-//!
-//! ## Required features
-//!
-//! **`console_app`**
 //!
 //! Author: Benjamin Hall
 
@@ -33,7 +29,7 @@ pub mod main_menu;
 /// Name of the usernames database file.
 pub const USERNAMES_FILENAME: &str = "users.txt";
 
-/// Runs the main state machine of the Wordle console program.
+/// Runs the main state machine of the Wordle terminal program.
 ///
 /// This function manages the various states of the program
 /// after all necessary variables have been initialized,
@@ -44,7 +40,6 @@ pub const USERNAMES_FILENAME: &str = "users.txt";
 /// Basic usage:
 /// ```no_run
 /// # use std::collections::{BTreeSet, HashSet};
-/// # use wordle::console_app;
 /// # fn read_dictionary(filename: &str) -> HashSet<String> {
 /// # HashSet::new()
 /// # }
@@ -55,7 +50,7 @@ pub const USERNAMES_FILENAME: &str = "users.txt";
 ///     read_dictionary("dictionary.txt");
 /// let mut usernames: BTreeSet<String> =
 ///     read_usernames("usernames.txt");
-/// console_app::run(&dictionary, &mut usernames);
+/// wordle_terminal::run(&dictionary, &mut usernames);
 /// ```
 pub fn run(
     dictionary: &HashSet<String, impl std::hash::BuildHasher>,
@@ -114,11 +109,10 @@ pub fn run(
 /// #     collections::BTreeSet,
 /// #     io
 /// # };
-/// # use wordle::console_app;
 /// # fn main() -> io::Result<()> {
 /// let mut usernames = BTreeSet::new();
 /// usernames.insert(String::from("user"));
-/// console_app::save_usernames(&usernames, "users.txt")?;
+/// wordle_terminal::save_usernames(&usernames, "users.txt")?;
 /// # Ok(())
 /// # }
 /// ```

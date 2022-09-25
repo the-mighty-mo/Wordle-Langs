@@ -1,10 +1,6 @@
-//! This module provides methods and structs to manage information
+//! This crate provides methods and structs to manage information
 //! about a Wordle player. Methods are also provided to save the
 //! player to and load a player from a database file.
-//!
-//! ## Required features
-//!
-//! **`player_db`**
 //!
 //! Author: Benjamin Hall
 
@@ -73,7 +69,7 @@ where
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle::players::PlayerInfo;
+    /// # use wordle_db::PlayerInfo;
     /// let player = PlayerInfo::new("user");
     /// ```
     #[inline]
@@ -89,7 +85,7 @@ where
     /// Basic usage:
     /// ```
     /// # use std::collections::HashSet;
-    /// # use wordle::players::PlayerInfo;
+    /// # use wordle_db::PlayerInfo;
     /// let mut words_played = HashSet::new();
     /// words_played.insert(String::from("TRACE"));
     ///
@@ -131,7 +127,7 @@ where
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle::players::PlayerInfo;
+    /// # use wordle_db::PlayerInfo;
     /// let username = "user";
     /// let player = PlayerInfo::new(username);
     /// assert_eq!(player.get_username(), username);
@@ -151,7 +147,7 @@ where
     /// Basic usage:
     /// ```
     /// # use std::collections::HashSet;
-    /// # use wordle::players::PlayerInfo;
+    /// # use wordle_db::PlayerInfo;
     /// # fn read_dictionary(filename: &str) -> HashSet<String> {
     /// # let mut dict = HashSet::new();
     /// # dict.insert(String::from("TRACE"));
@@ -189,7 +185,7 @@ where
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle::players::PlayerInfo;
+    /// # use wordle_db::PlayerInfo;
     /// let mut player = PlayerInfo::new("user");
     /// // player got TRACE in 3 guesses
     /// player.add_won_word(String::from("TRACE"), 3);
@@ -212,7 +208,7 @@ where
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle::players::PlayerInfo;
+    /// # use wordle_db::PlayerInfo;
     /// let mut player = PlayerInfo::new("user");
     /// // player could not guess BEBOP within 6 guesses
     /// player.add_lost_word(String::from("BEBOP"));
@@ -235,7 +231,7 @@ where
     ///
     /// Basic usage:
     /// ```
-    /// # use wordle::players::PlayerInfo;
+    /// # use wordle_db::PlayerInfo;
     /// let player = PlayerInfo::new("user");
     /// println!("{}", player.get_stats());
     /// ```
@@ -285,7 +281,7 @@ where
     /// Basic usage:
     /// ```no_run
     /// # use std::io;
-    /// # use wordle::players::PlayerInfo;
+    /// # use wordle_db::PlayerInfo;
     /// # fn main() -> io::Result<()> {
     /// let player = PlayerInfo::new("user");
     /// player.write_to_file("user.txt")?;
@@ -316,7 +312,7 @@ impl PlayerInfo<String> {
     /// Basic usage:
     /// ```no_run
     /// # use std::io;
-    /// # use wordle::players::PlayerInfo;
+    /// # use wordle_db::PlayerInfo;
     /// # fn main() -> io::Result<()> {
     /// let player = PlayerInfo::from_file("user.txt")?;
     /// # Ok(())

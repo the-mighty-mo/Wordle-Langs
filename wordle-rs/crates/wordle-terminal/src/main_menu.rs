@@ -76,7 +76,7 @@ impl TryFrom<isize> for UserSelection {
 /// Basic usage:
 /// ```
 /// # use std::collections::BTreeSet;
-/// # use wordle::console_app::main_menu;
+/// # use wordle_terminal::main_menu;
 /// # fn read_usernames(filename: &str) -> BTreeSet<String> {
 /// # BTreeSet::new()
 /// # }
@@ -130,7 +130,7 @@ pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo
 /// Basic usage:
 /// ```ignore
 /// # use std::collections::BTreeSet;
-/// # use wordle::console_app::main_menu;
+/// # use wordle_terminal::main_menu;
 /// # fn read_usernames(filename: &str) -> BTreeSet<String> {
 /// # BTreeSet::new()
 /// # }
@@ -203,7 +203,7 @@ fn request_username(usernames: &mut BTreeSet<String>) -> Option<String> {
 /// Basic usage:
 /// ```no_run
 /// # use std::collections::{BTreeSet, HashSet};
-/// # use wordle::console_app::main_menu;
+/// # use wordle_terminal::main_menu;
 /// # fn read_dictionary(filename: &str) -> HashSet<String> {
 /// # HashSet::new()
 /// # }
@@ -310,7 +310,7 @@ where
 ///
 /// Basic usage:
 /// ```ignore
-/// # use wordle::console_app::main_menu;
+/// # use wordle_terminal::main_menu;
 /// let user_selection = main_menu::request_user_selection();
 /// match (user_selection) {
 ///     Some(user_selection) => { /* run selection */ },
