@@ -47,7 +47,7 @@ fn main() {
             .read(true)
             .write(true)
             .create(true)
-            .open(wordle::console_app::USERNAMES_FILENAME);
+            .open(wordle_terminal::USERNAMES_FILENAME);
         let usernames_file_contents = match read_file(usernames_file) {
             Ok(usernames_file_contents) => usernames_file_contents,
             Err(_) => {
@@ -68,7 +68,7 @@ fn main() {
         (dictionary, usernames)
     };
 
-    wordle::console_app::run(&dictionary, &mut usernames);
+    wordle_terminal::run(&dictionary, &mut usernames);
 }
 
 /// Loads data from a file into a String.

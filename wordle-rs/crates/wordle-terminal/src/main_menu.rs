@@ -9,7 +9,9 @@ use std::{
     io::{self, stdin, Write},
 };
 
-use crate::{console_app::game, players::PlayerInfo, WordleAnswer};
+use crate::game;
+use wordle::WordleAnswer;
+use wordle_db::PlayerInfo;
 
 /// Possible states of the main Wordle program.
 #[derive(Default, Debug, Clone, PartialEq, Eq)]

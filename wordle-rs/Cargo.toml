@@ -1,20 +1,4 @@
-[package]
-name = "wordle-rs"
-version = "0.4.2"
-authors = ["Benjamin Hall <hallb1016@gmail.com>"]
-edition = "2021"
-
-[lib]
-name = "wordle"
-
-[[bin]]
-name = "wordle-rs"
-required-features = ["console_app"]
-
-[dependencies]
-fastrand = { version = "1.7", optional = true }
-
-[features]
-default = []
-player_db = ["dep:fastrand"]
-console_app = ["player_db"]
+[workspace]
+members = [
+    "crates/*"
+]

@@ -9,7 +9,8 @@ use std::{
     io::{self, Write},
 };
 
-use crate::{players::PlayerInfo, WordleAnswer, WordleGuess, WIN_MESSAGES};
+use wordle::{WordleAnswer, WordleGuess, WIN_MESSAGES};
+use wordle_db::PlayerInfo;
 
 /// Runs a game of Wordle.
 ///

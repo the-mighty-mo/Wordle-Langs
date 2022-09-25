@@ -1,0 +1,8 @@
+[package]
+name = "wordle-terminal"
+version = "0.4.2"
+edition = "2021"
+
+[dependencies]
+wordle = { path = "../wordle" }
+wordle-db = { path = "../wordle-db" }
