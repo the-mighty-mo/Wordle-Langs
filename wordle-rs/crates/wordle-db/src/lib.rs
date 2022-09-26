@@ -170,7 +170,7 @@ where
         let random_word_idx = fastrand::usize(0..unplayed_words_cnt);
         dictionary
             .iter()
-            .filter(|w| !self.words_played.contains(*w))
+            .filter(|&w| !self.words_played.contains(w))
             .nth(random_word_idx)
             .map(String::as_str)
     }
@@ -256,12 +256,12 @@ where
 
         /* print the guess distribution with bars, max 12 */
         let bar_factor = match max_num_guesses {
-            Some(max_num_guesses) if *max_num_guesses != 0 => 12.0 / *max_num_guesses as f64,
+            Some(&max_num_guesses) if max_num_guesses != 0 => 12.0 / max_num_guesses as f64,
             _ => 0.0,
         };
 
-        for (i, num_guess) in self.num_guesses.iter().enumerate() {
-            let num_bars = (bar_factor * *num_guess as f64).round() as usize;
+        for (i, &num_guess) in self.num_guesses.iter().enumerate() {
+            let num_bars = (bar_factor * num_guess as f64).round() as usize;
             let bars = "=".repeat(num_bars);
             writeln!(stats, "{}: {bars} {num_guess}", i + 1).unwrap();
         }
