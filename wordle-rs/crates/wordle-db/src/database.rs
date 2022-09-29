@@ -3,7 +3,10 @@
 //!
 //! Author: Benjamin Hall
 
-use std::{convert::identity, marker::PhantomData};
+use std::{
+    convert::{identity, Infallible},
+    marker::PhantomData,
+};
 
 /// Stores information about an entry in a database.
 ///
@@ -67,8 +70,8 @@ where
     /// ```
     #[must_use]
     pub fn from_line(line: &'a str, string_to_t: impl Fn(&'a str) -> T) -> Option<Self> {
-        let split_str = line.split_once(DELIM);
-        split_str.map(|(key, value)| Self::new(key.into(), string_to_t(value)))
+        Self::try_from_line(line, |s| Ok::<T, Infallible>(string_to_t(s)))
+            .unwrap_or_else(|e| match e {})
     }
 
     /// Creates a simple database entry from a line of text where
@@ -144,12 +147,8 @@ where
     /// ```
     #[must_use]
     pub fn from_collection(line: &'a str, string_to_v: impl Fn(&'a str) -> V) -> Option<Self> {
-        let parsed_row = Entry::<&str, _, _>::from_line(line, identity);
-        parsed_row.map(|parsed_row| {
-            let items = parsed_row.value.split(',').map(string_to_v).collect();
-
-            Self::new(parsed_row.key.into(), items)
-        })
+        Self::try_from_collection(line, |s| Ok::<V, Infallible>(string_to_v(s)))
+            .unwrap_or_else(|e| match e {})
     }
 
     /// Creates a database entry from a line of text where
