@@ -326,9 +326,8 @@ impl PlayerInfo<String> {
             )
         };
 
-        let file = match File::open(filename) {
-            Ok(file) => file,
-            Err(_) => return Ok(None),
+        let Ok(file) = File::open(filename) else {
+            return Ok(None);
         };
 
         let mut file_contents = String::new();

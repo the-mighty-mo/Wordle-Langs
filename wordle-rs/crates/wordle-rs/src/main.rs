@@ -35,12 +35,9 @@ fn main() {
 
     let (dictionary, mut usernames) = {
         let dict_file = File::open(dict_file_name);
-        let dict_file_contents = match read_file(dict_file) {
-            Ok(dict_file_contents) => dict_file_contents,
-            Err(_) => {
-                println!("Error: could not read dictionary file");
-                return;
-            }
+        let Ok(dict_file_contents) = read_file(dict_file) else {
+            println!("Error: could not read dictionary file");
+            return;
         };
 
         let usernames_file = OpenOptions::new()
@@ -48,12 +45,9 @@ fn main() {
             .write(true)
             .create(true)
             .open(wordle_terminal::USERNAMES_FILENAME);
-        let usernames_file_contents = match read_file(usernames_file) {
-            Ok(usernames_file_contents) => usernames_file_contents,
-            Err(_) => {
-                println!("Error: could not read user database");
-                return;
-            }
+        let Ok(usernames_file_contents) = read_file(usernames_file) else {
+            println!("Error: could not read user database");
+            return;
         };
 
         let dictionary: HashSet<String> = dict_file_contents
