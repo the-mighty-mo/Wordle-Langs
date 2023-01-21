@@ -121,7 +121,7 @@ fn save_usernames(usernames: &BTreeSet<String>, filename: &str) -> io::Result<()
     let file = File::create(filename)?;
     let mut writer = BufWriter::new(file);
     for username in usernames {
-        writeln!(writer, "{}", username)?;
+        writeln!(writer, "{username}")?;
     }
 
     Ok(())

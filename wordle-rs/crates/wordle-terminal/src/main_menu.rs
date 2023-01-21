@@ -101,7 +101,7 @@ pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo
         Ok(player_info) => player_info,
         /* error reading the database file */
         Err(msg) => {
-            println!("{}", msg);
+            println!("{msg}");
             return None;
         }
     };

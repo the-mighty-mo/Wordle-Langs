@@ -322,7 +322,7 @@ impl PlayerInfo<String> {
         let bad_data_err = || {
             io::Error::new(
                 io::ErrorKind::InvalidData,
-                format!("Error: corrupt player database file: {}", filename),
+                format!("Error: corrupt player database file: {filename}"),
             )
         };
 

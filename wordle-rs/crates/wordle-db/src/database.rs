@@ -68,6 +68,7 @@ where
     ///     Entry::new("String Test", "data")
     /// );
     /// ```
+    #[inline]
     #[must_use]
     pub fn from_line(line: &'a str, string_to_t: impl Fn(&'a str) -> T) -> Option<Self> {
         Self::try_from_line(line, |s| Ok::<T, Infallible>(string_to_t(s)))
@@ -145,6 +146,7 @@ where
     ///     Entry::new("String Test", HashSet::from(["data1", "data2"]))
     /// );
     /// ```
+    #[inline]
     #[must_use]
     pub fn from_collection(line: &'a str, string_to_v: impl Fn(&'a str) -> V) -> Option<Self> {
         Self::try_from_collection(line, |s| Ok::<V, Infallible>(string_to_v(s)))
