@@ -15,10 +15,7 @@ use wordle_db::PlayerInfo;
 
 /// Possible states of the main Wordle program.
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
-pub enum ProgramState<S>
-where
-    S: Borrow<str>,
-{
+pub enum ProgramState<S> {
     /// Request the user's login information
     #[default]
     LogIn,

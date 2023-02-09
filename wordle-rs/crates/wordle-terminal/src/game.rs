@@ -51,9 +51,9 @@ use wordle_db::PlayerInfo;
 /// # Ok(())
 /// # }
 /// ```
-pub fn run(
+pub fn run<S>(
     answer: &WordleAnswer<impl Borrow<str>>,
-    player: &mut PlayerInfo<impl Borrow<str>>,
+    player: &mut PlayerInfo<S>,
     dictionary: &HashSet<String, impl std::hash::BuildHasher>,
 ) {
     {

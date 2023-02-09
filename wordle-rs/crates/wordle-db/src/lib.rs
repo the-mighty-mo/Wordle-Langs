@@ -23,10 +23,7 @@ mod database;
 /// - maximum win streak
 /// - current win streak
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct PlayerInfo<S>
-where
-    S: Borrow<str>,
-{
+pub struct PlayerInfo<S> {
     username: S,
     words_played: HashSet<String>,
     num_guesses: [usize; 6],
@@ -34,35 +31,7 @@ where
     cur_win_streak: usize,
 }
 
-impl<S> fmt::Display for PlayerInfo<S>
-where
-    S: Borrow<str>,
-{
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        writeln!(f, "Username: {}", self.username.borrow())?;
-        writeln!(
-            f,
-            "Words Played: {}",
-            self.words_played
-                .iter()
-                .cloned()
-                .collect::<Vec<_>>()
-                .join(",")
-        )?;
-        writeln!(
-            f,
-            "Number of Guesses: {}",
-            self.num_guesses.map(|i| i.to_string()).join(",")
-        )?;
-        writeln!(f, "Maximum Win Streak: {}", self.max_win_streak)?;
-        writeln!(f, "Current Win Streak: {}", self.cur_win_streak)
-    }
-}
-
-impl<S> PlayerInfo<S>
-where
-    S: Borrow<str>,
-{
+impl<S> PlayerInfo<S> {
     /// Initializes data for a new player.
     ///
     /// # Examples
@@ -119,23 +88,6 @@ where
             max_win_streak,
             cur_win_streak,
         }
-    }
-
-    /// Gets the username of this player.
-    ///
-    /// # Examples
-    ///
-    /// Basic usage:
-    /// ```
-    /// # use wordle_db::PlayerInfo;
-    /// let username = "user";
-    /// let player = PlayerInfo::new(username);
-    /// assert_eq!(player.get_username(), username);
-    /// ```
-    #[inline]
-    #[must_use]
-    pub fn get_username(&self) -> &str {
-        self.username.borrow()
     }
 
     /// Gets a random word this player has not yet played.
@@ -268,6 +220,28 @@ where
 
         stats.trim().to_owned()
     }
+}
+
+impl<S> PlayerInfo<S>
+where
+    S: Borrow<str>,
+{
+    /// Gets the username of this player.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    /// ```
+    /// # use wordle_db::PlayerInfo;
+    /// let username = "user";
+    /// let player = PlayerInfo::new(username);
+    /// assert_eq!(player.get_username(), username);
+    /// ```
+    #[inline]
+    #[must_use]
+    pub fn get_username(&self) -> &str {
+        self.username.borrow()
+    }
 
     /// Writes this player's data to a file.
     ///
@@ -293,6 +267,31 @@ where
         let file = File::create(filename)?;
         let mut writer = BufWriter::new(file);
         writer.write_all(self.to_string().as_bytes())
+    }
+}
+
+impl<S> fmt::Display for PlayerInfo<S>
+where
+    S: Borrow<str>,
+{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        writeln!(f, "Username: {}", self.username.borrow())?;
+        writeln!(
+            f,
+            "Words Played: {}",
+            self.words_played
+                .iter()
+                .cloned()
+                .collect::<Vec<_>>()
+                .join(",")
+        )?;
+        writeln!(
+            f,
+            "Number of Guesses: {}",
+            self.num_guesses.map(|i| i.to_string()).join(",")
+        )?;
+        writeln!(f, "Maximum Win Streak: {}", self.max_win_streak)?;
+        writeln!(f, "Current Win Streak: {}", self.cur_win_streak)
     }
 }
 
