@@ -88,10 +88,9 @@ impl TryFrom<isize> for UserSelection {
 /// ```
 #[must_use]
 pub fn request_user_login(usernames: &mut BTreeSet<String>) -> Option<PlayerInfo<String>> {
-    let username = match request_username(usernames) {
-        Some(username) => username,
+    let Some(username) = request_username(usernames) else {
         /* user requested to exit the game */
-        None => return None,
+        return None;
     };
 
     let player_info = match PlayerInfo::from_file(&(username.clone() + ".txt")) {
@@ -225,10 +224,9 @@ pub fn run<S>(
 where
     S: Borrow<str>,
 {
-    let user_selection = match request_user_selection() {
-        Some(user_selection) => user_selection,
+    let Some(user_selection) = request_user_selection() else {
         /* user likely quit the program with Ctrl-C */
-        None => return ProgramState::Exit,
+        return ProgramState::Exit;
     };
 
     match user_selection {
