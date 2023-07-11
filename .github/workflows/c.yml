@@ -2,9 +2,9 @@ name: C
 
 on:
   push:
-    branches: [ master ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ master ]
+    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: build
       run: gcc -O2 -std=gnu11 -o CWordle src/*.c src/**/*.c -Iinclude -lm
       working-directory: CWordle
