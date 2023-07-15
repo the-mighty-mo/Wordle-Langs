@@ -15,13 +15,13 @@
  *
  * Any errors, such as failing to open the file or not having
  * read access, will be propagated up to the caller.
- * 
+ *
  * @param usernames
  *        A set of usernames to save
  * @param filename
  *        The file to which the usernames are saved
  */
-static int save_usernames(treeset_t *usernames, char *filename)
+static int save_usernames(treeset_t const *usernames, char *filename)
 {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
@@ -29,7 +29,7 @@ static int save_usernames(treeset_t *usernames, char *filename)
     }
 
     string_t const *username = NULL;
-    for (int i = 0; i < usernames->len; ++i) {
+    for (size_t i = 0; i < usernames->len; ++i) {
         username = treeset_get_next(usernames, username);
         fputs(username->buf, file);
         fputs("\n", file);
@@ -79,7 +79,7 @@ void run_console_app(hashset_t const *dictionary, treeset_t *usernames)
         {
             treeset_t tmp_usernames = treeset_new(usernames->type_info);
             string_t const *elem = NULL;
-            for (int i = 0; i < usernames->len; ++i) {
+            for (size_t i = 0; i < usernames->len; ++i) {
                 elem = treeset_get_next(usernames, elem);
                 if (strcmp(elem->buf, current_player->username.buf) != 0) {
                     treeset_insert(&tmp_usernames, move(elem, &usernames->type_info));

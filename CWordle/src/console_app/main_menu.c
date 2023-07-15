@@ -37,7 +37,7 @@ typedef enum _UserSelection {
  *
  * If the user does not yet exist in the given database,
  * they will be added to it.
- * 
+ *
  * @param usernames
  *        A set of existing usernames
  */
@@ -46,7 +46,7 @@ static string_t *request_username(treeset_t *usernames)
     if (!treeset_is_empty(usernames)) {
         printf("List of existing users:\n");
         string_t const *elem = NULL;
-        for (int i = 0; i < usernames->len; ++i) {
+        for (size_t i = 0; i < usernames->len; ++i) {
             elem = treeset_get_next(usernames, elem);
             printf("%s\n", elem->buf);
         }
@@ -56,6 +56,7 @@ static string_t *request_username(treeset_t *usernames)
     printf("Note: usernames are case-insensitive\n");
     printf("Type \":q\" to exit\n");
     printf("Username: ");
+    fflush(stdout);
 
     string_t *username = malloc(sizeof(*username));
     *username = string_new();
@@ -146,6 +147,7 @@ static UserSelection *request_user_selection(void)
     uint8_t read = 1;
     while (read) {
         printf("Selection: ");
+        fflush(stdout);
 
         string_t selection_str = string_new();
         if (file_read_line_to_string(&selection_str, stdin) != 0) {
@@ -153,7 +155,7 @@ static UserSelection *request_user_selection(void)
             return NULL;
         }
 
-        uint8_t selection = atoi(selection_str.buf);
+        uint8_t const selection = atoi(selection_str.buf);
         if (selection >= 1 && selection <= 4) {
             /* valid selection, stop the read loop */
             user_selection = malloc(sizeof(*user_selection));
@@ -235,6 +237,7 @@ ProgramState run_menu(player_info_t *current_player, hashset_t const *dictionary
     case _DeleteUser:
     {
         printf("Are you sure you would like to delete user: %s [y/N] ", current_player->username.buf);
+        fflush(stdout);
 
         string_t user_confirmation = string_new();
         file_read_line_to_string(&user_confirmation, stdin);

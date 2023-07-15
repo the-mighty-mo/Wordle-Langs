@@ -23,12 +23,13 @@ int Run(WordleAnswer const &answer, PlayerInfo &player, std::unordered_set<std::
     printf("X = Black:\tthere are no more instances of the letter in the word\n");
     printf("\n");
 
-    std::optional<int> wonGame = [&]() -> std::optional<int> {
+    std::optional<int> const wonGame = [&]() -> std::optional<int> {
         for (int i = 1; i <= 6; ++i) {
             std::string guess;
             uint8_t read = 1;
             while (read) {
                 printf("[%d] ", i);
+                fflush(stdout);
 
                 if (!std::getline(std::cin, guess)) {
                     /* user likely quit the program with Ctrl-C */
@@ -56,14 +57,14 @@ int Run(WordleAnswer const &answer, PlayerInfo &player, std::unordered_set<std::
                 }
             }
 
-            auto colors = answer.CheckGuess(guess);
+            auto const colors = answer.CheckGuess(guess);
             printf("    ");
             for (auto color : colors) {
                 printf("%s", WordleGuessToString(color));
             }
             printf("\n");
 
-            bool won = std::all_of(colors.begin(), colors.end(), [](auto color) {
+            bool const won = std::all_of(colors.begin(), colors.end(), [](auto color) {
                     return color == WordleGuess::Correct;
                 });
 

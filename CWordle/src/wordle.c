@@ -40,7 +40,7 @@ void wordle_answer_drop(wordle_answer_t *answer)
 
 void wordle_answer_check_guess(wordle_answer_t const *answer, WordleGuess colors[WORDLE_ANSWER_SIZE], char const *guess)
 {
-    for (int i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
+    for (size_t i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
         colors[i] = Incorrect;
     }
 
@@ -52,7 +52,7 @@ void wordle_answer_check_guess(wordle_answer_t const *answer, WordleGuess colors
     memcpy(letter_counts, answer->letter_counts, 26);
 
     /* first check for green letters */
-    for (int i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
+    for (size_t i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
         if (answer->word.buf[i] == guess[i]) {
             --letter_counts[guess[i] - 'A'];
             colors[i] = Correct;
@@ -60,7 +60,7 @@ void wordle_answer_check_guess(wordle_answer_t const *answer, WordleGuess colors
     }
 
     /* then check for yellow letters */
-    for (int i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
+    for (size_t i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
         if (colors[i] == Incorrect) {
             /* letter has not yet been checked */
             if (letter_counts[guess[i] - 'A'] > 0) {

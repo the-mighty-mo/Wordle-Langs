@@ -15,10 +15,6 @@
 
 namespace players {
 
-PlayerInfo::PlayerInfo(std::string username) :
-    m_username{std::move(username)}
-{}
-
 PlayerInfo::PlayerInfo(std::string username,
                     std::unordered_set<std::string> wordsPlayed,
                     std::array<uint32_t, MAX_NUM_GUESSES> numGuesses,
@@ -49,7 +45,7 @@ std::string const *PlayerInfo::GetRandomWord(std::unordered_set<std::string> con
             break;
         }
     }
-    
+
     if (iter != dictionary.end()) {
         return &*iter;
     } else {
@@ -74,7 +70,7 @@ void PlayerInfo::AddLostWord(std::string word)
 std::string PlayerInfo::ToString() const
 {
     std::stringstream playerStr;
-    playerStr << "Username: " << m_username << std::endl;
+    playerStr << "Username: " << m_username << "\n";
 
     playerStr << "Words Played: ";
     {
@@ -87,7 +83,7 @@ std::string PlayerInfo::ToString() const
             }
             playerStr << wordPlayed;
         }
-        playerStr << std::endl;
+        playerStr << "\n";
     }
 
     playerStr << "Number of Guesses: ";
@@ -97,10 +93,10 @@ std::string PlayerInfo::ToString() const
         }
         playerStr << m_numGuesses[i];
     }
-    playerStr << std::endl;
+    playerStr << "\n";
 
-    playerStr << "Maximum Win Streak: " << m_maxWinStreak << std::endl;
-    playerStr << "Current Win Streak: " << m_curWinStreak << std::endl;
+    playerStr << "Maximum Win Streak: " << m_maxWinStreak << "\n";
+    playerStr << "Current Win Streak: " << m_curWinStreak << "\n";
 
     return playerStr.str();
 }
@@ -109,19 +105,19 @@ std::string PlayerInfo::GetStats() const
 {
     std::stringstream playerStats;
 
-    playerStats << "Number of Words Played: " << m_wordsPlayed.size() << std::endl;
+    playerStats << "Number of Words Played: " << m_wordsPlayed.size() << "\n";
 
     playerStats << "Win Rate: " << [&] {
-            int wonGames = std::accumulate(m_numGuesses.begin(), m_numGuesses.end(), 0, std::plus<uint32_t>());
+            uint32_t const wonGames = std::accumulate(m_numGuesses.begin(), m_numGuesses.end(), 0, std::plus<uint32_t>());
             return (uint32_t)std::round(100.0 * wonGames / m_wordsPlayed.size());
-        }() << std::endl;
-    
-    playerStats << "Current Win Streak: " << m_curWinStreak << std::endl;
-    playerStats << "Maximum Win Streak: " << m_maxWinStreak << std::endl;
+        }() << "\n";
+
+    playerStats << "Current Win Streak: " << m_curWinStreak << "\n";
+    playerStats << "Maximum Win Streak: " << m_maxWinStreak << "\n";
     playerStats << "Guess Distribution:";
 
-    double barFactor = [&] {
-        auto maxNumGuesses = std::max_element(m_numGuesses.begin(), m_numGuesses.end());
+    double const barFactor = [&] {
+        auto const maxNumGuesses = std::max_element(m_numGuesses.begin(), m_numGuesses.end());
         if (maxNumGuesses == m_numGuesses.end() || *maxNumGuesses == 0) {
             return 0.0;
         } else {
@@ -129,9 +125,9 @@ std::string PlayerInfo::GetStats() const
         }
     }();
 
-    for (int i = 0; i < m_numGuesses.size(); ++i) {
-        int numBars = (int)std::round(barFactor * m_numGuesses[i]);
-        playerStats << std::endl << (i + 1) << ": " << std::string(numBars, '=') << " " << m_numGuesses[i];
+    for (size_t i = 0; i < m_numGuesses.size(); ++i) {
+        size_t const numBars = (size_t)std::round(barFactor * m_numGuesses[i]);
+        playerStats << "\n" << (i + 1) << ": " << std::string(numBars, '=') << " " << m_numGuesses[i];
     }
 
     return playerStats.str();
@@ -157,54 +153,54 @@ int PlayerInfo::WriteToFile(std::string const &filename) const
         return std::nullopt;
     }
 
-    static std::string const errStr = "Error: corrupt player database file: " + filename;
+    static auto const getErrStr = [&]() { return "Error: corrupt player database file: " + filename; };
 
     std::string line;
 
     if (!std::getline(file, line)) {
-        throw errStr;
+        throw getErrStr();
     }
     auto username = DatabaseEntry<std::string>::FromLine(line, [](auto s) { return std::string{s}; });
     if (!username.has_value()) {
-        throw errStr;
+        throw getErrStr();
     }
 
     if (!std::getline(file, line)) {
-        throw errStr;
+        throw getErrStr();
     }
     auto wordsPlayed = DatabaseEntry<std::unordered_set<std::string>>::FromSet(line, [](auto s) { return std::string{s}; });
     if (!wordsPlayed.has_value()) {
-        throw errStr;
+        throw getErrStr();
     }
 
     if (!std::getline(file, line)) {
-        throw errStr;
+        throw getErrStr();
     }
     auto numGuessesList = DatabaseEntry<std::vector<uint32_t>>::FromVector(line, [](auto s) { return std::stol(std::string{s}); });
     if (!numGuessesList.has_value()) {
-        throw errStr;
+        throw getErrStr();
     }
 
     if (!std::getline(file, line)) {
-        throw errStr;
+        throw getErrStr();
     }
     auto maxWinStreak = DatabaseEntry<uint32_t>::FromLine(line, [](auto s) { return std::stol(std::string{s}); });
     if (!maxWinStreak.has_value()) {
-        throw errStr;
+        throw getErrStr();
     }
 
     if (!std::getline(file, line)) {
-        throw errStr;
+        throw getErrStr();
     }
     auto curWinStreak = DatabaseEntry<uint32_t>::FromLine(line, [](auto s) { return std::stol(std::string{s}); });
     if (!curWinStreak.has_value()) {
-        throw errStr;
+        throw getErrStr();
     }
 
     file.close();
 
     std::array<uint32_t, MAX_NUM_GUESSES> numGuesses{};
-    for (int i = 0; i < numGuesses.size() && i < numGuessesList->value.size(); ++i) {
+    for (size_t i = 0; i < numGuesses.size() && i < numGuessesList->value.size(); ++i) {
         numGuesses[i] = numGuessesList->value[i];
     }
 

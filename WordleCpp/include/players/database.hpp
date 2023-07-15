@@ -9,7 +9,7 @@ namespace players {
 
 /**
  * Stores information about an entry in a database.
- * 
+ *
  * Each database entry contains two portions: the name
  * of the field, and the value of the data.
  */
@@ -24,7 +24,7 @@ public:
 
     /**
      * Creates a new database entry with the given name and value.
-     * 
+     *
      * @param name
      *        The name of the field
      * @param value
@@ -41,7 +41,7 @@ public:
      * The text will be split between field name and data
      * on the ": " delimiter. If the delimiter is not found,
      * then this function returns a nullopt.
-     * 
+     *
      * @param line
      *        The line to parse
      * @param stringToT
@@ -49,7 +49,7 @@ public:
      */
     static std::optional<BaseDatabaseEntry<T>> FromLine(std::string_view line, std::function<T(std::string_view)> const &stringToT)
     {
-        size_t delimIdx = line.find(DELIM);
+        size_t const delimIdx = line.find(DELIM);
         if (delimIdx == std::string_view::npos) {
             return std::nullopt;
         } else {
@@ -75,7 +75,7 @@ public:
      * then this function returns a nullopt. From there,
      * elements will be separated by the "," delimiter and
      * added to a vector.
-     * 
+     *
      * @param line
      *        The line to parse
      * @param stringToT
@@ -113,7 +113,7 @@ public:
      * then this function returns a nullopt. From there,
      * elements will be separated by the "," delimiter and
      * added to a set.
-     * 
+     *
      * @param line
      *        The line to parse
      * @param stringToT

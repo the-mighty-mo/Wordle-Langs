@@ -77,7 +77,7 @@ void vec_drop(vec_t *vec)
     }
 
     if (vec->type_info.drop) {
-        for (int i = 0; i < vec->len; ++i) {
+        for (size_t i = 0; i < vec->len; ++i) {
             vec->type_info.drop(CAST_BUF(vec->buf) + i * vec->type_info.type_sz);
         }
     }
@@ -134,7 +134,7 @@ void vec_clear(vec_t *vec)
     }
 
     if (vec->type_info.drop) {
-        for (int i = 0; i < vec->len; ++i) {
+        for (size_t i = 0; i < vec->len; ++i) {
             vec->type_info.drop(CAST_BUF(vec->buf) + i * vec->type_info.type_sz);
         }
     }
@@ -146,8 +146,8 @@ int vec_contains(vec_t const *vec, void const *elem)
     if (vec == NULL || elem == NULL || vec_is_empty(vec)) {
         return 0;
     }
-    
-    for (int i = 0; i < vec->len; ++i) {
+
+    for (size_t i = 0; i < vec->len; ++i) {
         void const *vec_elem = CAST_BUF(vec->buf) + i * vec->type_info.type_sz;
         if (vec->type_info.compare(vec_elem, elem) == 0) {
             return 1;

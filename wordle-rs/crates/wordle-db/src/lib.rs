@@ -266,7 +266,8 @@ where
         use std::io::Write;
         let file = File::create(filename)?;
         let mut writer = BufWriter::new(file);
-        writer.write_all(self.to_string().as_bytes())
+        writer.write_all(self.to_string().as_bytes())?;
+        writer.flush()
     }
 }
 

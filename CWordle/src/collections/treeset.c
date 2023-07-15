@@ -25,8 +25,8 @@ treeset_t treeset_from(type_info_t type_info, void const *arr, size_t count)
         NULL,
         type_info
     };
-    
-    for (int i = 0; i < count; ++i) {
+
+    for (size_t i = 0; i < count; ++i) {
         treeset_insert(&treeset, CAST_BUF(arr) + i * type_info.type_sz);
     }
     return treeset;
@@ -38,11 +38,11 @@ treeset_t treeset_clone(treeset_t const *treeset)
         type_info_t info = {0, NULL, NULL, NULL};
         return treeset_new(info);
     }
-    
+
     treeset_t set = treeset_new(treeset->type_info);
 
     void const *elem = NULL;
-    for (int i = 0; i < treeset->len; ++i) {
+    for (size_t i = 0; i < treeset->len; ++i) {
         elem = treeset_get_next(treeset, elem);
         treeset_insert(&set, elem);
     }
@@ -227,7 +227,7 @@ static treenode_t *fix_rotate_chain(treeset_t *treeset, treenode_t *cur_node, ui
 
 /**
  * Fixes the red-black tree after a red node has been inserted.
- * 
+ *
  * @param treeset
  * @param cur_node
  *        The red node inserted to the tree
@@ -279,9 +279,9 @@ static void insert_node_fixup(treeset_t *treeset, treenode_t *cur_node)
 static void left_rotate(treeset_t *treeset, treenode_t *node);
 static void right_rotate(treeset_t *treeset, treenode_t *node);
 
-/* 
+/*
  * Legend for documentation below:
- * 
+ *
  * G - grandparent
  * P - parent
  * U - uncle
@@ -291,13 +291,13 @@ static void right_rotate(treeset_t *treeset, treenode_t *node);
 
 /**
  * Fixes a node with a red uncle.
- * 
+ *
  * Situation (or mirrored):
- * 
+ *
  *     G-B              G-R
  * P-R     U-R  =>  P-B     U-B
  * C-R              C-R
- * 
+ *
  * @return
  *        The next node to fix
  */
@@ -315,17 +315,17 @@ static treenode_t *fix_red_uncle(treenode_t *cur_node, treenode_t *uncle)
 /**
  * Fixes a node that makes a zig-zag shape
  * with its parent and grandparent.
- * 
+ *
  * Situation (or mirrored):
- * 
+ *
  *     G-B              G-B
  * P-R      =>      C-R
  *     C-R      P-R
- * 
+ *
  * - rotate left at P
  * - P can now be treated like an inserted
  *   red node, so continue from P
- * 
+ *
  * @return
  *        The next node to fix
  */
@@ -347,17 +347,17 @@ static treenode_t *fix_zig_zag(treeset_t *treeset, treenode_t *cur_node, uint8_t
 /**
  * Fixes a node by rotating the Node-Parent-Grandparent
  * chain so the parent is the new root of the subtree.
- * 
+ *
  * Situation (or mirrored):
- * 
+ *
  *         G-B          P-B
  *     P-R      =>  C-R     G-R
  * C-R
- * 
+ *
  * - make P black and G red
  * - rotate right at G
  * - continue from the same node
- * 
+ *
  * @return
  *        The next node to fix
  */
@@ -379,7 +379,7 @@ static treenode_t *fix_rotate_chain(treeset_t *treeset, treenode_t *cur_node, ui
 
 /**
  * Rotates left at a given node.
- * 
+ *
  *     N                   R
  * L       R     =>    N       RR
  *      RL   RR      L   RL
@@ -408,7 +408,7 @@ static void left_rotate(treeset_t *treeset, treenode_t *node)
 
 /**
  * Rotates right at a given node.
- * 
+ *
  *        N               L
  *    L       R  =>  LL       N
  * LL   LR                 LR   R

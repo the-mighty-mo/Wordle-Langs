@@ -21,23 +21,23 @@ using main_menu::ProgramState;
  *
  * Any errors, such as failing to open the file or not having
  * read access, will be propagated up to the caller.
- * 
+ *
  * @param usernames
  *        A set of usernames to save
  * @param filename
  *        The file to which the usernames are saved
  */
-static int SaveUsernames(std::set<std::string> &usernames, std::string const &filename)
+static int SaveUsernames(std::set<std::string> const &usernames, std::string const &filename)
 {
     std::ofstream file{filename};
     if (!file.is_open()) {
         return -1;
     }
 
-    for (auto username : usernames) {
-        file << username << std::endl;
+    for (auto const &username : usernames) {
+        file << username << "\n";
     }
-    
+
     file.close();
     return 0;
 }

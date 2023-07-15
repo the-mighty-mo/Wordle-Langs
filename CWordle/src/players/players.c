@@ -104,7 +104,7 @@ string_t player_info_to_string(player_info_t const *player_info)
     string_push_str(&string, "\nWords Played: ");
     {
         string_t const *str = NULL;
-        for (int i = 0; i < player_info->words_played.len; ++i) {
+        for (size_t i = 0; i < player_info->words_played.len; ++i) {
             str = hashset_get_next(&player_info->words_played, str);
             string_push_str(&string, str->buf);
             if (i < player_info->words_played.len - 1) {
@@ -114,7 +114,7 @@ string_t player_info_to_string(player_info_t const *player_info)
     }
 
     string_push_str(&string, "\nNumber of Guesses: ");
-    for (int i = 0; i < MAX_NUM_GUESSES; ++i) {
+    for (size_t i = 0; i < MAX_NUM_GUESSES; ++i) {
         char int_str[20] = {0};
         snprintf(int_str, sizeof(int_str) - 1, "%d", player_info->num_guesses[i]);
         if (i < MAX_NUM_GUESSES - 1) {
@@ -134,7 +134,7 @@ string_t player_info_to_string(player_info_t const *player_info)
     string_push_str(&string, "\nCurrent Win Streak: ");
     snprintf(tmp, sizeof(tmp) - 1, "%d", player_info->cur_win_streak);
     string_push_str(&string, tmp);
-    
+
     string_push_str(&string, "\n");
 
     return string;
@@ -161,7 +161,7 @@ string_t player_info_get_stats(player_info_t const *player_info)
         tmp[0] = 0 + '0';
     } else {
         int win_rate = 0;
-        for (int i = 0; i < MAX_NUM_GUESSES; ++i) {
+        for (size_t i = 0; i < MAX_NUM_GUESSES; ++i) {
             win_rate += player_info->num_guesses[i];
         }
         win_rate = (int)round(100.0 * win_rate / player_info->words_played.len);
@@ -185,7 +185,7 @@ string_t player_info_get_stats(player_info_t const *player_info)
 
     string_push_str(&string, "\nGuess Distribution:");
     int max_num_guesses = 0;
-    for (int i = 0; i < MAX_NUM_GUESSES; ++i) {
+    for (size_t i = 0; i < MAX_NUM_GUESSES; ++i) {
         max_num_guesses = max(max_num_guesses, player_info->num_guesses[i]);
     }
 
@@ -197,8 +197,8 @@ string_t player_info_get_stats(player_info_t const *player_info)
         bar_factor = 12.0 / max_num_guesses;
     }
 
-    for (int i = 0; i < MAX_NUM_GUESSES; ++i) {
-        int num_bars = (int)round(bar_factor * player_info->num_guesses[i]);
+    for (size_t i = 0; i < MAX_NUM_GUESSES; ++i) {
+        size_t const num_bars = (size_t)round(bar_factor * player_info->num_guesses[i]);
         string_reserve(&string, num_bars + 6);
 
         string_push_str(&string, "\n");
@@ -208,7 +208,7 @@ string_t player_info_get_stats(player_info_t const *player_info)
 
         memset(tmp, 0, sizeof(tmp));
 
-        for (int j = 0; j < num_bars; ++j) {
+        for (size_t j = 0; j < num_bars; ++j) {
             string_push_str(&string, "=");
         }
 
@@ -338,7 +338,7 @@ int player_info_from_file(player_info_t *player_info, char const *filename)
     /* parse the number of guesses into an array */
     uint32_t num_guesses[MAX_NUM_GUESSES] = {0};
     uint32_t const *num_guess = NULL;
-    for (int i = 0; i < MAX_NUM_GUESSES && i < num_guesses_vec->len; ++i) {
+    for (size_t i = 0; i < MAX_NUM_GUESSES && i < num_guesses_vec->len; ++i) {
         num_guess = vec_get_next(num_guesses_vec, num_guess);
         num_guesses[i] = *num_guess;
     }

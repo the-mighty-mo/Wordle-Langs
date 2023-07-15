@@ -9,7 +9,7 @@ namespace players {
 
 /**
  * Contains information about a Wordle player.
- * 
+ *
  * A player has a:
  * - username
  * - list of words played
@@ -30,15 +30,17 @@ private:
 public:
     /**
      * Initializes data for a new player.
-     * 
+     *
      * @param username
      *        The username of the player
      */
-    PlayerInfo(std::string username);
+    PlayerInfo(std::string username) :
+        m_username{std::move(username)}
+    {}
 
     /**
      * Loads data for an existing player.
-     * 
+     *
      * @param username
      *        The username of the player
      * @param wordsPlayed
@@ -68,7 +70,7 @@ public:
 
     /**
      * Gets a random word the player has not yet played.
-     * 
+     *
      * @param dictionary
      *        The dictionary from which to find a word
      */
@@ -76,11 +78,11 @@ public:
 
     /**
      * Adds a word the player has successfully guessed to their database.
-     * 
+     *
      * This function increments the current win streak, adds
      * the guess to the list of words played and to the guess
      * distribution, and updates the max win streak if appropriate.
-     * 
+     *
      * @param word
      *        The word the player successfully guessed
      * @param num_guesses
@@ -90,11 +92,11 @@ public:
 
     /**
      * Adds a word the player has failed to guess to their database.
-     * 
+     *
      * This function resets the current win streak to 0 and adds
      * the guess to the list of words played. The number of guesses
      * is not added to the player's guess distribution.
-     * 
+     *
      * @param word
      *        The word the player failed to guess
      */
@@ -107,7 +109,7 @@ public:
 
     /**
      * Returns a string with formatted player statistics.
-     * 
+     *
      * Player statistics consist of:
      * - Number of words played
      * - Win rate
@@ -118,7 +120,7 @@ public:
 
     /**
      * Writes a player's data to a file.
-     * 
+     *
      * @param filename
      *        The file to which to write
      */
@@ -126,9 +128,9 @@ public:
 
     /**
      * Reads a player's information from a file.
-     * 
+     *
      * The function throws an exception on parse errors.
-     * 
+     *
      * @param filename
      *        The file from which to read
      * @return

@@ -24,7 +24,8 @@ int run_game(wordle_answer_t const *answer, player_info_t *player, hashset_t con
         uint8_t read = 1;
         while (read) {
             printf("[%d] ", i);
-            
+            fflush(stdout);
+
             if (file_read_line_to_string(&guess, stdin) != 0) {
                 /* user likely quit the program with Ctrl-C */
                 return -1;
@@ -44,7 +45,7 @@ int run_game(wordle_answer_t const *answer, player_info_t *player, hashset_t con
         WordleGuess colors[WORDLE_ANSWER_SIZE];
         wordle_answer_check_guess(answer, colors, guess.buf);
         printf("    ");
-        for (int i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
+        for (size_t i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
             printf("%s", wordle_guess_to_str(colors[i]));
         }
         printf("\n");
@@ -52,7 +53,7 @@ int run_game(wordle_answer_t const *answer, player_info_t *player, hashset_t con
         string_drop(&guess);
 
         won = 1;
-        for (int i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
+        for (size_t i = 0; i < WORDLE_ANSWER_SIZE; ++i) {
             if (colors[i] != Correct) {
                 won = 0;
                 break;

@@ -123,6 +123,5 @@ fn save_usernames(usernames: &BTreeSet<String>, filename: &str) -> io::Result<()
     for username in usernames {
         writeln!(writer, "{username}")?;
     }
-
-    Ok(())
+    writer.flush()
 }

@@ -51,7 +51,7 @@ hashset_t hashset_from(type_info_t type_info, void const *arr, size_t count)
         type_info
     };
 
-    for (int i = 0; i < count; ++i) {
+    for (size_t i = 0; i < count; ++i) {
         hashset_insert(&hashset, CAST_BUF(arr) + i * type_info.type_sz);
     }
     return hashset;
@@ -85,7 +85,7 @@ void hashset_drop(hashset_t *hashset)
     }
 
     if (hashset->type_info.drop) {
-        for (int i = 0; i < hashset->buf_sz; ++i) {
+        for (size_t i = 0; i < hashset->buf_sz; ++i) {
             if (hashset->tombstones[i] == 1) {
                 /* element exists, drop it */
                 hashset->type_info.drop(CAST_BUF(hashset->buf) + i * hashset->type_info.type_sz);
@@ -99,7 +99,7 @@ void hashset_drop(hashset_t *hashset)
 
 static void rehash(hashset_t *hashset, size_t old_buf_sz, void *old_buf, uint8_t *old_tombstones)
 {
-    for (int i = 0; i < old_buf_sz; ++i) {
+    for (size_t i = 0; i < old_buf_sz; ++i) {
         if (old_tombstones[i] != 1) {
             /* empty or dead element */
             continue;
@@ -170,7 +170,7 @@ void hashset_clear(hashset_t *hashset)
     }
 
     if (hashset->type_info.drop) {
-        for (int i = 0; i < hashset->len; ++i) {
+        for (size_t i = 0; i < hashset->len; ++i) {
             hashset->type_info.drop(CAST_BUF(hashset->buf) + i * hashset->type_info.type_sz);
         }
     }

@@ -27,7 +27,7 @@ std::array<WordleGuess, 5> WordleAnswer::CheckGuess(std::string_view guess) cons
     std::array<uint8_t, 26> letterCounts = m_letterCounts;
 
     /* first check for green letters */
-    for (int i = 0; i < m_word.length(); ++i) {
+    for (size_t i = 0; i < m_word.length(); ++i) {
         if (m_word[i] == guess[i]) {
             --letterCounts[guess[i] - 'A'];
             colors[i] = WordleGuess::Correct;
@@ -35,7 +35,7 @@ std::array<WordleGuess, 5> WordleAnswer::CheckGuess(std::string_view guess) cons
     }
 
     /* then check for yellow letters */
-    for (int i = 0; i < m_word.length(); ++i) {
+    for (size_t i = 0; i < m_word.length(); ++i) {
         if (colors[i] == WordleGuess::Incorrect) {
             /* letter has not yet been checked */
             if (letterCounts[guess[i] - 'A'] > 0) {

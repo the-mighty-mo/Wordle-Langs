@@ -46,7 +46,7 @@ enum class UserSelection {
  *
  * If the user does not yet exist in the given database,
  * they will be added to it.
- * 
+ *
  * @param usernames
  *        A set of existing usernames
  */
@@ -54,7 +54,7 @@ static std::optional<std::string> RequestUsername(std::set<std::string> &usernam
 {
     if (!usernames.empty()) {
         printf("List of existing users:\n");
-        for (auto username : usernames) {
+        for (auto const &username : usernames) {
             printf("%s\n", username.c_str());
         }
         printf("\n");
@@ -63,6 +63,7 @@ static std::optional<std::string> RequestUsername(std::set<std::string> &usernam
     printf("Note: usernames are case-insensitive\n");
     printf("Type \":q\" to exit\n");
     printf("Username: ");
+    fflush(stdout);
 
     std::string username;
     if (!std::getline(std::cin, username)) {
@@ -113,7 +114,7 @@ std::optional<PlayerInfo> RequestUserLogin(std::set<std::string> &usernames)
     printf("Hello, %s\n", username->c_str());
 
     /* this might be a new user, create a fresh instance of player_info_t if so */
-    return playerInfo.value_or(PlayerInfo{*username});
+    return playerInfo.value_or(PlayerInfo{std::move(*username)});
 }
 
 /**
@@ -141,6 +142,7 @@ static std::optional<UserSelection> RequestUserSelection()
     uint8_t read = 1;
     while (read) {
         printf("Selection: ");
+        fflush(stdout);
 
         std::string selectionStr;
         if (!std::getline(std::cin, selectionStr)) {
@@ -149,7 +151,7 @@ static std::optional<UserSelection> RequestUserSelection()
         }
 
         try {
-            uint8_t selection = std::stoi(selectionStr);
+            uint8_t const selection = std::stoi(selectionStr);
             if (selection >= 1 && selection <= 4) {
                 /* valid selection, stop the read loop */
                 userSelection = std::optional{(UserSelection)selection};
@@ -171,7 +173,7 @@ ProgramState Run(PlayerInfo &currentPlayer, std::unordered_set<std::string> cons
 {
     ProgramState nextState = ProgramState::MainMenu;
 
-    auto userSelection = RequestUserSelection();
+    auto const userSelection = RequestUserSelection();
     if (!userSelection.has_value()) {
         /* user likely quit the program with Ctrl-C */
         return ProgramState::Exit;
@@ -183,7 +185,7 @@ ProgramState Run(PlayerInfo &currentPlayer, std::unordered_set<std::string> cons
         /* run a game of Wordle */
         auto randWord = currentPlayer.GetRandomWord(dictionary);
         if (randWord) {
-            WordleAnswer answer{*randWord};
+            WordleAnswer const answer{*randWord};
             if (game::Run(answer, currentPlayer, dictionary) != 0) {
                 nextState = ProgramState::Exit;
                 break;
@@ -213,6 +215,7 @@ ProgramState Run(PlayerInfo &currentPlayer, std::unordered_set<std::string> cons
     case UserSelection::DeleteUser:
     {
         printf("Are you sure you would like to delete user: %s [y/N] ", currentPlayer.GetUsername().c_str());
+        fflush(stdout);
 
         std::string userConfirmation;
         std::getline(std::cin, userConfirmation);
