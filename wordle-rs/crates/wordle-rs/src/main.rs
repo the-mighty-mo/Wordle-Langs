@@ -44,6 +44,7 @@ fn main() {
             .read(true)
             .write(true)
             .create(true)
+            .truncate(false)
             .open(wordle_terminal::USERNAMES_FILENAME);
         let Ok(usernames_file_contents) = read_file(usernames_file) else {
             println!("Error: could not read user database");
