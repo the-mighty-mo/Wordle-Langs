@@ -7,6 +7,7 @@
 
 #include <array>
 #include <string>
+#include <stdint.h>
 
 namespace wordle {
 
@@ -30,7 +31,7 @@ enum class WordleGuess {
 
 /**
  * Returns a string representation of a Wordle guess.
- * 
+ *
  * @param guess
  *        The Wordle guess
  */
@@ -61,7 +62,7 @@ private:
 public:
     /**
      * Creates a new Wordle answer.
-     * 
+     *
      * @param word
      *        The answer word; must be uppercase
      */
@@ -77,15 +78,15 @@ public:
 
     /**
      * Calculates the correctness of a guess.
-     * 
+     *
      * This function returns an array containing the correctness
      * of each letter of the guess.
-     * 
+     *
      * It is important to note that the sum of Correct and Present
      * instances for a given letter cannot exceed the total number
      * of instances of the letter in the answer. Additionally,
      * Correct always takes priority over Present.
-     * 
+     *
      * @param guess
      *        The guess
      */
