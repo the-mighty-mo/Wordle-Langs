@@ -21,7 +21,7 @@ public static class StringExt
     public static IEnumerable<string> Lines(this string str)
     {
         var linesArr = str.Split('\n');
-        var lines = linesArr[^1].Length == 0 ? linesArr.Take(linesArr.Length - 1) : (IEnumerable<string>)linesArr;
+        var lines = linesArr[^1].Length == 0 ? linesArr.Take(linesArr.Length - 1) : linesArr;
         return lines.Select(s => s.TrimEnd('\r'));
     }
 }

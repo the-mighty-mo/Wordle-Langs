@@ -46,13 +46,13 @@ using (var usernamesFile = File.Open("users.txt", FileMode.OpenOrCreate))
     }
 }
 
-HashSet<string> dictionary = dictFileContents
+HashSet<string> dictionary = [.. dictFileContents
     .Lines()
     .Where(s => s.Length == 5)
     .Select(s => s.ToUpper())
-    .ToHashSet();
+];
 
-SortedSet<string> usernames = new(usernamesFileContents.Lines());
+SortedSet<string> usernames = [.. usernamesFileContents.Lines()];
 
 ConsoleApp.Run(dictionary, usernames);
 

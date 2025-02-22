@@ -7,24 +7,15 @@
 /// of the field, and the value of the data.
 /// </summary>
 /// <typeparam name="T">Type of Value</typeparam>
-internal class DatabaseEntry<T>
+/// <param name="name">The name of the field</param>
+/// <param name="value">The value stored in the field</param>
+internal class DatabaseEntry<T>(string name, T value)
 {
-    public readonly string Name;
-    public readonly T Value;
+    public readonly string Name = name;
+    public readonly T Value = value;
 
     /// Delimiter between the field name and data for database entries
     private const string DELIM = ": ";
-
-    /// <summary>
-    /// Creates a new database entry with the given name and value.
-    /// </summary>
-    /// <param name="name">The name of the field</param>
-    /// <param name="value">The value stored in the field</param>
-    public DatabaseEntry(string name, T value)
-    {
-        Name = name;
-        Value = value;
-    }
 
     /// <summary>
     /// A function to convert from a string to a given type.
@@ -69,7 +60,7 @@ internal class DatabaseEntry<T>
             return null;
         }
 
-        C? items = (C?)Activator.CreateInstance(typeof(C), new object[] { parsedRow.Value.Split(',').Select(s => strToT(s)) });
+        C? items = (C?)Activator.CreateInstance(typeof(C), [parsedRow.Value.Split(',').Select(s => strToT(s))]);
         return items is null ? null : new DatabaseEntry<C>(parsedRow.Name, items);
     }
 }

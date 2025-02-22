@@ -116,13 +116,13 @@ public class WordleAnswer
     /// WIN_MESSAGES[n - 1] is the message
     /// that should be displayed.
     /// </summary>
-    public static readonly string[] WORDLE_WIN_MESSAGES = new string[]
-    {
+    public static readonly string[] WORDLE_WIN_MESSAGES =
+    [
         "Genius",
         "Magnificent",
         "Impressive",
         "Splendid",
         "Great",
         "Phew",
-    };
+    ];
 }

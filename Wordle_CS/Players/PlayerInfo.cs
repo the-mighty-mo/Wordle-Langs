@@ -31,7 +31,7 @@ public class PlayerInfo
     /// Initializes data for a new player.
     /// </summary>
     /// <param name="username">The username of the player</param>
-    public PlayerInfo(string username) : this(username, new(), new ulong[6], 0, 0)
+    public PlayerInfo(string username) : this(username, [], new ulong[6], 0, 0)
     { }
 
     /// <summary>
