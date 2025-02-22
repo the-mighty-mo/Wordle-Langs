@@ -6,7 +6,7 @@
 use std::{
     borrow::Borrow,
     collections::{BTreeSet, HashSet},
-    io::{self, stdin, Write},
+    io::{self, Write, stdin},
 };
 
 use crate::game;

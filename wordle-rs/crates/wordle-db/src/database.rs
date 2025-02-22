@@ -4,7 +4,7 @@
 //! Author: Benjamin Hall
 
 use std::{
-    convert::{identity, Infallible},
+    convert::{Infallible, identity},
     marker::PhantomData,
 };
 
