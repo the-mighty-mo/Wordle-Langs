@@ -68,13 +68,11 @@ void Run(std::unordered_set<std::string> const &dictionary, std::set<std::string
                     state = ProgramState::MainMenu;
                 }
             }
+            break;
         }
-        break;
         case ProgramState::MainMenu:
-        {
             state = main_menu::Run(*currentPlayer, dictionary);
-        }
-        break;
+            break;
         case ProgramState::DeleteUser:
         {
             /* remove the current player from the databse */
@@ -89,13 +87,11 @@ void Run(std::unordered_set<std::string> const &dictionary, std::set<std::string
                 /* user has logged out, go to the login screen */
                 state = ProgramState::LogIn;
             }
+            break;
         }
-        break;
         case ProgramState::Exit:
-        {
             runProgram = 0;
-        }
-        break;
+            break;
         }
     }
 }

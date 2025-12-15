@@ -10,25 +10,25 @@ checksum = "37909eebbb50d72f9059c3b6d82c0463f2ff062c9e95845c43a6c9c0355411be"
 
 [[package]]
 name = "wordle"
-version = "0.4.2"
+version = "0.4.3"
 
 [[package]]
 name = "wordle-db"
-version = "0.4.2"
+version = "0.4.3"
 dependencies = [
  "fastrand",
 ]
 
 [[package]]
 name = "wordle-rs"
-version = "0.4.2"
+version = "0.4.3"
 dependencies = [
  "wordle-terminal",
 ]
 
 [[package]]
 name = "wordle-terminal"
-version = "0.4.2"
+version = "0.4.3"
 dependencies = [
  "wordle",
  "wordle-db",

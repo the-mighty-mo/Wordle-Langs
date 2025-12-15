@@ -13,10 +13,10 @@ namespace players {
  * Each database entry contains two portions: the name
  * of the field, and the value of the data.
  */
-template <typename T>
+template <std::movable T>
 class BaseDatabaseEntry {
 private:
-    static constexpr char const *DELIM = ": ";
+    static constexpr std::string_view DELIM{": "};
 
 public:
     std::string const name;
@@ -53,7 +53,10 @@ public:
         if (delimIdx == std::string_view::npos) {
             return std::nullopt;
         } else {
-            return std::optional{BaseDatabaseEntry<T>{std::string{line.substr(0, delimIdx)}, stringToT(line.substr(delimIdx + 2, line.length()))}};
+            return std::optional{BaseDatabaseEntry<T>{
+                std::string{line.substr(0, delimIdx)},
+                stringToT(line.substr(delimIdx + 2, line.length()))
+            }};
         }
     }
 };
@@ -62,6 +65,7 @@ template <typename T>
 class DatabaseEntry : public BaseDatabaseEntry<T> {};
 
 template class DatabaseEntry<std::string>;
+template class DatabaseEntry<std::string_view>;
 
 template <typename T>
 class DatabaseEntry<std::vector<T>> : public BaseDatabaseEntry<std::vector<T>> {
@@ -96,8 +100,8 @@ public:
         vec.push_back(stringToT(parsedRow->value.substr(start, parsedRow->value.length())));
 
         return std::optional{
-                BaseDatabaseEntry<std::vector<T>>{std::move(parsedRow->name), std::move(vec)}
-            };
+            BaseDatabaseEntry<std::vector<T>>{std::move(parsedRow->name), std::move(vec)}
+        };
     }
 };
 
@@ -134,8 +138,8 @@ public:
         set.insert(stringToT(parsedRow->value.substr(start, parsedRow->value.length())));
 
         return std::optional{
-                BaseDatabaseEntry<S<T, Us...>>{std::move(parsedRow->name), std::move(set)}
-            };
+            BaseDatabaseEntry<S<T, Us...>>{std::move(parsedRow->name), std::move(set)}
+        };
     }
 };
 

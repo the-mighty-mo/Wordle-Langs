@@ -14,16 +14,28 @@ namespace Wordle_CS.Players;
 ///     <item>current win streak</item>
 /// </list>
 /// </summary>
-public class PlayerInfo
+/// <remarks>
+/// Loads data for an existing player.
+/// </remarks>
+/// <param name="username">The username of the player</param>
+/// <param name="wordsPlayed">A set of words the player has already played</param>
+/// <param name="numGuesses">
+///     An array containing the number of times the
+///     player has guessed a word in (i + 1) attempts,
+///     where i is the index of the array from [0, 6)
+/// </param>
+/// <param name="maxWinStreak">The maximum winning streak</param>
+/// <param name="curWinStreak">The current winning streak</param>
+public class PlayerInfo(string username, HashSet<string> wordsPlayed, ulong[] numGuesses, ulong maxWinStreak, ulong curWinStreak)
 {
     /// <summary>
     /// This player's username.
     /// </summary>
-    public string Username { get; init; }
-    private readonly HashSet<string> wordsPlayed;
-    private readonly ulong[] numGuesses;
-    private ulong maxWinStreak;
-    private ulong curWinStreak;
+    public string Username { get; init; } = username;
+    private readonly HashSet<string> wordsPlayed = wordsPlayed;
+    private readonly ulong[] numGuesses = numGuesses;
+    private ulong maxWinStreak = maxWinStreak;
+    private ulong curWinStreak = curWinStreak;
 
     private readonly Random rnd = new();
 
@@ -33,27 +45,6 @@ public class PlayerInfo
     /// <param name="username">The username of the player</param>
     public PlayerInfo(string username) : this(username, [], new ulong[6], 0, 0)
     { }
-
-    /// <summary>
-    /// Loads data for an existing player.
-    /// </summary>
-    /// <param name="username">The username of the player</param>
-    /// <param name="wordsPlayed">A set of words the player has already played</param>
-    /// <param name="numGuesses">
-    ///     An array containing the number of times the
-    ///     player has guessed a word in (i + 1) attempts,
-    ///     where i is the index of the array from [0, 6)
-    /// </param>
-    /// <param name="maxWinStreak">The maximum winning streak</param>
-    /// <param name="curWinStreak">The current winning streak</param>
-    public PlayerInfo(string username, HashSet<string> wordsPlayed, ulong[] numGuesses, ulong maxWinStreak, ulong curWinStreak)
-    {
-        Username = username;
-        this.wordsPlayed = wordsPlayed;
-        this.numGuesses = numGuesses;
-        this.maxWinStreak = maxWinStreak;
-        this.curWinStreak = curWinStreak;
-    }
 
     /// <summary>
     /// Gets a random word the player has not yet played.

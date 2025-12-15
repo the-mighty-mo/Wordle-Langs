@@ -11,7 +11,7 @@
 
 /**
  * Runs the Wordle program.
- * 
+ *
  * The user must pass in the name of the dictionary
  * file as a command-line argument to the program.
  */
@@ -54,8 +54,8 @@ int main(int argc, char **argv)
             if (dictFileContents.length() == 5) {
                 /* convert to uppercase */
                 std::transform(dictFileContents.begin(), dictFileContents.end(), dictFileContents.begin(), [](auto c) {
-                        return std::toupper(c);
-                    });
+                    return std::toupper(c);
+                });
                 /* add to dictionary */
                 dictionary.insert(dictFileContents);
             }

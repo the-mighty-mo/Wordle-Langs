@@ -55,11 +55,13 @@ public:
      * @param curWinStreak
      *        The current winning streak
      */
-    PlayerInfo(std::string username,
-            std::unordered_set<std::string> wordsPlayed,
-            std::array<uint32_t, MAX_NUM_GUESSES> numGuesses,
-            uint32_t maxWinStreak,
-            uint32_t curWinStreak);
+    PlayerInfo(
+        std::string username,
+        std::unordered_set<std::string> wordsPlayed,
+        std::array<uint32_t, MAX_NUM_GUESSES> numGuesses,
+        uint32_t maxWinStreak,
+        uint32_t curWinStreak
+    );
 
     /**
      * Returns this player's username.

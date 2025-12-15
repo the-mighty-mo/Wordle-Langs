@@ -202,7 +202,7 @@ string_t player_info_get_stats(player_info_t const *player_info)
         string_reserve(&string, num_bars + 6);
 
         string_push_str(&string, "\n");
-        snprintf(tmp, sizeof(tmp) - 1, "%d", i + 1);
+        snprintf(tmp, sizeof(tmp) - 1, "%zd", i + 1);
         string_push_str(&string, tmp);
         string_push_str(&string, ": ");
 

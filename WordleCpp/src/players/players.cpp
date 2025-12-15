@@ -15,11 +15,13 @@
 
 namespace players {
 
-PlayerInfo::PlayerInfo(std::string username,
-                    std::unordered_set<std::string> wordsPlayed,
-                    std::array<uint32_t, MAX_NUM_GUESSES> numGuesses,
-                    uint32_t maxWinStreak,
-                    uint32_t curWinStreak) :
+PlayerInfo::PlayerInfo(
+    std::string username,
+    std::unordered_set<std::string> wordsPlayed,
+    std::array<uint32_t, MAX_NUM_GUESSES> numGuesses,
+    uint32_t maxWinStreak,
+    uint32_t curWinStreak
+) :
     m_username{std::move(username)},
     m_wordsPlayed{std::move(wordsPlayed)},
     m_numGuesses{std::move(numGuesses)},
@@ -108,9 +110,9 @@ std::string PlayerInfo::GetStats() const
     playerStats << "Number of Words Played: " << m_wordsPlayed.size() << "\n";
 
     playerStats << "Win Rate: " << [&] {
-            uint32_t const wonGames = std::accumulate(m_numGuesses.begin(), m_numGuesses.end(), 0, std::plus<uint32_t>());
-            return (uint32_t)std::round(100.0 * wonGames / m_wordsPlayed.size());
-        }() << "\n";
+        uint32_t const wonGames = std::accumulate(m_numGuesses.begin(), m_numGuesses.end(), 0, std::plus<uint32_t>());
+        return (uint32_t)std::round(100.0 * wonGames / m_wordsPlayed.size());
+    }() << "\n";
 
     playerStats << "Current Win Streak: " << m_curWinStreak << "\n";
     playerStats << "Maximum Win Streak: " << m_maxWinStreak << "\n";
@@ -204,10 +206,10 @@ int PlayerInfo::WriteToFile(std::string const &filename) const
         numGuesses[i] = numGuessesList->value[i];
     }
 
-    return std::optional{
-            PlayerInfo{std::move(username->value), std::move(wordsPlayed->value),
-                    std::move(numGuesses), maxWinStreak->value, curWinStreak->value}
-        };
+    return std::optional{PlayerInfo{
+        std::move(username->value), std::move(wordsPlayed->value),
+        std::move(numGuesses), maxWinStreak->value, curWinStreak->value
+    }};
 }
 
 }

@@ -37,15 +37,15 @@ int Run(WordleAnswer const &answer, PlayerInfo &player, std::unordered_set<std::
                 }
                 /* trim string */
                 guess.erase(guess.begin(), std::find_if(guess.begin(), guess.end(), [](auto c) {
-                        return !std::isspace(c);
-                    }));
+                    return !std::isspace(c);
+                }));
                 guess.erase(std::find_if(guess.rbegin(), guess.rend(), [](auto c) {
-                        return !std::isspace(c);
-                    }).base(), guess.end());
+                    return !std::isspace(c);
+                }).base(), guess.end());
                 /* convert to uppercase */
                 std::transform(guess.begin(), guess.end(), guess.begin(), [](auto c) {
-                        return std::toupper(c);
-                    });
+                    return std::toupper(c);
+                });
 
                 if (guess.length() != 5) {
                     printf("Error: guess must be 5 letters\n");
@@ -65,8 +65,8 @@ int Run(WordleAnswer const &answer, PlayerInfo &player, std::unordered_set<std::
             printf("\n");
 
             bool const won = std::all_of(colors.begin(), colors.end(), [](auto color) {
-                    return color == WordleGuess::Correct;
-                });
+                return color == WordleGuess::Correct;
+            });
 
             if (won) {
                 return std::optional{i};

@@ -72,15 +72,15 @@ static std::optional<std::string> RequestUsername(std::set<std::string> &usernam
     }
     /* trim string */
     username.erase(username.begin(), std::find_if(username.begin(), username.end(), [](auto c) {
-            return !std::isspace(c);
-        }));
+        return !std::isspace(c);
+    }));
     username.erase(std::find_if(username.rbegin(), username.rend(), [](auto c) {
-            return !std::isspace(c);
-        }).base(), username.end());
+        return !std::isspace(c);
+    }).base(), username.end());
     /* convert to lowercase */
     std::transform(username.begin(), username.end(), username.begin(), [](auto c) {
-            return std::tolower(c);
-        });
+        return std::tolower(c);
+    });
 
     if (username.compare(":q") == 0) {
         /* user wants to exit */
@@ -201,13 +201,11 @@ ProgramState Run(PlayerInfo &currentPlayer, std::unordered_set<std::string> cons
             /* couldn't get a word, player has already played every word */
             printf("There are no remaining words in the dictionary.\n");
         }
+        break;
     }
-    break;
     case UserSelection::ViewStats:
-    {
         printf("%s\n", currentPlayer.GetStats().c_str());
-    }
-    break;
+        break;
     case UserSelection::LogOff:
         /* user is logged off, go back to login screen */
         nextState = ProgramState::LogIn;
@@ -221,15 +219,15 @@ ProgramState Run(PlayerInfo &currentPlayer, std::unordered_set<std::string> cons
         std::getline(std::cin, userConfirmation);
         /* trim string */
         userConfirmation.erase(userConfirmation.begin(), std::find_if(userConfirmation.begin(), userConfirmation.end(), [](auto c) {
-                return !std::isspace(c);
-            }));
+            return !std::isspace(c);
+        }));
         userConfirmation.erase(std::find_if(userConfirmation.rbegin(), userConfirmation.rend(), [](auto c) {
-                return !std::isspace(c);
-            }).base(), userConfirmation.end());
+            return !std::isspace(c);
+        }).base(), userConfirmation.end());
         /* convert to lowercase */
         std::transform(userConfirmation.begin(), userConfirmation.end(), userConfirmation.begin(), [](auto c) {
-                return std::tolower(c);
-            });
+            return std::tolower(c);
+        });
 
         if (userConfirmation.compare("y") == 0) {
             printf("\n");
@@ -237,8 +235,8 @@ ProgramState Run(PlayerInfo &currentPlayer, std::unordered_set<std::string> cons
         } else {
             printf("Action aborted\n");
         }
+        break;
     }
-    break;
     }
 
     return nextState;
